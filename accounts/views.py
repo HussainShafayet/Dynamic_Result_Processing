@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 from django.contrib import messages
 #User Reg,login and Logout
 from .forms import (TeacherRegForm, StudentRegForm)
 from .models import (User, Teacher, Student, Depthead)
+from depthead.models import (Dept)
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import (login, logout, authenticate)
 from django.contrib.auth.models import (auth, Group)
@@ -67,6 +68,11 @@ def teacher_registration(request):
     return render(request,'registration.html',context)
 
 def student_registration(request):
+    if request.is_ajax():
+        term=request.GET.get('term')
+        dept = Dept.objects.all().filter(dept__icontains=term)
+        response_content = list(dept.values())
+        return JsonResponse(response_content,safe=False)
     if request.method == 'POST':
         form = StudentRegForm(request.POST, request.FILES)
         if form.is_valid():

@@ -48,7 +48,8 @@ LOCAL_APPS = [
 
 ]
 THIRD_PARTY_APPS = [
-    'crispy_forms'
+    'crispy_forms',
+    
 ]
 INSTALLED_APPS = DEFAULT_APPS+LOCAL_APPS+THIRD_PARTY_APPS
 MIDDLEWARE = [
@@ -114,6 +115,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
 
 
 # Internationalization

@@ -3,7 +3,7 @@ from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from .models import User,Teacher,Student,Depthead
 from django.db import transaction
-from depthead.models import Dept,Batch,Session
+from depthead.models import Dept, Batch, Session
 
 class TeacherRegForm(UserCreationForm):
     contact = forms.CharField(max_length=15,required=True)
@@ -78,9 +78,9 @@ class StudentRegForm(UserCreationForm):
         ('eunuch','Eunuch'),
     )
 
-    dept = forms.ModelChoiceField(queryset=Dept.objects.all(),label='Department')
-    batch = forms.ModelChoiceField(queryset=Batch.objects.all())
-    session = forms.ModelChoiceField(queryset=Session.objects.all())
+    dept = forms.ModelChoiceField(queryset=Dept.objects.all(), label='Department', empty_label="Choose Department")
+    batch = forms.ModelChoiceField(queryset=Batch.objects.all(),empty_label="Choose Batch")
+    session = forms.ModelChoiceField(queryset=Session.objects.all(),empty_label="Choose Session")
     reg_no = forms.IntegerField(required=True,label='Registration No')
     mobile = forms.CharField(max_length=15, required=True)
     gender=forms.ChoiceField(widget=forms.RadioSelect(),choices=Gender,required=True)
@@ -94,8 +94,9 @@ class StudentRegForm(UserCreationForm):
         labels = {
             'email':'Email*'
         }
-
-        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['dept'].queryset=Dept.objects.none()
     def __init__(self, *args, **kwargs):
         super(StudentRegForm, self).__init__(*args, **kwargs)
         self.fields['first_name'].widget.attrs.update({
@@ -132,7 +133,11 @@ class StudentRegForm(UserCreationForm):
         self.fields['mobile'].widget.attrs.update({
             'placeholder': '01***-******'
         })
-
+        self.fields['dept'].queryset = Dept.objects.none()
+        if 'dept' in self.data:
+            self.fields['dept'].queryset = Dept.objects.all()
+        elif self.instance.pk:
+            self.fields['dept'].queryset = Dept.objects.all().filter(pk=self.instance.dept.pk)
         
     @transaction.atomic
     def save(self, *args, **kwargs):

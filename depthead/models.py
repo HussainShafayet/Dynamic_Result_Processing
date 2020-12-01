@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 
 
@@ -15,6 +16,7 @@ class Course_List(models.Model):
         return self.course_code
 
 
+    
 class Batch(models.Model):
     batch = models.CharField(max_length=20)
 
