@@ -23,7 +23,7 @@ $(document).ready(function() {
         }
     });
     $('#allow').on('click', function() {
-        return confirm("Please Check again!!");
+        return confirm("Please Check again!");
     });
 
 
