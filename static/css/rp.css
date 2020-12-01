@@ -1,0 +1,344 @@
+@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: darkseagreen;
+}
+
+
+/*Profile*/
+
+nav {
+    background-color: darkcyan;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: auto;
+}
+
+nav #logo {
+    color: darkkhaki;
+    font-size: 1.5rem;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+#menu ul {
+    list-style-type: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+#menu a {
+    text-decoration: none;
+    text-transform: capitalize;
+    padding: 12px 14px;
+    font-size: 20px;
+    display: block;
+    color: black;
+}
+
+#menu a:hover {
+    background-color: cornflowerblue;
+    transition: 1.2s;
+    -webkit-transition: 1.2s;
+    -moz-transition: 1.2s;
+    -ms-transition: 1.2s;
+    -o-transition: 1.2s;
+}
+
+#prof ul {
+    list-style-type: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+#prof a {
+    text-decoration: none;
+    text-transform: capitalize;
+    padding: 12px 14px;
+    font-size: 20px;
+    display: block;
+    color: black;
+}
+
+#dropdown {
+    position: relative;
+}
+
+#dropdown a {
+    background-color: inherit;
+    color: inherit;
+    padding: 12px 14px;
+    font-size: 20px;
+    color: black;
+    cursor: pointer;
+}
+
+#dropdown-item {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    width: 134px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+#dropdown-item-log {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    width: 134px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    margin-right: 10px;
+}
+
+#dropdown-item a {
+    color: black;
+    padding: 12px 14px;
+    text-decoration: none;
+    display: block;
+}
+
+#dropdown a:hover {
+    background-color: #3e8e41;
+    cursor: pointer;
+}
+
+#dropdown-item a:hover {
+    background-color: #f1f1f1
+}
+
+#dropdown:hover #dropdown-item {
+    display: block;
+}
+
+#dropdown:hover #dropdown-item-log {
+    display: block;
+    margin-right: 20px;
+}
+
+.text-muted ul {
+    margin-left: 30px;
+}
+
+#reg {
+    width: 400px;
+    height: 400px;
+    background-color: cornflowerblue;
+    margin: 0 auto;
+}
+
+#reg:hover {
+    transform: scale(2);
+    z-index: 1;
+    -webkit-transform: scale(2);
+    -moz-transform: scale(2);
+    -ms-transform: scale(2);
+    -o-transform: scale(2);
+}
+
+span.psw {
+    float: right;
+    padding-top: 16px;
+}
+
+
+/* The Modal (background) */
+
+.modal {
+    display: none;
+    /*Hiddenbydefault*/
+    position: absolute;
+    /*Stayinplace*/
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    /*Fullheight*/
+    overflow: auto;
+    /*Enablescrollifneeded*/
+    background-color: rgb(0, 0, 0);
+    /*Fallbackcolor*/
+    background-color: rgba(0, 0, 0, 0.4);
+    /*Blackw/opacity*/
+    padding-top: 80px;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto 15% auto;
+    /*5%fromthetop,15%fromthebottomandcentered*/
+    border: 1px solid #888;
+    width: 350px;
+    /*Couldbemoreorless,dependingonscreensize*/
+    height: 300px;
+    box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034), 0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06), 0 22.3px 17.9px rgba(0, 0, 0, 0.072), 0 41.8px 33.4px rgba(0, 0, 0, 0.086), 0 100px 80px rgba(0, 0, 0, 0.12);
+}
+
+
+/* The Close Button (x) */
+
+.close {
+    position: absolute;
+    right: 10px;
+    top: 0;
+    color: black;
+    font-size: 35px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: red;
+    cursor: pointer;
+}
+
+
+/* Add Zoom Animation */
+
+.animate {
+    -webkit-animation: animatezoom 0.5s;
+    animation: animatezoom 0.5s;
+}
+
+@keyframes animatezoom {
+    from {
+        transform: scale(0);
+        -webkit-transform: scale(0);
+        -moz-transform: scale(0);
+        -ms-transform: scale(0);
+        -o-transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+        -webkit-transform: scale(1);
+        -moz-transform: scale(1);
+        -ms-transform: scale(1);
+        -o-transform: scale(1);
+    }
+}
+
+
+/* Change styles for span and cancel button on extra small screens */
+
+@media screen and (max-width: 300px) {
+    span.psw {
+        display: block;
+        float: none;
+    }
+    .cancelbtn {
+        width: 100%;
+    }
+}
+
+#link {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    top: 50%;
+}
+
+#link a {
+    color: black;
+    font-size: 25px;
+    text-decoration: none;
+    text-transform: capitalize;
+    display: block;
+    padding: 10px;
+    color: sienna;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+#link a:hover {
+    color: #3e8e41;
+    transition: color 0.2s;
+    transform: rotate(1deg);
+    -webkit-transition: color 0.2s;
+    -moz-transition: color 0.2s;
+    -ms-transition: color 0.2s;
+    -o-transition: color 0.2s;
+}
+
+#link h5 {
+    font-size: 3rem;
+    color: cornflowerblue;
+    font-family: 'Patrick Hand', cursive;
+}
+
+
+/*Table Design*/
+
+table {
+    width: 100%;
+}
+
+th,
+td {
+    border-bottom: 0.5px solid black;
+    cursor: pointer;
+}
+
+th {
+    background-color: sienna;
+    height: 50px;
+}
+
+td {
+    padding: 5px;
+}
+
+tr:hover {
+    background-color: darkkhaki;
+    transition: 1s;
+    -webkit-transition: 1s;
+    -moz-transition: 1s;
+    -ms-transition: 1s;
+    -o-transition: 1s;
+}
+
+
+/* Userdetails*/
+
+#userdetdiv {
+    margin-top: 30px;
+}
+
+#userdetdiv span {
+    color: black;
+    font-size: large;
+    font-weight: bold;
+}
+
+#userdetdiv h4 {
+    font-size: 2.50rem;
+    margin-top: 50px;
+}
+
+#std {
+    display: none;
+}
+
+#teach {
+    display: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    appearance: textfield;
+}

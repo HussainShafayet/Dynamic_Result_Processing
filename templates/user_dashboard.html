@@ -1,0 +1,8 @@
+{% extends 'base.html' %}{% block title %}{% if val == 'user_dh' %}Depthead Dashboard{% elif val == 'user_t' %}Teacher Dashboard{% else %}Student Dasdboard {% endif %}{% endblock %}{% block body %}
+<h1>user page</h1>
+
+<p>Welcome{{user}}</p>{% if val == 'user_dh'%}
+<p>DeptHead</p>{% elif val == 'user_t' %}
+<p>Teacher</p>{% else %}Student{% endif %}
+
+<br> {% endblock %}

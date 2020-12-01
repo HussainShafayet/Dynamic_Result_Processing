@@ -1,0 +1,56 @@
+{% extends 'base.html' %}{% load crispy_forms_tags %} {% block title %}{% if val == 'teacher_reg'%}Teacher Registration{% elif val == 'student_reg' %}Student Registration{% endif %}{% endblock %}{% block body %} {% if val == 'teacher_reg' %}
+<div class="row">
+    <div class="col"></div>
+
+    <div class="col-mid-auto">
+        <div class="page-header">
+            <h3 class="text-center">Teacher Registration</h3>
+        </div>
+        <hr>
+        <form action="" method="POST" enctype="multipart/form-data" id="demo">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-6">
+                    {{form.first_name|as_crispy_field}}
+                </div>
+                <div class="col-6">
+                    {{form.last_name|as_crispy_field}}
+                </div>
+            </div>
+
+            {{form.username|as_crispy_field}} {{form.email|as_crispy_field}} {{form.password1|as_crispy_field}}{{form.password2|as_crispy_field}}{{form.designation|as_crispy_field}}{{form.contact|as_crispy_field}}{{form.location|as_crispy_field}}{{form.image|as_crispy_field}}
+            <button class="btn btn-primary" type="submit" id="submit">Create Account</button>
+        </form>
+        <p id="">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+    </div>
+    <div class="col"></div>
+</div>
+{% elif val == 'student_reg' %}
+<div class="row">
+    <div class="col"></div>
+
+    <div class="col-mid-auto">
+        <div class="page-header">
+            <h3 class="text-center">Student Registration</h3>
+        </div>
+        <hr>
+        <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-6">
+                    {{form.first_name|as_crispy_field}}
+                </div>
+                <div class="col-6">
+                    {{form.last_name|as_crispy_field}}
+                </div>
+            </div>
+
+            {{form.username|as_crispy_field}} {{form.email|as_crispy_field}} {{form.password1|as_crispy_field}}{{form.password2|as_crispy_field}}{{form.dept|as_crispy_field}} {{form.batch|as_crispy_field}}{{form.session|as_crispy_field}}{{form.reg_no|as_crispy_field}}{{form.mobile|as_crispy_field}}{{form.gender|as_crispy_field}}{{form.image|as_crispy_field}}
+            <button class="btn btn-primary" type="submit" id="submit">Create Account</button>
+        </form>
+        <p id="">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+    </div>
+    <div class="col"></div>
+</div>
+
+{% else %}Test {% endif %} {% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}{% load crispy_forms_tags %}{% block body %} {% if val == 'crt_batch' %}
+
+<div class="row">
+    <div class="col"></div>
+    <div class="col-mid-auto">
+        <form action="" method="POST">
+            {% csrf_token %}{{form|crispy}}
+            <input type="submit" class="btn btn-primary" name="" id="" value="Create">
+        </form>
+    </div>
+    <div class="col"></div>
+
+</div>
+<a href="{% url 'show_batch' %}">show</a> {% elif val == 'show_batch' %}
+<div>
+    {% for batch in batch_session %} batch:{{batch.Batch}} session:{{batch.Session}} {% endfor %}
+</div>{% endif %} {% endblock %}

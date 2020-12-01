@@ -1,0 +1,162 @@
+{% extends 'base.html' %} {% block title %} {% if val == 'user_val' %}Users{% elif val == 'userdetails' %}{{user_det.first_name}}'s details{% endif %}{% endblock %}{% block body %}
+
+<!-- Users info -->
+{% if val == 'user_val' %}
+<h3 class="text-center">Unauthorised Users
+    <hr>
+</h3>
+{% if user_list %}
+<table>
+    <thead>
+        <th>SL No</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Date Joined</th>
+
+        <th>View as</th>
+    </thead>
+    <tbody>
+        {% for i in user_list %} {% if i.is_active %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{i.first_name}} </td>
+            <td>{{i.last_name}}</td>
+            <td>{{i.username}}</td>
+            <td>{{i.email}}</td>
+            <td>{{i.date_joined}}</td>
+            <td><a class="btn btn-primary" href="{% url 'userdetails' i.id %}">Details</a>
+            </td>
+        </tr>{% endif %} {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p style="color: rgb(243, 9, 9); padding:3px;font-size:large">No users are waiting list.</p>
+{% endif %}
+<br>
+<hr>
+
+<!--Users Details -->
+{% elif val == 'userdetails' %}
+<div class="row" id="userdetdiv">
+    <div class="col-2"></div>
+    <div class="col-8">
+        <div class="row">
+            <div class="col-3">{% if user_det.is_none %}<img src="{{user_det.student.image.url}}" alt="image" width="150px" height="150px" style="border-radius: 50%;">{% elif user_det.is_student %}<img src="{{user_det.student.image.url}}" alt="image" width="150px" height="150px"
+                    style="border-radius: 50%;"> {% else %}<img src="{{user_det.teacher.image.url}}" alt="image" width="150px" height="150px" style="border-radius: 50%;">{%endif%}</div>
+            <div class="col-8">
+                <h4>{{user_det.first_name}} {{user_det.last_name}}</h4>
+                <p style="font-size: large;">{{user_det.teacher.designation}}</p>
+            </div>
+        </div>
+
+        <hr>
+        <div class="row">
+            <div class="col-4">
+                <div><span>Username: </span>{{user_det.username}}</div>
+                <div><span>Email: </span>{{user_det.email}}</div>
+                <div></div>
+                {% if group.name == 'None' %}{% if user_det.is_none %}
+                <div><span>Department: </span>{{user_det.student.dept}}</div>
+                <div><span>Batch: </span>{{user_det.student.batch}}</div>
+                <div><span>Registration No: </span>{{user_det.student.reg_no}}</div>
+                <div><span>Contact: </span>{{user_det.student.mobile}}</div>
+                <div><span>Gender: </span>{{user_det.student.gender}}</div>
+                {% else %}
+                <div><span>Designation: </span>{{user_det.teacher.designation}}</div>
+                <div><span>Contact: </span>{{user_det.teacher.contact}}</div>
+                <div><span>Location: </span>{{user_det.teacher.location}}</div> {% endif %} {% elif group.name == 'Teacher'%}
+                <div><span>Designation: </span>{{user_det.teacher.designation}}</div>
+                <div><span>Contact: </span>{{user_det.teacher.contact}}</div>
+                <div><span>Location: </span>{{user_det.teacher.location}}</div>
+                {% elif group.name == 'Student' %}
+                <div><span>Department: </span>{{user_det.student.dept}}</div>
+                <div><span>Batch: </span>{{user_det.student.batch}}</div>
+                <div><span>Registration No: </span>{{user_det.student.reg_no}}</div>
+                <div><span>Contact: </span>{{user_det.student.mobile}}</div>
+                <div><span>Gender: </span>{{user_det.student.gender}}</div>
+                {% endif %} {% if 'None' in group.name %}
+                <form action="{% url 'allowuser' user_det.id %}" method="POST">
+                    {% csrf_token %}
+                    <span>Allow user as:</span><br>
+                    <input type="radio" id="teacher" name="group" value="Teacher" required>
+                    <label for="teacher">Teacher</label>
+                    <input type="radio" id="female" name="group" value="Student" required>
+                    <label for="student">Student</label><br>
+                    <!--
+                    <select name="group" id="" required>
+                <option value="">--select group--</option>
+                    <option value="Teachers">Teacher</option>
+                    <option value="Students">Student</option>
+                </select>-->
+                    <input type="submit" class="btn btn-primary" value="allow" id="allow">
+                    <a class="btn btn-danger" href="">Delete user</a>
+                </form>
+                {% endif %}
+            </div>
+            <div class="col-8" style="border: 1px solid green;">
+                <form action="">
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-2"></div>
+</div>
+
+<!--Student Info-->
+{% elif val == 'std_info' %}
+<h3 class="text-center">Student</h3>
+<table>
+    <thead>
+        <th>SL No</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Last Login</th>
+        <th>View as</th>
+    </thead>
+    <tbody>
+        {% for j in stud_info %}
+        <tr>
+
+            <td>{{forloop.counter}}</td>
+            <td>{{j.first_name}} </td>
+            <td>{{j.last_name}}</td>
+            <td>{{j.username}}</td>
+            <td>{{j.email}}</td>
+            <td>{{j.last_login}}</td>
+            <td><a class="btn btn-primary" href="{% url 'userdetails' j.id %}">Details</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% elif val == 'teach_info' %}
+<h3 class="text-center">Teacher</h3>
+<table>
+    <thead>
+        <th>SL No</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Last Login</th>
+        <th>View as</th>
+    </thead>
+    <tbody>
+        {% for j in teaher_info %}
+        <tr>
+
+            <td>{{forloop.counter}}</td>
+            <td>{{j.first_name}} </td>
+            <td>{{j.last_name}}</td>
+            <td>{{j.username}}</td>
+            <td>{{j.email}}</td>
+            <td>{{j.last_login}}</td>
+            <td><a class="btn btn-primary" href="{% url 'userdetails' j.id %}">Details</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %} {% endblock %}
