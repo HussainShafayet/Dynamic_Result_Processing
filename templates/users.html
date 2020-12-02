@@ -133,7 +133,8 @@
         {% endfor %}
     </tbody>
 </table>
-{% elif val == 'teach_info' %}
+<!--Teacher Info-->
+{% elif val == 'teach_info' %} {% if teaher_info %}
 <h3 class="text-center">Teacher</h3>
 <table>
     <thead>
@@ -160,4 +161,6 @@
         {% endfor %}
     </tbody>
 </table>
-{% endif %} {% endblock %}
+{% else %}
+<p style="color: rgb(243, 9, 9); padding:3px;font-size:large">No teacher info</p>
+{% endif %}{% endif %} {% endblock %}

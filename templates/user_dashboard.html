@@ -2,7 +2,9 @@
 <h1>user page</h1>
 
 <p>Welcome{{user}}</p>{% if val == 'user_dh'%}
-<p>DeptHead</p>{% elif val == 'user_t' %}
+<p>DeptHead</p>
+
+{% elif val == 'user_t' %}
 <p>Teacher</p>{% else %}Student{% endif %}
 
 <br> {% endblock %}
