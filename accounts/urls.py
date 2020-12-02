@@ -3,8 +3,11 @@ from . import views
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('teacher_registration',views.teacher_registration, name='teacher_registratiion'),
-    path('student_registration', views.student_registration, name='student_registratiion'),
+    path('teacher_registration',views.teacher_registration, name='teacher_registration'),
+    path('student_registration', views.student_registration, name='student_registration'),
+    path('ajax/', views.ajax, name='ajax'),
+    path('ajax2/', views.ajax2, name='ajax2'),
+    path('ajax3/', views.ajax3, name='ajax3'),
     path('activate/<uidb64>/<token>/',views.activate, name='activate'),
     path('login',views.user_login, name='login'),
     path('logout', views.user_logout, name='logout'),

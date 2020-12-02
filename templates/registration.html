@@ -1,7 +1,13 @@
 {% extends 'base.html' %}{% load crispy_forms_tags %} {% block title %}{% if val == 'teacher_reg'%}Teacher Registration{% elif val == 'student_reg' %}Student Registration{% endif %}{% endblock %}{% block style %}
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 <style>
-
+    .select2-container .select2-selection--single {
+        height: 38px;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 36px;
+    }
 </style>
 
 {% endblock %}{% block body %} {% if val == 'teacher_reg' %}
@@ -51,15 +57,13 @@
                 </div>
             </div>
 
-            {{form.username|as_crispy_field}} {{form.email|as_crispy_field}} {{form.password1|as_crispy_field}}{{form.password2|as_crispy_field}}
+            {{form.username|as_crispy_field}} {{form.email|as_crispy_field}} {{form.password1|as_crispy_field}}{{form.password2|as_crispy_field}} {{form.dept|as_crispy_field}}
             <div class="row">
-                <div class="col-4">
-                    {{form.dept|as_crispy_field}}
-                </div>
-                <div class="col-4">
+
+                <div class="col-6">
                     {{form.batch|as_crispy_field}}
                 </div>
-                <div class="col-4">
+                <div class="col-6">
                     {{form.session|as_crispy_field}}
                 </div>
             </div>{{form.reg_no|as_crispy_field}}{{form.mobile|as_crispy_field}}{{form.gender|as_crispy_field}}{{form.image|as_crispy_field}}
@@ -75,9 +79,28 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
+        $('#id_batch').select2({
+            ajax: {
+                url: "{% url 'ajax2' %}",
+                dataType: 'json',
+                processResults: function(data) {
+                    return {
+                        results: $.map(data, function(item) {
+                            return {
+                                id: item.id,
+                                text: item.batch
+                            };
+                        })
+                    };
+                }
+            },
+            minimumInputLength: 1
+        });
+
+
         $('#id_dept').select2({
             ajax: {
-                url: "{% url 'student_registratiion' %}",
+                url: "{% url 'ajax' %}",
                 dataType: 'json',
                 processResults: function(data) {
                     return {
@@ -92,6 +115,25 @@
             },
             minimumInputLength: 1
         });
+    });
+
+
+    $('#id_session').select2({
+        ajax: {
+            url: "{% url 'ajax3' %}",
+            dataType: 'json',
+            processResults: function(data) {
+                return {
+                    results: $.map(data, function(item) {
+                        return {
+                            id: item.id,
+                            text: item.session
+                        };
+                    })
+                };
+            }
+        },
+        minimumInputLength: 1
     });
 </script>
 {% endblock %}

@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import (User, Group,)
 from accounts.models import (Student, Teacher)
 from django.contrib.auth import get_user_model
-from .forms import (Course)
-from .models import (Course_List)
+from .forms import (Course,Create_batch)
+from .models import (Course_List,Batch)
 
 # Create your views here.
 
@@ -122,7 +122,7 @@ def show_course(request):
     return render(request, 'course.html', context)
 
 
-def create_batch(request):
+def createbatch(request):
     if request.method == 'POST':
         form = Create_batch(request.POST)
         if form.is_valid():
@@ -146,7 +146,7 @@ def create_batch(request):
 
 
 def show_batch(request):
-    batch_session = Student_Sessions.objects.all()
+    batch_session = Batch.objects.all()
     val = 'show_batch'
     contex = {
         'batch_session': batch_session,

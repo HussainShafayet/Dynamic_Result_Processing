@@ -18,7 +18,7 @@
         <th>View as</th>
     </thead>
     <tbody>
-        {% for i in user_list %} {% if i.is_active %}
+        {% for i in user_list %}{% if i.is_active %}
         <tr>
             <td>{{forloop.counter}}</td>
             <td>{{i.first_name}} </td>
@@ -28,7 +28,7 @@
             <td>{{i.date_joined}}</td>
             <td><a class="btn btn-primary" href="{% url 'userdetails' i.id %}">Details</a>
             </td>
-        </tr>{% endif %} {% endfor %}
+        </tr>{% endif %}{% endfor %}
     </tbody>
 </table>
 {% else %}
@@ -60,16 +60,17 @@
                 {% if group.name == 'None' %}{% if user_det.is_none %}
                 <div><span>Department: </span>{{user_det.student.dept}}</div>
                 <div><span>Batch: </span>{{user_det.student.batch}}</div>
+                <div><span>Session: </span>{{user_det.student.session}}</div>
                 <div><span>Registration No: </span>{{user_det.student.reg_no}}</div>
                 <div><span>Contact: </span>{{user_det.student.mobile}}</div>
                 <div><span>Gender: </span>{{user_det.student.gender}}</div>
                 {% else %}
                 <div><span>Designation: </span>{{user_det.teacher.designation}}</div>
                 <div><span>Contact: </span>{{user_det.teacher.contact}}</div>
-                <div><span>Location: </span>{{user_det.teacher.location}}</div> {% endif %} {% elif group.name == 'Teacher'%}
+                <div><span>Teaching Field: </span>{{user_det.teacher.teach_field}}</div> {% endif %} {% elif group.name == 'Teacher'%}
                 <div><span>Designation: </span>{{user_det.teacher.designation}}</div>
                 <div><span>Contact: </span>{{user_det.teacher.contact}}</div>
-                <div><span>Location: </span>{{user_det.teacher.location}}</div>
+                <div><span>Teaching Field: </span>{{user_det.teacher.teach_field}}</div>
                 {% elif group.name == 'Student' %}
                 <div><span>Department: </span>{{user_det.student.dept}}</div>
                 <div><span>Batch: </span>{{user_det.student.batch}}</div>

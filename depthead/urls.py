@@ -12,6 +12,6 @@ urlpatterns = [
     path('course/', views.course, name='course'),
     path('course_list', views.show_course, name='show_course'),
     path('savecourse', apiViews.save_course, name='savecourse'),
-    path('create_batch/',views.create_batch,name='create_batch'),
+    path('create_batch/',views.createbatch,name='create_batch'),
     path('show_batch/',views.show_batch,name='show_batch'),
 ]

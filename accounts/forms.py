@@ -78,9 +78,9 @@ class StudentRegForm(UserCreationForm):
         ('eunuch','Eunuch'),
     )
 
-    dept = forms.ModelChoiceField(queryset=Dept.objects.all(), label='Department', empty_label="Choose Department")
-    batch = forms.ModelChoiceField(queryset=Batch.objects.all(),empty_label="Choose Batch")
-    session = forms.ModelChoiceField(queryset=Session.objects.all(),empty_label="Choose Session")
+    dept = forms.ModelChoiceField(queryset=Dept.objects.all(), label='Department', empty_label="Choose your Department")
+    batch = forms.ModelChoiceField(queryset=Batch.objects.all(),empty_label="Choose your Batch")
+    session = forms.ModelChoiceField(queryset=Session.objects.all(),empty_label="Choose your Session")
     reg_no = forms.IntegerField(required=True,label='Registration No')
     mobile = forms.CharField(max_length=15, required=True)
     gender=forms.ChoiceField(widget=forms.RadioSelect(),choices=Gender,required=True)
@@ -138,7 +138,21 @@ class StudentRegForm(UserCreationForm):
             self.fields['dept'].queryset = Dept.objects.all()
         elif self.instance.pk:
             self.fields['dept'].queryset = Dept.objects.all().filter(pk=self.instance.dept.pk)
+
         
+        self.fields['batch'].queryset = Batch.objects.none()
+        if 'batch' in self.data:
+            self.fields['batch'].queryset = Batch.objects.all()
+        elif self.instance.pk:
+            self.fields['batch'].queryset = Batch.objects.all().filter(
+                pk=self.instance.batch.pk)
+
+        self.fields['session'].queryset = Session.objects.none()
+        if 'session' in self.data:
+            self.fields['session'].queryset = Session.objects.all()
+        elif self.instance.pk:
+            self.fields['session'].queryset = Session.objects.all().filter(
+                pk=self.instance.session.pk)
     @transaction.atomic
     def save(self, *args, **kwargs):
         user = super().save(commit=False)

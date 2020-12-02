@@ -4,7 +4,7 @@ from django.contrib import messages
 #User Reg,login and Logout
 from .forms import (TeacherRegForm, StudentRegForm)
 from .models import (User, Teacher, Student, Depthead)
-from depthead.models import (Dept)
+from depthead.models import (Dept,Batch,Session)
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import (login, logout, authenticate)
 from django.contrib.auth.models import (auth, Group)
@@ -66,13 +66,29 @@ def teacher_registration(request):
             'val': val
     }
     return render(request,'registration.html',context)
-
-def student_registration(request):
+def ajax(request):
     if request.is_ajax():
         term=request.GET.get('term')
         dept = Dept.objects.all().filter(dept__icontains=term)
         response_content = list(dept.values())
+        return JsonResponse(response_content, safe=False)
+
+
+def ajax2(request):
+    if request.is_ajax():
+        term = request.GET.get('term')
+        batch = Batch.objects.all().filter(batch__icontains=term)
+        response_content = list(batch.values())
         return JsonResponse(response_content,safe=False)
+
+
+def ajax3(request):
+    if request.is_ajax():
+        term = request.GET.get('term')
+        session = Session.objects.all().filter(session__icontains=term)
+        response_content = list(session.values())
+        return JsonResponse(response_content, safe=False)
+def student_registration(request):
     if request.method == 'POST':
         form = StudentRegForm(request.POST, request.FILES)
         if form.is_valid():
@@ -114,6 +130,8 @@ def student_registration(request):
         'val': val,
     }
     return render(request, 'registration.html', context)
+
+
 
 
 def activate(request, uidb64, token):
