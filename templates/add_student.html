@@ -1,0 +1,32 @@
+<form action="add_student" method="post">
+    {% csrf_token %}
+    <div class="container">
+      <label><b>Registration No.</b></label>
+      <input type="text" name="registration_no" required>
+      <br>
+      <br>
+      <label><b>Name</b></label>
+      <input type="text" name="name" required>
+      <br>
+      <br>
+      <label><b>Gender</b></label>
+      <input type="text" name="gender" required>
+      <br>
+      <br>
+      <label><b>Phone</b></label>
+      <input type="text" name="phone" required>
+      <br>
+      <br>
+      <label><b>Dept</b></label>
+      <input type="text" name="dept" required>
+      <br>
+      <br>
+      <button type="submit">Add Student</button>
+    </div>  
+  </form>
+<br>
+{% if messages %}
+  {% for message in messages %}
+    {{message}}
+  {% endfor %}
+{% endif %}

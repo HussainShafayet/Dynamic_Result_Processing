@@ -67,10 +67,10 @@
                 {% else %}
                 <div><span>Designation: </span>{{user_det.teacher.designation}}</div>
                 <div><span>Contact: </span>{{user_det.teacher.contact}}</div>
-                <div><span>Teaching Field: </span>{{user_det.teacher.teach_field}}</div> {% endif %} {% elif group.name == 'Teacher'%}
+                <div><span>Teaching Field: </span>{{user_det.teacher.teach_fields}}</div> {% endif %} {% elif group.name == 'Teacher'%}
                 <div><span>Designation: </span>{{user_det.teacher.designation}}</div>
                 <div><span>Contact: </span>{{user_det.teacher.contact}}</div>
-                <div><span>Teaching Field: </span>{{user_det.teacher.teach_field}}</div>
+                <div><span>Teaching Field: </span>{{user_det.teacher.teach_fields}}</div>
                 {% elif group.name == 'Student' %}
                 <div><span>Department: </span>{{user_det.student.dept}}</div>
                 <div><span>Batch: </span>{{user_det.student.batch}}</div>

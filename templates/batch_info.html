@@ -1,0 +1,30 @@
+<h1>Batch Name : {{student_list.Batch}}</h1>
+<h1>Session : {{student_list.Session}}</h1>
+<br>
+{% if messages %}
+  {% for message in messages %}
+    {{message}}
+  {% endfor %}
+{% endif %}
+<style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+</style>
+<table>
+    {% for stu in student_list.students_set.all  %}
+    <tr>
+        <td>{{stu.Reg_No}}</td>
+        <td>{{stu.Name}}</td>
+        <td>{{stu.Gender}}</td>
+        <td>{{stu.Dept}}</td>
+        <td>{{stu.Phone}}</td>
+    </tr>
+    {% endfor  %}
+</table>
+
+<br>
+<br>
+<a href="{{student_list.Batch}}/add_student">Add Student</a>
+

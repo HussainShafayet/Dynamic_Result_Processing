@@ -1,0 +1,33 @@
+{% extends 'base.html' %}{% block body %}{% if val == 'assign_teacher' %}
+<h1>assignteacher</h1>
+<table>
+    <thead>
+        <th>SL No</th>
+        <th>Dept</th>
+        <th>Batch</th>
+        <th>Session</th>
+        <th>Course code</th>
+        <th>View as</th>
+    </thead>
+    <tbody>
+        {% for j in assign_teacher_list %}
+        <tr>
+
+            <td>{{forloop.counter}}</td>
+            <td>{{j.dept}} </td>
+            <td>{{j.batch}}</td>
+            <td>{{j.session}}</td>
+            <td>{{j.course}}</td>
+            <td><a class="btn btn-primary" href="">Details</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% elif val == 'course_result' %}
+
+<form action="" method="POST">
+    {% csrf_token %} {{form.as_p}}
+    <input type="submit" name="" id="" value="Submit">
+</form>
+
+{% endif %} {% endblock %}

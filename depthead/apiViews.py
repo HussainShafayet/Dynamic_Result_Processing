@@ -1,7 +1,7 @@
 from django.core import serializers
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import Course_List
+from .models import Course_list
 
 
 
@@ -10,7 +10,7 @@ def save_course(request):
     id = request.POST.get('id', '')
     type = request.POST.get('type', '')
     value = request.POST.get('value', '')
-    course = Course_List.objects.get(id=id)
+    course = Course_list.objects.get(id=id)
     if type == "course_code":
         course.course_code = value
     if type == "title":

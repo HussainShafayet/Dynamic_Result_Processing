@@ -1,0 +1,72 @@
+{% extends 'base.html' %}{% block body %}
+<h1>3rd Semester</h1>
+{% if messages %} {% for message in messages %} {%if "student" in message.tags %} {{message}} {%endif%} {% endfor %} {% endif %}
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+</style>
+
+<table>
+    {% for stu in result_list %}
+    <tr>
+        <td>{{stu.Reg_No}} </td>
+        <td>{{stu.Name}} </td>
+        <td>{{stu.CSE_301_GP}} </td>
+        <td>{{stu.CSE_301_LG}} </td>
+        <td>{{stu.CSE_302_GP}} </td>
+        <td>{{stu.CSE_302_LG}} </td>
+        <td>{{stu.CSE_303_GP}} </td>
+        <td>{{stu.CSE_303_LG}} </td>
+        <td>{{stu.CSE_304_GP}} </td>
+        <td>{{stu.CSE_304_LG}} </td>
+        <td>{{stu.CSE_305_GP}} </td>
+        <td>{{stu.CSE_305_LG}} </td>
+        <td>{{stu.CSE_306_GP}} </td>
+        <td>{{stu.CSE_306_LG}} </td>
+        <td>{{stu.EEE_309_GP}} </td>
+        <td>{{stu.EEE_309_LG}} </td>
+        <td>{{stu.EEE_310_GP}} </td>
+        <td>{{stu.EEE_310_LG}} </td>
+        <td>{{stu.MATH_301_GP}} </td>
+        <td>{{stu.MATH_301_LG}} </td>
+        <td>{{stu.Sem_03_Total_Credit}} </td>
+        <td>{{stu.Sem_03_Grade_Point}} </td>
+        <td>{{stu.Sem_03_LG}} </td>
+        <td>{{stu.Total_Credit_Till_Sem_03}} </td>
+        <td>{{stu.Grade_Point_Till_Sem_03}} </td>
+        <td>{{stu.Letter_Grade_Till_Sem_03}} </td>
+    </tr>
+    {% endfor %}
+</table>
+<br>
+<br>
+<form action="semester_03" method="POST">
+    {% csrf_token %}
+    <div class="container">
+        <button type="submit" name="cal_GPA">Calculate GPA</button>
+    </div>
+</form>
+
+<form action="semester_03" method="POST">
+    {% csrf_token %}
+    <label for="course_id">Choose Course: </label>
+    <select name="course" id="course_id">
+      {% for i,j in course_list %}
+          <option value={{j}}>{{i}}</option>
+      {% endfor %}
+    </select>
+
+    <label for="teacher_id">Choose Teacher: </label>
+    <select name="teacher" id="teacher_id">
+      {% for i,j in teacher_list %}
+          <option value={{j}}>{{i}}</option>
+      {% endfor %}
+    </select>
+
+    <input type="submit" name="assign_course" value="Assign Teacher">
+</form>
+<br> {% if messages %} {% for message in messages %} {%if "teacher" in message.tags %} {{message}} {%endif%} {% endfor %} {% endif %}{% endblock %}

@@ -31,19 +31,28 @@
                     <a href="{% url 'teacher_info'%}">Teacher Info</a>
                 </li>
                 <li>
-                    <a href="{% url 'create_batch' %}">Create Batch</a>
+                    <a href="{% url 'create_batchs' %}">Create Batch</a>
                 </li>
                 <li>
                     <a href="{% url 'show_course' %}">Course list</a>
                 </li>
 
                 <li>
-                    <a href="">Results</a>
+                    <a href="{% url 'results' %}">Results</a>
+                </li>
+                <li>
+                    <a href="{% url 'create_batch' %}">create batch</a>
+                </li>
+                <li>
+                    <a href="">batch info</a>
                 </li>
                 {% elif user.is_teacher %}
                 <li><a href="{% url 'teacher_dashboard' %}">Home</a></li>
                 <li>
-                    <a href="">Teachers</a>
+                    <a href="">Course Result</a>
+                </li>
+                <li>
+                    <a href="">Assign</a>
                 </li>
                 {% elif user.is_student %}
                 <li><a href="">Home</a></li>

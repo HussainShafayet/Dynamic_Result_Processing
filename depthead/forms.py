@@ -1,17 +1,17 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Course_List,Batch
+from .models import Course_list,Batch
 
 
 class Course(forms.ModelForm):
     class Meta():
-        model = Course_List
+        model = Course_list
         fields = '__all__'
 
     def clean(self):
         cleaned_data = super(Course, self).clean()
         course_code = cleaned_data.get('course_code')
-        if Course_List.objects.filter(course_code=course_code):
+        if Course_list.objects.filter(course_code=course_code):
             raise forms.ValidationError('Course code already Exists!')
         return self.cleaned_data
 class Create_batch(forms.ModelForm):

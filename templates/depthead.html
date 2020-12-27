@@ -13,5 +13,12 @@
 </div>
 <a href="{% url 'show_batch' %}">show</a> {% elif val == 'show_batch' %}
 <div>
-    {% for batch in batch_session %} batch:{{batch.Batch}} session:{{batch.Session}} {% endfor %}
-</div>{% endif %} {% endblock %}
+    {% for batch in batch_session %} batch:{{batch}} session:{{batch.Session}} {% endfor %}
+</div>
+{% elif val == 'assteach' %}
+<h1>Assign Teacher</h1>
+<form action="" method="POST">
+    {% csrf_token %} {{form}}
+    <input type="submit" name="" id="" value="Submit">
+</form>
+{% endif %} {% endblock %}
