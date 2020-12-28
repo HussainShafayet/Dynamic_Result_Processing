@@ -3,8 +3,8 @@ from django.contrib.auth.models import (User, Group,)
 from accounts.models import (Student, Teacher)
 from django.contrib.auth import get_user_model
 from .forms import (Course,Create_batch)
-from .models import (Course_list, Batch, Session,Student_Sessions,batch_result)
-from teacher.models import (Teachers, Course,Course_Result)
+from .models import (Course_list, Batch, Session,Student_Sessions,batch_result,Dept)
+from teacher.models import (Teachers, Course, Course_Result)
 from student.models import(Students)
 from django.contrib import messages
 
@@ -90,6 +90,18 @@ def allow_user(request, id):
             user_det.is_none = False
             user_det.is_student = True
             user_det.save()
+            n1=user_det.first_name
+            n2 = user_det.last_name
+            name = n1 + ' ' + n2
+            stud = Student.objects.get(user=user_det)
+            dept = Dept.objects.get(dept=stud.dept)
+            batch = stud.batch
+            Sess = Student_Sessions.objects.get(Batch=batch)
+            New_Student = Students(
+                Reg_No=stud.reg_no, Name=name, Gender=stud.gender, Dept=dept,Phone=stud.mobile, session=Sess)
+            New_Student.save()
+            Result_Table = batch_result(Reg_No=stud.reg_no, Name=name, Result_Session=Sess)
+            Result_Table.save()
             return redirect('users')
     else:
         user_det = User.objects.get(id=id)
@@ -157,6 +169,10 @@ def create_batch(request):
         session = request.POST['session']
         New_Batch = Student_Sessions(Batch=batch, Session=session)
         New_Batch.save()
+        add_batch = Batch(batch=batch)
+        add_batch.save()
+        add_session = Session(session=session)
+        add_session.save()
         return render(request, 'create_batch.html')
     else:
         return render(request, 'create_batch.html')
@@ -308,6 +324,7 @@ def get_teachers():
 
 
 def assign_teacher(string01, string02, string03):
+    print(2)
     course = string01
     teacher = string02
     Dy_id = string03

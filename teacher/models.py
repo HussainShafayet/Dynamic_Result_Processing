@@ -8,6 +8,8 @@ class Teachers(models.Model):
     objects = models.Manager()
     Name = models.CharField(max_length=100, primary_key=True)
 
+    def __str__(self):
+        return self.Name
 
 class Course(models.Model):
     objects = models.Manager()
@@ -17,6 +19,8 @@ class Course(models.Model):
     Active = models.BooleanField(default=True, null=True, blank=True)
     Batch = models.CharField(max_length=30, null=True, blank=True)
 
+    def __str__(self):
+        return self.Course
 
 class Course_Result(models.Model):
     objects = models.Manager()
@@ -32,4 +36,5 @@ class Course_Result(models.Model):
         default=0, max_length=10, null=True, blank=True)
     Letter_grade = models.CharField(max_length=10, default=' ', blank=True)
 
-
+    def __str__(self):
+        return self.Reg_No

@@ -19,7 +19,8 @@ class Student_Sessions(models.Model):
     objects = models.Manager()
     Batch = models.CharField(max_length=20, primary_key=True)
     Session = models.CharField(max_length=20)
-    
+    def __str__(self):
+        return self.Batch+' '+self.Session
 class Batch(models.Model):
     batch = models.CharField(max_length=20)
 

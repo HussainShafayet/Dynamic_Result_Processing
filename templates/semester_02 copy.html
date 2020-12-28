@@ -66,6 +66,7 @@
           <option value={{j}}>{{i}}</option>
       {% endfor %}
     </select>
+
     <input type="submit" name="assign_course" value="Assign Teacher">
 </form>
 <br> {% if messages %} {% for message in messages %} {%if "teacher" in message.tags %} {{message}} {%endif%} {% endfor %} {% endif %}{% endblock %}

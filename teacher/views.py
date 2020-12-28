@@ -94,8 +94,8 @@ def course_result(request, Dy_id):
                 setattr(batch_result_2, string_05, GPA)
                 setattr(batch_result_2, string_06, GRADE)
                 batch_result_2.save()
-    group = Group.objects.get(name='Teachers')
-    return render(request, 'course_result.html', {'context': assigned_course, 'id': Dy_id, 'group': group})
+    #group = Group.objects.get(name='Teacher')
+    return render(request, 'course_result.html', {'context': assigned_course, 'id': Dy_id})
 """ def assignteacher(request):
     teacher = get_object_or_404(Teacher, user=request.user)
     assign_teacher_list = AssignTeacher.objects.filter(teacher=teacher)
@@ -114,17 +114,4 @@ class Assignteacher(ListView):
         user2 = self.request.user
         teacher=get_object_or_404(Teacher,user=user2)
         return AssignTeacher.objects.filter(teacher=teacher) """
-def course_result(request):
-    if request.method == 'POST':
-        form = Course_Result_Form(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('/')
-    else:
-        form = Course_Result_Form()
-        val = 'course_result'
-        context = {
-            'form': form,
-            'val':val,
-        }
-        return render(request,'teacher.html',context)
+
