@@ -11,8 +11,7 @@ $(document).ready(function() {
     $('#allow').on('click', function() {
         return confirm("Please Check again!!");
     });
-    var x = 0;
-    $('.dropbtn').on('click', function() {
-        $('.dropdown-content').slide("slow ");
-    });
+
+
+
 });

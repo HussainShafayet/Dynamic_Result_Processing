@@ -229,45 +229,6 @@ span.psw {
 }
 
 
-/* Dropdown menu */
-
-.dropbtn {
-    background-color: darkcyan;
-    color: white;
-    padding: 12px 14px;
-    font-size: 20px;
-    border: none;
-    cursor: pointer;
-}
-
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdown-content {
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 165px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    z-index: 1;
-}
-
-.dropdown-content a {
-    color: green;
-    text-decoration: none;
-    display: block;
-}
-
-.dropdown-content a:hover {
-    background-color: #f1f1f1
-}
-
-.dropdown:hover .dropbtn {
-    background-color: cornflowerblue;
-}
-
-
 /* Change styles for span and cancel button on extra small screens */
 
 @media screen and (max-width: 300px) {

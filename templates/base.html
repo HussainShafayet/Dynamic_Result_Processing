@@ -38,18 +38,7 @@
                     <a href="{% url 'results' %}">Results</a>
                 </li>
                 <li>
-                    <a href="{% url 'create_batch' %}">create batch</a>
-                </li>
-                <li>
-                    <div class="dropdown">
-                        <a class="dropbtn dropdown-toggle" href="{% url 'find_batch' %}">Batch Info</a>
-                        <div class="dropdown-content">
-                            {% for batch in batches %}
-                            <a href="{% url 'batch_info' batch %}">{{batch}}</a> {% endfor %}
-                        </div>
-                    </div>
-
-
+                    <a href="{% url 'find_batch' %}">Batch Info</a>
                 </li>
                 {% elif user.is_teacher %}
                 <li><a href="{% url 'teacher_dashboard' %}">Home</a></li>

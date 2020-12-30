@@ -18,12 +18,15 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes,force_text
 from .tokens import account_activation_token
 from django.core.mail import EmailMessage
-
+#Decorators
+from depthead.decorators import unauthenticated_user
 
 #My views here.
 def home(request):
     return render(request, 'home.html')
+
 #User Registration and Activation
+@unauthenticated_user
 def teacher_registration(request):
     if request.method == 'POST':
         form = TeacherRegForm(request.POST, request.FILES)
@@ -88,6 +91,8 @@ def ajax3(request):
         session = Session.objects.all().filter(session__icontains=term)
         response_content = list(session.values())
         return JsonResponse(response_content, safe=False)
+
+@unauthenticated_user
 def student_registration(request):
     if request.method == 'POST':
         form = StudentRegForm(request.POST, request.FILES)
@@ -149,6 +154,8 @@ def activate(request, uidb64, token):
 
 
 #User Login and Logout
+
+@unauthenticated_user
 def user_login(request):
     if request.method == 'POST':
         form = AuthenticationForm(request=request, data=request.POST)
@@ -159,20 +166,16 @@ def user_login(request):
             if user is not None:
                 if user.is_depthead:
                     auth.login(request, user)
-                    user.save()
                     return redirect('depthead_dashboard')
                 elif user.is_student:
                     auth.login(request, user)
-                    user.save()
                     return redirect('student_dashboard')
                 elif user.is_teacher:
                     auth.login(request, user)
-                    user.save()
                     return redirect('teacher_dashboard')
                 else:
                     auth.login(request, user)
                     messages.error(request, 'Your are not authorised user')
-                    user.save()
                     return redirect(home)
         else:
             conext = {
@@ -187,9 +190,6 @@ def user_login(request):
         return render(request, 'login.html', conext)
 
 def user_logout(request):
-    user = request.user
-    user.is_online = False
-    user.save()
     logout(request)
     messages.warning(request, 'You are logged out')
     return redirect('home')

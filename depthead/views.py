@@ -7,6 +7,7 @@ from .models import (Course_list, Batch, Session,Student_Sessions,batch_result,D
 from teacher.models import (Teachers, Course, Course_Result)
 from student.models import(Students)
 from django.contrib import messages
+from .decorators import login_required,allowed_user
 
 # Create your views here.
 
@@ -14,11 +15,12 @@ def depthead_home(request):
     return render(request, 'user_Dashboard.html', {'val': 'user_dh',})
     
 #Users,Userdetails and Allowuser
+
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def users(request):
     if request.method == 'POST':
         q = request.GET['search']
-        print(2)
-        print(q)
         User = get_user_model()
         user_list = User.objects.filter(groups__name='None')
         val = 'user_val'
@@ -37,6 +39,9 @@ def users(request):
         }
         return render(request, 'users.html', context)
 
+
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def userdetails(request, id):
     user = request.user
     User = get_user_model()
@@ -52,6 +57,8 @@ def userdetails(request, id):
     return render(request, 'users.html', context)
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def allow_user(request, id):
     User = get_user_model()
     user_det = User.objects.get(id=id)
@@ -100,6 +107,8 @@ def allow_user(request, id):
     return render(request, 'users.html', context)
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def student_info(request):
     User = get_user_model()
     stud_info = User.objects.filter(groups__name='Student')
@@ -111,6 +120,8 @@ def student_info(request):
     return render(request, 'users.html', context)
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def teacher_info(request):
     User = get_user_model()
     teaher_info = User.objects.filter(groups__name='Teacher')
@@ -123,6 +134,8 @@ def teacher_info(request):
 #Course create and Show
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def addcourse(request):
     if request.method == 'POST':
         form = AddCourse(request.POST)
@@ -141,6 +154,9 @@ def addcourse(request):
         }
         return render(request, 'course.html', context)
 
+
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def show_course(request): 
     course_list = Course_list.objects.all().order_by('semester','course_code')
     val = 'course_li'
@@ -151,6 +167,8 @@ def show_course(request):
     return render(request, 'course.html', context)
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def create_batch(request):
     if request.method == 'POST':
         form = Create_batch(request.POST)
@@ -176,6 +194,8 @@ def create_batch(request):
         return render(request, 'create_batch.html',context)
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def batch_info(request, Dy_id):
     batch = Student_Sessions.objects.get(pk=Dy_id)
     query_set = batch.students_set.all()
@@ -184,21 +204,31 @@ def batch_info(request, Dy_id):
             request, "No Student of this session has been added yet")
     return render(request, 'batch_info.html', {'student_list': batch,})
 
+
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def find_batch(request):
-    batches = Batch.objects.all()
-    return render(request,'base.html',{'batches':batches})
+    batches = Student_Sessions.objects.all()
+    val='batch_info'
+    context = {
+        'batches': batches,
+        'val':val
+    }
+    return render(request,'batch_info.html',context)
 
 
-def show_batch(request):
+""" def show_batch(request):
     batch_session = Batch.objects.all()
     val = 'show_batch'
     contex = {
         'batch_session': batch_session,
         'val': val,
     }
-    return render(request, 'depthead.html', contex)
+    return render(request, 'depthead.html', contex) """
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def results(request):
     batch_list = Student_Sessions.objects.all()
     group = Group.objects.get(name='DeptHead')
@@ -209,17 +239,18 @@ def results(request):
     return render(request, 'results.html', context)
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def batch_results(request, Dy_id):
     string = Dy_id
-    group = Group.objects.get(name='DeptHead')
     context = {
         'string': string,
-        'group': group,
-
     }
     return render(request, 'semester_list.html', context)
 
 
+""" @login_required
+@allowed_user(allowed_roles=['DeptHead']) """
 def calculate(batch, start, end, credit, point, grade):
     for i in batch.batch_result_set.all():
         credit_count = 0
@@ -275,6 +306,7 @@ def calculate(batch, start, end, credit, point, grade):
         letter_grade = ' '
 
 
+
 def get_courses(sem):
     course_list_01 = Course_list.objects.filter(semester=sem)
     course_list_02 = []
@@ -287,6 +319,7 @@ def get_courses(sem):
 
     course_list_zip = zip(course_list_02, course_list_03)
     return course_list_zip
+
 
 
 def get_teachers():
@@ -303,8 +336,9 @@ def get_teachers():
     return teacher_list_zip
 
 
+""" @login_required
+@allowed_user(allowed_roles=['DeptHead']) """
 def assign_teacher(string01, string02, string03):
-    print(2)
     course = string01
     teacher = string02
     Dy_id = string03
@@ -329,6 +363,8 @@ def assign_teacher(string01, string02, string03):
     teacher_entry.save() """
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def semester_01(request, Dy_id):
     Batch = Student_Sessions.objects.get(pk=Dy_id)
     course_list = get_courses('1st')
@@ -371,6 +407,8 @@ def semester_01(request, Dy_id):
     return render(request, 'semester_01.html', context)
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def semester_02(request, Dy_id):
     Batch = Student_Sessions.objects.get(pk=Dy_id)
     course_list = get_courses('2nd')
@@ -415,6 +453,8 @@ def semester_02(request, Dy_id):
     return render(request, 'semester_02.html', {'result_list': batch4, 'course_list': course_list, 'teacher_list': teacher_list, 'group': group})
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def semester_03(request, Dy_id):
     Batch = Student_Sessions.objects.get(pk=Dy_id)
     course_list = get_courses('3rd')
@@ -459,6 +499,8 @@ def semester_03(request, Dy_id):
     return render(request, 'semester_03.html', {'result_list': batch4, 'course_list': course_list, 'teacher_list': teacher_list, 'group': group})
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def semester_04(request, Dy_id):
     Batch = Student_Sessions.objects.get(pk=Dy_id)
     course_list = get_courses('4th')
@@ -502,6 +544,8 @@ def semester_04(request, Dy_id):
     return render(request, 'semester_04.html', {'result_list': batch4, 'course_list': course_list, 'teacher_list': teacher_list, 'group': group})
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def semester_05(request, Dy_id):
     Batch = Student_Sessions.objects.get(pk=Dy_id)
     course_list = get_courses('5th')
@@ -546,6 +590,8 @@ def semester_05(request, Dy_id):
     return render(request, 'semester_05.html', {'result_list': batch4, 'course_list': course_list, 'teacher_list': teacher_list, 'group': group})
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def semester_06(request, Dy_id):
     Batch = Student_Sessions.objects.get(pk=Dy_id)
     course_list = get_courses('6th')
@@ -590,6 +636,8 @@ def semester_06(request, Dy_id):
     return render(request, 'semester_06.html', {'result_list': batch4, 'course_list': course_list, 'teacher_list': teacher_list, 'group': group})
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def semester_07(request, Dy_id):
     Batch = Student_Sessions.objects.get(pk=Dy_id)
     course_list = get_courses('7th')
@@ -634,6 +682,8 @@ def semester_07(request, Dy_id):
     return render(request, 'semester_07.html', {'result_list': batch4, 'course_list': course_list, 'teacher_list': teacher_list, 'group': group})
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def semester_08(request, Dy_id):
     Batch = Student_Sessions.objects.get(pk=Dy_id)
     course_list = get_courses('8th')
