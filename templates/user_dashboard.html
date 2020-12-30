@@ -3,7 +3,7 @@
 
 <p>Welcome{{user}}</p>{% if val == 'user_dh'%}
 <p>DeptHead</p>
-<a href="student_info/1/add_student">stud</a> {% elif val == 'user_t' %}
+{% elif val == 'user_t' %}
 <p>Teacher</p>{% else %}Student{% endif %}
 
 <br> {% endblock %}

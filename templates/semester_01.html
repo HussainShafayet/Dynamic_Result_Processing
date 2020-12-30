@@ -1,3 +1,4 @@
+{% extends 'base.html' %}{% block body %}
 <h1>1st Semester</h1>
 {% if messages %} {% for message in messages %} {%if "student" in message.tags %} {{message}} {%endif%} {% endfor %} {% endif %}
 <style>
@@ -10,32 +11,39 @@
 </style>
 
 <table>
-    {% for stu in result_list %}
+    <thead>
+        <th>Registration No</th>
+        <th>Name</th>
+        <th>CSE 101<br>GP<br>LG</th>
+        <th>CSE 102<br>GP<br>LG</th>
+        <th>EEE 105<br>GP<br>LG</th>
+        <th>EEE 106<br>GP<br>LG</th>
+        <th>ME 100<br>GP<br>LG</th>
+        <th>ME 101<br>GP<br>LG</th>
+        <th>ME 102<br>GP<br>LG</th>
+        <th>MATH 101<br>GP<br>LG</th>
+        <th>PHY 101<br>GP<br>LG</th>
+        <th>PHY 102<br>GP<br>LG</th>
+        <th>SS 101<br>GP<br>LG</th>
+        <th>Total Credit</th>
+        <th>Total Grade Point</th>
+        <th>LG</th>
+    </thead>
+    {% for stu in result_list|dictsort:"Reg_No" %}
     <tr>
         <td>{{stu.Reg_No}} </td>
         <td>{{stu.Name}} </td>
-        <td>{{stu.CSE_101_GP}} </td>
-        <td>{{stu.CSE_101_LG}} </td>
-        <td>{{stu.CSE_102_GP}} </td>
-        <td>{{stu.CSE_102_LG}} </td>
-        <td>{{stu.EEE_105_GP}} </td>
-        <td>{{stu.EEE_105_LG}} </td>
-        <td>{{stu.EEE_106_GP}} </td>
-        <td>{{stu.EEE_106_LG}} </td>
-        <td>{{stu.ME_100_GP}} </td>
-        <td>{{stu.ME_100_LG}} </td>
-        <td>{{stu.ME_101_GP}} </td>
-        <td>{{stu.ME_101_LG}} </td>
-        <td>{{stu.ME_102_GP}} </td>
-        <td>{{stu.ME_102_LG}} </td>
-        <td>{{stu.MATH_101_GP}} </td>
-        <td>{{stu.MATH_101_LG}} </td>
-        <td>{{stu.PHY_101_GP}} </td>
-        <td>{{stu.PHY_101_LG}} </td>
-        <td>{{stu.PHY_102_GP}} </td>
-        <td>{{stu.PHY_102_LG}} </td>
-        <td>{{stu.SS_101_GP}} </td>
-        <td>{{stu.SS_101_LG}} </td>
+        <td>{{stu.CSE_101_GP}}<br>{{stu.CSE_101_LG}}</td>
+        <td>{{stu.CSE_102_GP}}<br>{{stu.CSE_102_LG}} </td>
+        <td>{{stu.EEE_105_GP}} <br>{{stu.EEE_105_LG}} </td>
+        <td>{{stu.EEE_106_GP}}<br>{{stu.EEE_106_LG}} </td>
+        <td>{{stu.ME_100_GP}}<br>{{stu.ME_100_LG}} </td>
+        <td>{{stu.ME_101_GP}}<br>{{stu.ME_101_LG}} </td>
+        <td>{{stu.ME_102_GP}}<br>{{stu.ME_102_LG}} </td>
+        <td>{{stu.MATH_101_GP}}<br>{{stu.MATH_101_LG}} </td>
+        <td>{{stu.PHY_101_GP}}<br>{{stu.PHY_101_LG}} </td>
+        <td>{{stu.PHY_102_GP}}<br>{{stu.PHY_102_LG}} </td>
+        <td>{{stu.SS_101_GP}}<br>{{stu.SS_101_LG}} </td>
         <td>{{stu.Sem_01_Total_Credit}} </td>
         <td>{{stu.Sem_01_Grade_Point}} </td>
         <td>{{stu.Sem_01_LG}} </td>
@@ -70,4 +78,4 @@
 
     <input type="submit" name="assign_course" value="Assign Teacher">
 </form>
-<br> {% if messages %} {% for message in messages %} {%if "teacher" in message.tags %} {{message}} {%endif%} {% endfor %} {% endif %}
+<br> {% if messages %} {% for message in messages %} {%if "teacher" in message.tags %} {{message}} {%endif%} {% endfor %} {% endif %}{% endblock %}

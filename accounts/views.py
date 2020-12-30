@@ -159,22 +159,19 @@ def user_login(request):
             if user is not None:
                 if user.is_depthead:
                     auth.login(request, user)
-                    user.is_online = True
                     user.save()
                     return redirect('depthead_dashboard')
                 elif user.is_student:
                     auth.login(request, user)
-                    user.is_online = True
                     user.save()
                     return redirect('student_dashboard')
                 elif user.is_teacher:
                     auth.login(request, user)
-                    user.is_online = True
                     user.save()
                     return redirect('teacher_dashboard')
                 else:
                     auth.login(request, user)
-                    user.is_online = True
+                    messages.error(request, 'Your are not authorised user')
                     user.save()
                     return redirect(home)
         else:

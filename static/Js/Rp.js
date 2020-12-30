@@ -7,24 +7,12 @@ window.onclick = function(event) {
 }
 
 $(document).ready(function() {
-    $('.select').on('change', function() {
-        if (this.value == 'student') {
 
-            $("#std").show();
-            $('#teach').hide();
-            $form.find('input[type=submit]').click();
-        } else if (this.value == 'teacher') {
-            $('#teach').show();
-            $('#std').hide();
-
-        } else {
-            $("#std").hide();
-            $("#teach").hide();
-        }
-    });
     $('#allow').on('click', function() {
         return confirm("Please Check again!!");
     });
-
-
+    var x = 0;
+    $('.dropbtn').on('click', function() {
+        $('.dropdown-content').slide("slow ");
+    });
 });

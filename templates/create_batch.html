@@ -1,15 +1,13 @@
-<form action="create_batch" method="post">
-    {% csrf_token %}
-    <div class="container">
-        <label><b>Batch Name</b></label>
-        <input type="text" name="batch" required>
-        <br>
-        <br>
-        <label><b>Session</b></label>
-        <input type="text" name="session" required>
-        <br>
-        <br>
-        <button type="submit">Create Batch</button>
-    </div>
+{% extends 'base.html' %}{% load crispy_forms_tags %}{% block body %}
 
-</form>
+<div class="row">
+    <div class="col"></div>
+    <div class="col-mid-auto">
+        <form action="" method="post">
+            {% csrf_token %} {{form|crispy}}
+            <button class="btn btn-outline-primary" type="submit">Create Batch</button>
+        </form>
+    </div>
+    <div class="col"></div>
+</div>
+{% endblock %}

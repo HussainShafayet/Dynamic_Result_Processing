@@ -1,6 +1,6 @@
 {% extends 'base.html' %}{% block body %}
 
 <h1>Results will be displayed here</h1>
-<br> {% for i in batch_list %}
+<br> {% for i in batch_list|dictsort:"Session" %}
 <a href="results/{{i.Batch}}">{{i.Batch}}</a>
 <br> {% endfor %}{% endblock %}

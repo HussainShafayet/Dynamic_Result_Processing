@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import (User, Group,)
 from accounts.models import (Student, Teacher)
 from django.contrib.auth import get_user_model
-from .forms import (Course,Create_batch)
+from .forms import (AddCourse,Create_batch)
 from .models import (Course_list, Batch, Session,Student_Sessions,batch_result,Dept)
 from teacher.models import (Teachers, Course, Course_Result)
 from student.models import(Students)
@@ -10,44 +10,32 @@ from django.contrib import messages
 
 # Create your views here.
 
-
-def add_student(request, Dy_id):
-    if request.method == 'POST':
-        reg_no = request.POST['registration_no']
-        name = request.POST['name']
-        gender = request.POST['gender']
-        dept = request.POST['dept']
-        phone = request.POST['phone']
-        batch = Dy_id
-        if Students.objects.filter(Reg_No=reg_no).exists():
-            messages.error(request, 'This Registration Number Already Exists!')
-            return redirect(request.path)
-
-        Sess = Student_Sessions.objects.get(Batch=batch)
-        New_Student = Students(
-            Reg_No=reg_no, Name=name, Gender=gender, Dept=dept, Phone=phone, session=Sess)
-        New_Student.save()
-        Result_Table = batch_result(
-            Reg_No=reg_no, Name=name, Result_Session=Sess)
-        Result_Table.save()
-        return render(request, 'add_student.html')
-    else:
-        return render(request, 'add_student.html')
-
 def depthead_home(request):
-    return render(request, 'user_Dashboard.html', {'val': 'user_dh'})
+    return render(request, 'user_Dashboard.html', {'val': 'user_dh',})
     
 #Users,Userdetails and Allowuser
 def users(request):
-    User = get_user_model()
-    user_list = User.objects.filter(groups__name='None')
-    val = 'user_val'
-    context = {
-        'user_list': user_list,
-        'val': val
-    }
-    return render(request, 'users.html', context)
-
+    if request.method == 'POST':
+        q = request.GET['search']
+        print(2)
+        print(q)
+        User = get_user_model()
+        user_list = User.objects.filter(groups__name='None')
+        val = 'user_val'
+        context = {
+            'user_list': user_list,
+            'val': val
+        }
+        return render(request, 'users.html', context)
+    else:
+        User = get_user_model()
+        user_list = User.objects.filter(groups__name='None')
+        val = 'user_val'
+        context = {
+            'user_list': user_list,
+            'val': val
+        }
+        return render(request, 'users.html', context)
 
 def userdetails(request, id):
     user = request.user
@@ -135,9 +123,9 @@ def teacher_info(request):
 #Course create and Show
 
 
-def course(request):
+def addcourse(request):
     if request.method == 'POST':
-        form = Course(request.POST)
+        form = AddCourse(request.POST)
         if form.is_valid():
             form.save()
             return redirect('course')
@@ -147,14 +135,14 @@ def course(request):
             }
             return render(request, 'course.html', context)
     else:
-        form = Course()
+        form = AddCourse()
         context = {
             'form': form
         }
         return render(request, 'course.html', context)
 
 def show_course(request): 
-    course_list = Course_list.objects.all()
+    course_list = Course_list.objects.all().order_by('semester','course_code')
     val = 'course_li'
     context = {
         'course_list': course_list,
@@ -165,17 +153,27 @@ def show_course(request):
 
 def create_batch(request):
     if request.method == 'POST':
-        batch = request.POST['batch']
-        session = request.POST['session']
-        New_Batch = Student_Sessions(Batch=batch, Session=session)
-        New_Batch.save()
-        add_batch = Batch(batch=batch)
-        add_batch.save()
-        add_session = Session(session=session)
-        add_session.save()
-        return render(request, 'create_batch.html')
+        form = Create_batch(request.POST)
+        if form.is_valid():
+            batch = form.cleaned_data['Batch']
+            session = form.cleaned_data['Session']
+            form.save()
+            add_batch = Batch(batch=batch)
+            add_batch.save()
+            add_session = Session(session=session)
+            add_session.save()
+            return redirect('depthead_dashboard')
+        else:
+            context = {
+                'form':form,
+            }
+            return render(request, 'create_batch.html', context)
     else:
-        return render(request, 'create_batch.html')
+        form = Create_batch()
+        context = {
+            'form':form,
+        }
+        return render(request, 'create_batch.html',context)
 
 
 def batch_info(request, Dy_id):
@@ -184,29 +182,11 @@ def batch_info(request, Dy_id):
     if query_set.exists() == False:
         messages.error(
             request, "No Student of this session has been added yet")
-    return render(request, 'batch_info.html', {'student_list': batch})
+    return render(request, 'batch_info.html', {'student_list': batch,})
 
-def createbatch(request):
-    if request.method == 'POST':
-        form = Create_batch(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('/')
-        else:
-            val = 'crt_batch'
-            context = {
-                'form': form,
-                'val': val
-            }
-            return render(request, 'depthead.html', context)
-    else:
-        form = Create_batch()
-        val = 'crt_batch'
-        context = {
-            'form': form,
-            'val': val,
-        }
-        return render(request, 'depthead.html', context)
+def find_batch(request):
+    batches = Batch.objects.all()
+    return render(request,'base.html',{'batches':batches})
 
 
 def show_batch(request):

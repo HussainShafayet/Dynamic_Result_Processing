@@ -3,17 +3,9 @@
 <div class="row">
     <div class="col"></div>
     <div class="col-mid-auto">
-        <form action="" method="POST">
-            {% csrf_token %}{{form|crispy}}
-            <input type="submit" class="btn btn-primary" name="" id="" value="Create">
-        </form>
     </div>
     <div class="col"></div>
 
-</div>
-<a href="{% url 'show_batch' %}">show</a> {% elif val == 'show_batch' %}
-<div>
-    {% for batch in batch_session %} batch:{{batch}} session:{{batch.Session}} {% endfor %}
 </div>
 {% elif val == 'assteach' %}
 <h1>Assign Teacher</h1>

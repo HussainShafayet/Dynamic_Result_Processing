@@ -10,7 +10,7 @@ def save_course(request):
     id = request.POST.get('id', '')
     type = request.POST.get('type', '')
     value = request.POST.get('value', '')
-    course = Course_list.objects.get(id=id)
+    course = Course_list.objects.get(pk=id)
     if type == "course_code":
         course.course_code = value
     if type == "title":

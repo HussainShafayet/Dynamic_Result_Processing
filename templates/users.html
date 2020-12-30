@@ -1,7 +1,20 @@
 {% extends 'base.html' %} {% block title %} {% if val == 'user_val' %}Users{% elif val == 'userdetails' %}{{user_det.first_name}}'s details{% endif %}{% endblock %}{% block body %}
 
 <!-- Users info -->
+
 {% if val == 'user_val' %}
+<div class="row">
+    <div class="col-8"></div>
+    <div class="col-4">
+        <form class="d-flex" method="POST">
+            {% csrf_token %}
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+    </div>
+
+</div>
+
 <h3 class="text-center">Unauthorised Users
     <hr>
 </h3>

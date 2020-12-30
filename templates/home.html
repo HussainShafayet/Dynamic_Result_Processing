@@ -1,4 +1,3 @@
 {% extends 'base.html' %}{% block body %}
-
-<h1>This is home page</h1>
-{% endblock %}
+<h1>This is home page!</h1>
+{% if messages %} {% for message in messages %} {{message}} {% endfor %} {% endif %} {% endblock %}

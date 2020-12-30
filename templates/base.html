@@ -31,9 +31,6 @@
                     <a href="{% url 'teacher_info'%}">Teacher Info</a>
                 </li>
                 <li>
-                    <a href="{% url 'create_batchs' %}">Create Batch</a>
-                </li>
-                <li>
                     <a href="{% url 'show_course' %}">Course list</a>
                 </li>
 
@@ -44,7 +41,15 @@
                     <a href="{% url 'create_batch' %}">create batch</a>
                 </li>
                 <li>
-                    <a href="">batch info</a>
+                    <div class="dropdown">
+                        <a class="dropbtn dropdown-toggle" href="{% url 'find_batch' %}">Batch Info</a>
+                        <div class="dropdown-content">
+                            {% for batch in batches %}
+                            <a href="{% url 'batch_info' batch %}">{{batch}}</a> {% endfor %}
+                        </div>
+                    </div>
+
+
                 </li>
                 {% elif user.is_teacher %}
                 <li><a href="{% url 'teacher_dashboard' %}">Home</a></li>
@@ -98,7 +103,6 @@
 
         </div>
     </div>
-
     {% block body %}{% endblock %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js "></script>
     <script src="{% static 'Js/Rp.js' %} "></script>

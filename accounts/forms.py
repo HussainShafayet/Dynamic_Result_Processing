@@ -8,7 +8,7 @@ from depthead.models import Dept, Batch, Session
 class TeacherRegForm(UserCreationForm):
     contact = forms.CharField(max_length=15,required=True)
     designation = forms.CharField(max_length=20,required=True)
-    location = forms.CharField(max_length=30,required=True)
+    Teaching_Field = forms.CharField(max_length=30,required=True)
     image = forms.ImageField(required=True)
     class Meta(UserCreationForm.Meta):
         model = User
@@ -52,19 +52,19 @@ class TeacherRegForm(UserCreationForm):
         self.fields['contact'].widget.attrs.update({
             'placeholder':'01***-******'
         })
-        self.fields['location'].widget.attrs.update({
+        self.fields['Teaching_Field'].widget.attrs.update({
             'required': True,
-            'placeholder': 'location'
+            'placeholder': 'Teaching field'
         })
     @transaction.atomic
     def save(self, *args, **kwargs):
         user = super().save(commit=False)
-        user.is_none=True
+        #user.is_none=True
         user.save()
         teacher = Teacher.objects.create(user=user)
         teacher.contact = self.cleaned_data.get('contact')
         teacher.designation=self.cleaned_data.get('designation')
-        teacher.location = self.cleaned_data.get('location')
+        teacher.teach_fields = self.cleaned_data.get('Teaching_Field')
         teacher.image = self.cleaned_data.get('image')
         teacher.save()
         return user

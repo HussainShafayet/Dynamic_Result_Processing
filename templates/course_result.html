@@ -26,7 +26,7 @@
             <th>Grade Point</th>
             <th>Letter Grade</th>
         </thead>
-        {% for i in context.course_result_set.all %}
+        {% for i in context.course_result_set.all|dictsort:"Reg_No" %}
         <tr>
             <td>{{i.Reg_No}} </td>
             <td>{{i.Name}} </td>
