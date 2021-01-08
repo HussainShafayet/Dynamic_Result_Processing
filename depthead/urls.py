@@ -1,10 +1,11 @@
 from django.urls import path
-from . import views,apiViews
+from . import views, apiViews
+from django.views.decorators.csrf import csrf_exempt
 
 
 urlpatterns = [
     path('depthead_dashboard/',views.depthead_home,name='depthead_dashboard'),
-    path('users', views.users, name='users'),
+    path('users', csrf_exempt(views.users), name='users'),
     path('user_details/<int:id>', views.userdetails, name='userdetails'),
     path('allow_user/<int:id>', views.allow_user, name='allowuser'),
     path('student_info/', views.student_info, name='student_info'),

@@ -1,16 +1,28 @@
 {% extends 'base.html' %} {% block title %} {% if val == 'user_val' %}Users{% elif val == 'userdetails' %}{{user_det.first_name}}'s details{% endif %}{% endblock %}{% block body %}
 
 <!-- Users info -->
-
 {% if val == 'user_val' %}
 <div class="row">
-    <div class="col-8"></div>
-    <div class="col-4">
-        <form class="d-flex" method="POST">
+    <div class=""></div>
+    <div class="">
+        <div class="">
+            <form class="form-inline my-2 my-lg-0">
+                {% csrf_token %}
+                <input class="form-control mr-sm-2" id="searchField" name="search" type="text" placeholder="Search" aria-label="Search">
+                <button class="btn btn-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+            <!-- <form action="" method="GET">
+                {% csrf_token %}
+                <input type="text" class="form-control" id="searchField" name="search" placeholder="Search">
+                <button class="btn btn-info" type="submit">Search</button>
+            </form> -->
+
+        </div>
+        <!-- <form class="d-flex" action="" method="GET">
             {% csrf_token %}
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
+            <input class="form-control me-2" type="search" name="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-success" type="submit">Search</button>
+        </form> -->
     </div>
 
 </div>
@@ -19,32 +31,50 @@
     <hr>
 </h3>
 {% if user_list %}
-<table>
-    <thead>
-        <th>SL No</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Username</th>
-        <th>Email</th>
-        <th>Date Joined</th>
+<div class="app-table">
+    <table>
+        <thead>
+            <th>SL No</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Date Joined</th>
+            <th>View as</th>
+        </thead>
+        <tbody>
+            {% for i in user_list %}{% if i.is_active %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{i.first_name}} </td>
+                <td>{{i.last_name}}</td>
+                <td>{{i.username}}</td>
+                <td>{{i.email}}</td>
+                <td>{{i.date_joined}}</td>
+                <td><a class="btn btn-primary" href="{% url 'userdetails' i.id %}">Details</a>
+                </td>
+            </tr>{% endif %}{% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="table-output">
+    <table>
+        <thead>
+            <th>SL No</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Date Joined</th>
+            <th>View as</th>
+        </thead>
+        <tbody class="table-body">
 
-        <th>View as</th>
-    </thead>
-    <tbody>
-        {% for i in user_list %}{% if i.is_active %}
-        <tr>
-            <td>{{forloop.counter}}</td>
-            <td>{{i.first_name}} </td>
-            <td>{{i.last_name}}</td>
-            <td>{{i.username}}</td>
-            <td>{{i.email}}</td>
-            <td>{{i.date_joined}}</td>
-            <td><a class="btn btn-primary" href="{% url 'userdetails' i.id %}">Details</a>
-            </td>
-        </tr>{% endif %}{% endfor %}
-    </tbody>
-</table>
-{% else %}
+        </tbody>
+    </table>
+</div>
+
+{% elif messages %} {% for message in messages %} {{message}} {% endfor %} {% else %}
 <p style="color: rgb(243, 9, 9); padding:3px;font-size:large">No users are waiting list.</p>
 {% endif %}
 <br>
@@ -176,4 +206,59 @@
 </table>
 {% else %}
 <p style="color: rgb(243, 9, 9); padding:3px;font-size:large">No teacher info</p>
-{% endif %}{% endif %} {% endblock %}
+{% endif %}{% endif %} {% endblock %}{% block js_script %}
+
+<script>
+    const searchField = document.querySelector("#searchField");
+    const tableOutput = document.querySelector(".table-output");
+    const appTable = document.querySelector(".app-table");
+    const tbody = document.querySelector(".table-body");
+    tableOutput.style.display = 'None';
+    searchField.addEventListener("keyup", (e) => {
+        const searchValue = e.target.value;
+        if (searchValue.trim().length > 0) {
+            console.log("searchvalue", searchValue);
+            tbody.innerHTML = "";
+            fetch("users", {
+                    body: JSON.
+                    stringify({
+                        searchText: searchValue
+                    }),
+                    method: "POST"
+                })
+                .then((res) => res.json())
+                .then((data) => {
+                    console.log("data", data);
+                    appTable.style.display = "none"
+                    tableOutput.style.display = "block";
+
+                    if (data.length == 0) {
+                        tableOutput.innerHTML = "No result found";
+
+                    } else {
+                        data.forEach((item) => {
+                            tbody.innerHTML += `
+                        <tr>
+                            <td>${item.id}</td>
+                            <td>${item.first_name}</td>
+                            <td>${item.last_name}</td>
+                            <td>${item.username}</td>
+                            <td>${item.email}</td>
+                            <td>${item.date_joined}</td>
+                            <td><a class="btn btn-primary" href="user_details/${item.id}">Details</a>
+                            </td>
+                        </tr>
+                        `
+
+                        });
+                    }
+                });
+        } else {
+
+            appTable.style.display = "block";
+            tableOutput.style.display = "none";
+        }
+    });
+</script>
+
+{% endblock %}

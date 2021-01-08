@@ -7,7 +7,10 @@ from .models import (Course_list, Batch, Session,Student_Sessions,batch_result,D
 from teacher.models import (Teachers, Course, Course_Result)
 from student.models import(Students)
 from django.contrib import messages
-from .decorators import login_required,allowed_user
+from .decorators import login_required, allowed_user
+from django.db.models import Q
+import json
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -19,16 +22,44 @@ def depthead_home(request):
 @login_required
 @allowed_user(allowed_roles=['DeptHead'])
 def users(request):
-    if request.method == 'POST':
-        q = request.GET['search']
+    if request.method == "POST":
+        search_str = json.loads(request.body).get("searchText")
+        group = Group.objects.get(name='None')
         User = get_user_model()
-        user_list = User.objects.filter(groups__name='None')
-        val = 'user_val'
-        context = {
-            'user_list': user_list,
-            'val': val
-        }
-        return render(request, 'users.html', context)
+        user_list = User.objects.filter(groups=group).filter(Q(first_name__icontains=search_str)|Q(last_name__icontains=str(search_str)))
+        data=user_list.values()
+        return JsonResponse(list(data), safe=False)
+    elif 'search' in request.GET:
+        q = request.GET.get('search')
+        if q:
+            group = Group.objects.get(name='None')
+            User = get_user_model()
+            user_list = User.objects.filter(groups=group).filter(
+                Q(first_name__icontains=str(q)) | Q(last_name__icontains=str(q)) | Q(username__icontains=q))
+            if user_list:
+               val = 'user_val'
+               context = {
+                   'user_list': user_list,
+                   'val': val,
+               }
+               return render(request, 'users.html', context)
+            else:
+                messages.error(request, 'No result found')
+                val = 'user_val'
+                context = {
+                    'val': val,
+                }
+                return render(request, 'users.html', context)
+        else:
+            messages.info(request, 'No results found')
+            User = get_user_model()
+            user_list = User.objects.filter(groups__name='None')
+            val = 'user_val'
+            context = {
+                'val': val,
+            }
+            return render(request, 'users.html', context)
+            
     else:
         User = get_user_model()
         user_list = User.objects.filter(groups__name='None')
@@ -38,6 +69,32 @@ def users(request):
             'val': val
         }
         return render(request, 'users.html', context)
+"""if 'search' in request.GET:
+        q = request.GET.get('search')
+        if q:
+            User = get_user_model()
+            user_list = User.objects.filter(Q(first_name__icontains=str(q))|Q(username=q)|Q(last_name=q))
+            val = 'user_val'
+            context = {
+                'user_list': user_list,
+                'val':val,
+            }
+            return render(request, 'users.html', context)
+        else:
+            messages.info(request, 'No results found')
+            User = get_user_model()
+            user_list = User.objects.filter(groups__name='None')
+            val = 'user_val'
+            context = {
+                'val': val,
+            }
+            return render(request, 'users.html', context)
+
+    else: """
+    
+        
+    
+
 
 
 @login_required

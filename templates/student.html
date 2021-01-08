@@ -1,0 +1,42 @@
+{% extends 'base.html' %}{% block body %}
+
+<h1>Result</h1>
+<table>
+    <thead>
+        <th>Registration No</th>
+        <th>Name</th>
+        <th>CSE 101<br>GP<br>LG</th>
+        <th>CSE 102<br>GP<br>LG</th>
+        <th>EEE 105<br>GP<br>LG</th>
+        <th>EEE 106<br>GP<br>LG</th>
+        <th>ME 100<br>GP<br>LG</th>
+        <th>ME 101<br>GP<br>LG</th>
+        <th>ME 102<br>GP<br>LG</th>
+        <th>MATH 101<br>GP<br>LG</th>
+        <th>PHY 101<br>GP<br>LG</th>
+        <th>PHY 102<br>GP<br>LG</th>
+        <th>SS 101<br>GP<br>LG</th>
+        <th>Total Credit</th>
+        <th>Total Grade Point</th>
+        <th>LG</th>
+    </thead>
+    <tr>
+        <td>{{results.Reg_No}} </td>
+        <td>{{results.Name}} </td>
+        <td>{{results.CSE_101_GP}}<br>{{results.CSE_101_LG}}</td>
+        <td>{{results.CSE_102_GP}}<br>{{results.CSE_102_LG}} </td>
+        <td>{{results.EEE_105_GP}} <br>{{results.EEE_105_LG}} </td>
+        <td>{{results.EEE_106_GP}}<br>{{results.EEE_106_LG}} </td>
+        <td>{{results.ME_100_GP}}<br>{{results.ME_100_LG}} </td>
+        <td>{{results.ME_101_GP}}<br>{{results.ME_101_LG}} </td>
+        <td>{{results.ME_102_GP}}<br>{{results.ME_102_LG}} </td>
+        <td>{{results.MATH_101_GP}}<br>{{results.MATH_101_LG}} </td>
+        <td>{{results.PHY_101_GP}}<br>{{results.PHY_101_LG}} </td>
+        <td>{{results.PHY_102_GP}}<br>{{results.PHY_102_LG}} </td>
+        <td>{{results.SS_101_GP}}<br>{{results.SS_101_LG}} </td>
+        <td>{{results.Sem_01_Total_Credit}} </td>
+        <td>{{results.Sem_01_Grade_Point}} </td>
+        <td>{{results.Sem_01_LG}} </td>
+    </tr>
+
+</table> {% endblock %}

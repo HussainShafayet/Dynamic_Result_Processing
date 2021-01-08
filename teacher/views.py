@@ -3,17 +3,21 @@ from accounts.models import Teacher
 from .models import (Teachers, Course, Course_Result)
 from django.contrib.auth.models import (User, auth, Group)
 from django.contrib import messages
-from depthead.models import batch_result
+from depthead.models import batch_result,Course_list
+from depthead.decorators import login_required,allowed_user
 #from .forms import (Course_Result_Form)
 from django.shortcuts import get_object_or_404
 # Create your views here.
 
-
+@login_required
+@allowed_user(allowed_roles=['Teacher'])
 def teacher_dashboard(request):
     return render(request, 'user_dashboard.html')
 
 
-def teacher_profile(request):
+@login_required
+@allowed_user(allowed_roles=['Teacher'])
+def assign_course(request):
     current_user = request.user
     v1 = current_user.first_name
     v2 = current_user.last_name
@@ -25,16 +29,47 @@ def teacher_profile(request):
     context = {
         'name': t_name,
         'course': assaigned_courses,
-        'val': val
+        'val': val,
         
     }
     return render(request, 'teacher_Dashboard.html', context)
 
 
-def course_result(request, Dy_id):
-    x = Dy_id.find('+')
-    batch = Dy_id[0:x]
-    course = Dy_id[(x+1):]
+@login_required
+@allowed_user(allowed_roles=['Teacher'])
+def assign_course_result(request):
+    current_user = request.user
+    v1 = current_user.first_name
+    v2 = current_user.last_name
+    t_name = v1+' '+v2
+    assaigned_courses = Course.objects.filter(teacher=t_name)
+    if assaigned_courses.exists() == False:
+        messages.error(request, 'No Course Has Been Assaigned To You Yet')
+    context = {
+        'name': t_name,
+        'course': assaigned_courses,
+
+    }
+    return render(request, 'teacher_Dashboard.html', context)
+def details_course(request,batch,course):
+    course_details = Course.objects.get(Batch=batch, Course=course)
+    course_details2 = Course_list.objects.get(course_code=course_details)
+    print(course_details2)
+    val='course_det'
+    context = {
+        'course_details': course_details,
+        'course_details2': course_details2,
+        'val':val,
+    }
+    return render(request,'teacher_Dashboard.html',context)
+
+@login_required
+@allowed_user(allowed_roles=['Teacher'])
+def course_result(request, batch,course):
+    #x = Dy_id.find('+')
+    Dy_id=batch
+    #batch = Dy_id[0:x]
+    #course = Dy_id[(x+1):]
     assigned_course = Course.objects.get(Batch=batch, Course=course)
 
     if (request.method == 'POST'):

@@ -1,5 +1,4 @@
-{% extends 'base.html' %}{% block body %}
-
+{% extends 'base.html' %} {% block style %}
 <style>
     table,
     th,
@@ -7,12 +6,24 @@
         border: 1px solid black;
         border-collapse: collapse;
     }
+    
+    #btn {
+        display: flex;
+        align-items: center;
+    }
 </style>
+
+
+{% endblock %} {% block body %}
+
+
 <div style="height: 50px;">
     <div id="id"></div>
     <div id="id2"></div>
 </div>
 <div>
+    <button class="btn btn-primary">Add Drop Student</button>
+
     <h3 class="text-center">Course Relust Details</h3>
     <table>
         <thead>
@@ -42,26 +53,29 @@
     </table>
 </div>
 <br>
-<form action="{{id}}" method="POST">
-    {% csrf_token %}
-    <div class="container">
-        <button type="submit" name="Calculate">Calculate GPA</button>
+<div class="row">
+    <div class="col"></div>
+    <div class="col-mid-auto">
+        <div id="btn">
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="container">
+                    <button class="btn btn-success" type="submit" name="Calculate">Calculate GPA</button>
+                </div>
+            </form>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="container">
+                    <button class="btn btn-success" type="submit" name="Submit">Submit</button>
+                </div>
+            </form>
+        </div>
     </div>
-</form>
+    <div class="col"></div>
+</div>
 
-<form action="{{id}}" method="POST">
-    {% csrf_token %}
-    <div class="container">
-        <button type="submit" name="Submit">Submit</button>
-    </div>
-</form>
 
-<form action="{{id}}" method="POST">
-    {% csrf_token %}
-    <div class="container">
-        <button type="submit" name="Drop">Add Drop Student</button>
-    </div>
-</form>{% endblock %} {% block js_script %}
+{% endblock %} {% block js_script %}
 <script>
     $(document).ready(function() {
         $(document).on("dblclick", ".editable", function() {

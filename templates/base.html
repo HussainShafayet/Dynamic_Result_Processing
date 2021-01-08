@@ -20,38 +20,41 @@
         <div id="menu">
             <ul>
                 {% if user.is_depthead %}
-                <li><a href="{% url 'depthead_dashboard' %}">home</a></li>
-                <li>
+                <li class="items"><a href="{% url 'depthead_dashboard' %}">home</a></li>
+                <li class="items">
                     <a href="{% url 'users' %}">users</a>
                 </li>
-                <li>
+                <li class="items">
                     <a href="{% url 'student_info' %}">Student Info</a>
                 </li>
-                <li>
+                <li class="items">
                     <a href="{% url 'teacher_info'%}">Teacher Info</a>
                 </li>
-                <li>
+                <li class="items">
                     <a href="{% url 'show_course' %}">Course list</a>
                 </li>
 
-                <li>
+                <li class="items">
                     <a href="{% url 'results' %}">Results</a>
                 </li>
-                <li>
+                <li class="items">
                     <a href="{% url 'find_batch' %}">Batch Info</a>
                 </li>
                 {% elif user.is_teacher %}
                 <li><a href="{% url 'teacher_dashboard' %}">Home</a></li>
                 <li>
-                    <a href="">Course Result</a>
+                    <a href="{% url 'assign_course' %}">Courses</a>
                 </li>
                 <li>
-                    <a href="">Assign</a>
+                    <a href="{% url 'assign_course_result' %}">Course Result</a>
+                </li>
+                <li>
+                    <a href="">contact</a>
                 </li>
                 {% elif user.is_student %}
-                <li><a href="">Home</a></li>
+                <li><a href="{% url 'student_dashboard' %}">Home</a></li>
                 <li>
-                    <a href="">student</a>
+                    <a href="{% url 'student_result' %}">Result</a>
                 </li>
                 {% elif user.is_student == False and user.is_teacher == False and user.is_depthead == False%}
                 <li><a href="{% url 'home' %}">Home</a></li>

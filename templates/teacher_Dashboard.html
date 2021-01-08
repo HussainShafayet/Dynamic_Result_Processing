@@ -1,10 +1,64 @@
-{% extends 'base.html' %}{% block body %}
+{% extends 'base.html' %}{% block style %}
+<style>
+    .card:hover {
+        background-color: rgb(113, 223, 204);
+        transition: .5s;
+        transform: scale(1.03);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);
+    }
+    
+    a:hover {
+        color: black;
+    }
+</style>
 
-<h1>Hello {{name}}</h1>
-<br> {% if messages %} {% for message in messages %} {{message}} {% endfor %}
-<br>
-<br> {% endif %}
-<br> {% for i in course %}
-
-<a href="{{i.Batch}}+{{i.Course}}">{{i.Course}}</a>
-<br> {% endfor %} {% endblock %}
+{% endblock %}{% block body %}
+<div>
+    {% if messages %} {% for message in messages %} {{message}} {% endfor %} {% endif %}
+</div>
+{% if val == 'user_t' %}
+<div class="row">
+    {% for course_detail in course %}
+    <div class="col">
+        <div class="card" style="width: 16rem; margin-top: 8px; margin-left:10px">
+            <div class="card-body">
+                <h5 class="card-title">{{course_detail.Course}}</h5>
+                <hr>
+                <p class="card-text">This is {{course_detail.Course}} information.</p>
+                <a href="{% url 'assign_course_details' course_detail.Batch course_detail.Course %}" class="btn btn-primary">Click Here</a>
+            </div>
+        </div>
+    </div>{% endfor %}
+</div>
+{% elif val == 'course_det' %}
+<h3>Course Details</h3>
+<hr>
+<p>Batch: {{course_details.Batch}}</p>
+<p>Session: {{course_details.Session}}</p>
+<p>Semester: {{course_details2.semester}}</p>
+<p>Course Name: {{course_details.Course}}</p>
+<p>Course Title: {{course_details2.title}}</p>
+<p>Course Type: {{course_details2.course_type}}</p>
+<p>Course Credit: {{course_details2.credit}}</p>
+{% else %}
+<h1 class="text-center">All Courses Information are here</h1>
+<hr>
+<div class="row">
+    {% for i in course %}
+    <div class="col">
+        <div class="container py-4">
+            <div class="card-deck-wrappe">
+                <div class="card-deck">
+                    <div class="card p-2">
+                        <a class="card-block stretched-link text-decoration-none" href="{% url 'course_result' i.Batch i.Course %}">
+                            <h4 class="card-title">{{i.Course}}</h4>
+                            <hr>
+                            <p class="card-text">This is {{i.Batch}} {{i.Course}} course information.</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>{% endif %} {% endblock %}
