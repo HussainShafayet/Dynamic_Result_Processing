@@ -11,7 +11,7 @@ from .decorators import login_required, allowed_user
 from django.db.models import Q
 import json
 from django.http import JsonResponse
-
+from django.core.serializers.json import DjangoJSONEncoder
 # Create your views here.
 
 def depthead_home(request):
@@ -22,14 +22,7 @@ def depthead_home(request):
 @login_required
 @allowed_user(allowed_roles=['DeptHead'])
 def users(request):
-    if request.method == "POST":
-        search_str = json.loads(request.body).get("searchText")
-        group = Group.objects.get(name='None')
-        User = get_user_model()
-        user_list = User.objects.filter(groups=group).filter(Q(first_name__icontains=search_str)|Q(last_name__icontains=str(search_str)))
-        data=user_list.values()
-        return JsonResponse(list(data), safe=False)
-    elif 'search' in request.GET:
+    if 'search' in request.GET:
         q = request.GET.get('search')
         if q:
             group = Group.objects.get(name='None')
@@ -40,6 +33,7 @@ def users(request):
                val = 'user_val'
                context = {
                    'user_list': user_list,
+                   'qs_json': json.dumps(list(user_list.values()), cls=DjangoJSONEncoder),
                    'val': val,
                }
                return render(request, 'users.html', context)
@@ -51,11 +45,12 @@ def users(request):
                 }
                 return render(request, 'users.html', context)
         else:
-            messages.info(request, 'No results found')
             User = get_user_model()
             user_list = User.objects.filter(groups__name='None')
             val = 'user_val'
             context = {
+                'user_list':user_list,
+                'qs_json': json.dumps(list(user_list.values()), cls=DjangoJSONEncoder),
                 'val': val,
             }
             return render(request, 'users.html', context)
@@ -65,8 +60,9 @@ def users(request):
         user_list = User.objects.filter(groups__name='None')
         val = 'user_val'
         context = {
-            'user_list': user_list,
-            'val': val
+            'user_list':user_list,
+            'qs_json': json.dumps(list(user_list.values()), cls=DjangoJSONEncoder),
+            'val': val,
         }
         return render(request, 'users.html', context)
 """if 'search' in request.GET:
@@ -92,10 +88,46 @@ def users(request):
 
     else: """
     
+""" def search(request):
+    if request.method == "POST":
+        search_str = json.loads(request.body).get("search")
+        group = Group.objects.get(name='None')
+        User = get_user_model()
+        user_list = User.objects.filter(groups=group).filter(
+            Q(first_name__icontains=search_str) | Q(last_name__icontains=str(search_str)))
+        data = user_list.values()
+        return JsonResponse(list(data), safe=False)
+    else:
+        search_str = ''
+        data = search_str.values()
+        print(data)
+        return JsonResponse(list(data),safe=False)"""
         
-    
+from django.views.generic import ListView
 
+""" class Users(ListView):
+    User=get_user_model()
+    model = User
+    template_name = 'users.html'
+    context_object_name = 'user_list'
+    queryset=[]
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        User = get_user_model()
+        group = Group.objects.get(name='None')
+        users = User.objects.filter(groups=group)
+        context['val'] = 'user_val'
+        context["qs_json"] = json.dumps(
+            list(users.values()), cls=DjangoJSONEncoder)
+        return context
 
+    def get_queryset(self, **kwargs):
+        User = get_user_model()
+        group = Group.objects.get(name='None')
+        queryset=User.objects.filter(groups=group)
+        return queryset """
+
+   
 
 @login_required
 @allowed_user(allowed_roles=['DeptHead'])
