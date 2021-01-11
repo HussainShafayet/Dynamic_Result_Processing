@@ -199,30 +199,98 @@ def allow_user(request, id):
 @login_required
 @allowed_user(allowed_roles=['DeptHead'])
 def student_info(request):
-    User = get_user_model()
-    stud_info = User.objects.filter(groups__name='Student')
-    val = 'std_info'
-    context = {
-        'stud_info': stud_info,
-        'val': val
-    }
-    return render(request, 'users.html', context)
+    if 'search' in request.GET:
+        q = request.GET.get('search')
+        if q:
+            group = Group.objects.get(name='Student')
+            User = get_user_model()
+            stud_info = User.objects.filter(groups=group).filter(
+                    Q(first_name__icontains=str(q)) | Q(last_name__icontains=str(q)) | Q(username__icontains=q))
+            if stud_info:
+                val = 'std_info'
+                context = {
+                    'stud_info': stud_info,
+                    'qs_json': json.dumps(list(stud_info.values()), cls=DjangoJSONEncoder),
+                    'val': val,
+                }
+                return render(request, 'users.html', context)
+            else:
+                messages.error(request, 'No result found')
+                val = 'std_info'
+                context = {
+                    'val': val,
+                }
+                return render(request, 'users.html', context)
+        else:
+            User = get_user_model()
+            stud_info = User.objects.filter(groups__name='Student')
+            val = 'std_info'
+            context = {
+                'stud_info': stud_info,
+                'qs_json': json.dumps(list(stud_info.values()), cls=DjangoJSONEncoder),
+                'val': val,
+            }
+            return render(request, 'users.html', context)
+    else:
+        User = get_user_model()
+        stud_info = User.objects.filter(groups__name='Student')
+        val = 'std_info'
+        context = {
+            'stud_info': stud_info,
+            'qs_json': json.dumps(list(stud_info.values()), cls=DjangoJSONEncoder),
+            'val': val,
+        }
+        return render(request, 'users.html', context)
 
 
 @login_required
 @allowed_user(allowed_roles=['DeptHead'])
 def teacher_info(request):
-    User = get_user_model()
-    teaher_info = User.objects.filter(groups__name='Teacher')
-    val = 'teach_info'
-    context = {
-        'teaher_info': teaher_info,
-        'val': val
-    }
-    return render(request, 'users.html', context)
+    if 'search' in request.GET:
+        q = request.GET.get('search')
+        if q:
+                group = Group.objects.get(name='Teacher')
+                User = get_user_model()
+                teacher_info = User.objects.filter(groups=group).filter(
+                    Q(first_name__icontains=str(q)) | Q(last_name__icontains=str(q)) | Q(username__icontains=q))
+                if teacher_info:
+                    val = 'teach_info'
+                    context = {
+                        'teacher_info': teacher_info,
+                        'qs_json': json.dumps(list(teacher_info.values()), cls=DjangoJSONEncoder),
+                        'val': val,
+                    }
+                    return render(request, 'users.html', context)
+                else:
+                    messages.error(request, 'No result found')
+                    val = 'teach_info'
+                    context = {
+                        'val': val,
+                    }
+                    return render(request, 'users.html', context)
+        else:
+                User = get_user_model()
+                teacher_info = User.objects.filter(groups__name='Teacher')
+                val = 'teach_info'
+                context = {
+                    'teacher_info': teacher_info,
+                    'qs_json': json.dumps(list(teacher_info.values()), cls=DjangoJSONEncoder),
+                    'val': val,
+                }
+                return render(request, 'users.html', context)
+    else:
+        User = get_user_model()
+        teacher_info = User.objects.filter(groups__name='Teacher')
+        val = 'teach_info'
+        context = {
+            'teacher_info': teacher_info,
+            'qs_json':json.dumps(list(teacher_info.values()),cls=DjangoJSONEncoder),
+            'val': val,
+        }
+        return render(request, 'users.html', context)
+
+        
 #Course create and Show
-
-
 @login_required
 @allowed_user(allowed_roles=['DeptHead'])
 def addcourse(request):

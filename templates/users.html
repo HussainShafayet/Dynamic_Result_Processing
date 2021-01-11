@@ -2,38 +2,19 @@
 
 <!-- Users info -->
 {% if val == 'user_val' %}
-<div style="position: relative; height:38px">
-    <div class="" style="position:absolute;right:0;border:1px solid red;">
-        <form class="form-inline my-2 my-lg-0" action="" method="GET">
-            {% csrf_token %}
-            <input class="form-control mr-sm-2" id="search_here" name="search" type="text" placeholder="Search" aria-label="Search">
-            <button class="btn btn-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
-    </div>
-    <!-- <form action="" method="GET">
-                {% csrf_token %}
-                <input type="text" class="form-control" id="searchField" name="search" placeholder="Search">
-                <button class="btn btn-info" type="submit">Search</button>
-            </form> -->
+<h3 class="text-center">Unauthorised Users</h3>
+<hr>
+<div style="display: flex;justify-content:end;margin-bottom:5px;">
+    <form class="form-inline my-2 my-lg-0" action="" method="GET">
+        {% csrf_token %}
+        <input class="form-control mr-sm-2" id="search_here" name="search" type="text" placeholder="Search" aria-label="Search">
 
-
-    <!-- <form class="d-flex" action="" method="GET">
-            {% csrf_token %}
-            <input class="form-control me-2" type="search" name="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-success" type="submit">Search</button>
-        </form> -->
-
-
+    </form>
 </div>
-
-<h3 class="text-center">Unauthorised Users
-    <hr>
-</h3>
 {% if user_list %}
 <div class="box">
     <table>
         <thead>
-
             <th>First Name</th>
             <th>Last Name</th>
             <th>Username</th>
@@ -55,6 +36,7 @@
         </tbody>
     </table>
 </div>
+
 <div class="table-output">
     <table>
         <thead>
@@ -74,8 +56,21 @@
 {% elif messages %} {% for message in messages %} {{message}} {% endfor %} {% else %}
 <p style="color: rgb(243, 9, 9); padding:3px;font-size:large">No users are waiting list.</p>
 {% endif %}
-<br>
-<hr>
+<!-- <form action="" method="GET">
+                {% csrf_token %}
+                <input type="text" class="form-control" id="searchField" name="search" placeholder="Search">
+                <button class="btn btn-info" type="submit">Search</button>
+            </form> -->
+
+
+<!-- <form class="d-flex" action="" method="GET">
+            {% csrf_token %}
+            <input class="form-control me-2" type="search" name="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-success" type="submit">Search</button>
+        </form> -->
+
+
+
 
 <!--Users Details -->
 {% elif val == 'userdetails' %}
@@ -147,61 +142,112 @@
 
 <!--Student Info-->
 {% elif val == 'std_info' %}
-<h3 class="text-center">Student</h3>
-<table>
-    <thead>
-        <th>SL No</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Username</th>
-        <th>Email</th>
-        <th>Last Login</th>
-        <th>View as</th>
-    </thead>
-    <tbody>
-        {% for j in stud_info %}
-        <tr>
+<h3 class="text-center">Students</h3>
+<hr>
+<div style="display: flex;justify-content:end;margin-bottom:5px;">
+    <form class="form-inline my-2 my-lg-0" action="" method="GET">
+        {% csrf_token %}
+        <input class="form-control mr-sm-2" id="search_here" name="search" type="text" placeholder="Search" aria-label="Search">
 
-            <td>{{forloop.counter}}</td>
-            <td>{{j.first_name}} </td>
-            <td>{{j.last_name}}</td>
-            <td>{{j.username}}</td>
-            <td>{{j.email}}</td>
-            <td>{{j.last_login}}</td>
-            <td><a class="btn btn-primary" href="{% url 'userdetails' j.id %}">Details</a></td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    </form>
+</div>
+{% if stud_info %}
+<div class="box">
+    <table>
+        <thead>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Last Login</th>
+            <th>View as</th>
+        </thead>
+        <tbody>
+            {% for j in stud_info %}
+            <tr>
+                <td>{{j.first_name}} </td>
+                <td>{{j.last_name}}</td>
+                <td>{{j.username}}</td>
+                <td>{{j.email}}</td>
+                <td>{{j.last_login}}</td>
+                <td><a class="btn btn-primary" href="{% url 'userdetails' j.id %}">Details</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="table-output">
+    <table>
+        <thead>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Last Login</th>
+            <th>View as</th>
+        </thead>
+        <tbody class="table-body">
+
+        </tbody>
+    </table>
+</div>
+{% elif messages %} {% for message in messages %} {{message}} {% endfor %} {% else %}
+<p style="color: rgb(243, 9, 9); padding:3px;font-size:large">No Student registratin yet.</p>
+{% endif %}
+
 <!--Teacher Info-->
-{% elif val == 'teach_info' %} {% if teaher_info %}
+{% elif val == 'teach_info' %}
 <h3 class="text-center">Teacher</h3>
-<table>
-    <thead>
-        <th>SL No</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Username</th>
-        <th>Email</th>
-        <th>Last Login</th>
-        <th>View as</th>
-    </thead>
-    <tbody>
-        {% for j in teaher_info %}
-        <tr>
+<hr>
+<div style="display: flex;justify-content:end;margin-bottom:5px;">
+    <form class="form-inline my-2 my-lg-0" action="" method="GET">
+        {% csrf_token %}
+        <input class="form-control mr-sm-2" id="search_here" name="search" type="text" placeholder="Search" aria-label="Search">
 
-            <td>{{forloop.counter}}</td>
-            <td>{{j.first_name}} </td>
-            <td>{{j.last_name}}</td>
-            <td>{{j.username}}</td>
-            <td>{{j.email}}</td>
-            <td>{{j.last_login}}</td>
-            <td><a class="btn btn-primary" href="{% url 'userdetails' j.id %}">Details</a></td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% else %}
+    </form>
+</div>
+{% if teacher_info %}
+<div class="box">
+    <table>
+        <thead>
+
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Last Login</th>
+            <th>View as</th>
+        </thead>
+        <tbody>
+            {% for j in teacher_info %}
+            <tr>
+                <td>{{j.first_name}} </td>
+                <td>{{j.last_name}}</td>
+                <td>{{j.username}}</td>
+                <td>{{j.email}}</td>
+                <td>{{j.last_login}}</td>
+                <td><a class="btn btn-primary" href="{% url 'userdetails' j.id %}">Details</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="table-output">
+    <table>
+        <thead>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Last Login</th>
+            <th>View as</th>
+        </thead>
+        <tbody class="table-body">
+
+        </tbody>
+    </table>
+</div>
+{% elif messages %} {% for message in messages %} {{message}} {% endfor %} {% else %}
 <p style="color: rgb(243, 9, 9); padding:3px;font-size:large">No teacher info</p>
 {% endif %}{% endif %} {% endblock %}{% block js_script %}
 
@@ -217,7 +263,9 @@
     input.addEventListener('keyup', (e) => {
         box.style.display = 'none';
         filteredArr = rdata.filter(user_list => user_list['first_name'].includes(e.target.value));
-        console.log(filteredArr);
+        filteredArr = rdata.filter(stud_info => stud_info['first_name'].includes(e.target.value));
+        filteredArr = rdata.filter(teacher_info => teacher_info['first_name'].includes(e.target.value));
+        console.log(filteredArr)
         if (filteredArr.length > 0) {
             tableOutput.style.display = "block";
             box.style.display = 'none'
