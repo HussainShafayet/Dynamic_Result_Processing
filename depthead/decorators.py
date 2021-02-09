@@ -31,6 +31,7 @@ def allowed_user(allowed_roles=[]):
     def docorator(view_func):
         def wrapper_func(request, *args, **kwargs):
             group = None
+            dept=None
             if request.user.groups.exists():
                 group = request.user.groups.all()[0].name
             if group in allowed_roles:

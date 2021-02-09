@@ -69,9 +69,15 @@
         </div>
         <div id="prof">
             <ul>
-                {% if user.is_authenticated %}
-                <li><a href="{% url 'logout'%}">Logout</a></li>
+                {% if user.is_authenticated %}{% if user.is_depthead %}
+                <li class="pro"><img id="icon" src="{{user.depthead.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer"></li>{% elif user.is_teacher %}
+                <li class="pro"><img id="icon" src="{{user.teacher.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer"></li>{% elif user.is_student %}
+                <li class="pro"><img id="icon" src="{{user.student.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer"></li>
                 {% else %}
+                <li>
+                    <a href="{% url 'logout' %}">logout</a>
+                </li>
+                {% endif %} {% else %}
                 <li style="cursor: pointer;">
                     <a onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Registration</a>
                 </li>
@@ -82,6 +88,13 @@
             </ul>
         </div>
     </nav>
+    <div id="side-menu">
+        <ul>
+            <li><a href="{% url 'profile' %}">profile</a></li>
+            <li><a href=" ">settings</a></li>
+            <li><a href="{% url 'logout' %} ">logout</a></li>
+        </ul>
+    </div>
     <div id="id01" class="modal animate">
         <div class="modal-content ">
             <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
@@ -95,9 +108,11 @@
 
         </div>
     </div>
+
     {% block body %}{% endblock %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js "></script>
     <script src="{% static 'Js/Rp.js' %} "></script>
+    <script src="https://kit.fontawesome.com/bf12ee2437.js " crossorigin="anonymous "></script>
     {% block js_script %}{% endblock %}
 </body>
 

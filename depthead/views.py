@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import (User, Group,)
-from accounts.models import (Student, Teacher)
+from accounts.models import (Student, Teacher,Depthead)
 from django.contrib.auth import get_user_model
 from .forms import (AddCourse,Create_batch)
 from .models import (Course_list, Batch, Session,Student_Sessions,batch_result,Dept)
@@ -319,7 +319,8 @@ def show_course(request):
     val = 'course_li'
     context = {
         'course_list': course_list,
-        'val': val
+        'qs_json':json.dumps(list(course_list.values()),cls=DjangoJSONEncoder),
+        'val': val,
     }
     return render(request, 'course.html', context)
 

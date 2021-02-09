@@ -1,7 +1,11 @@
 {% extends 'base.html' %}{% block title %}{% if val == 'user_dh' %}Depthead Dashboard{% elif val == 'user_t' %}Teacher Dashboard{% else %}Student Dasdboard {% endif %}{% endblock %}{% block body %}
 <h1>user page</h1>
 
-<p>Welcome{{user}}</p>{% if val == 'user_dh'%}
+<p>Welcome{{user}}</p>{% if val == 'user_dh'%} {% if messages %} {% for message in messages %}
+<div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+    <strong>{{message}}</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div> {% endfor %} {% endif %}
 <p>DeptHead</p>
 {% elif val == 'user_t' %}
 <p>Teacher</p>{% else %}Student{% endif %}

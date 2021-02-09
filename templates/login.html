@@ -1,6 +1,7 @@
 {% extends 'base.html' %}{% load crispy_forms_tags %}{% block title %}Login{% endblock %}{% block body %} {% if messages %} {% for message in messages %}
 <div class="alert alert-success" role="alert">
-    <button type="button" class="close" data-dismiss="alert">X</button> {{message}}
+    {{message}}
+    <button type="button" class="close" data-dismiss="alert">X</button>
 </div>
 {% endfor %} {% endif %}
 <div class="row">

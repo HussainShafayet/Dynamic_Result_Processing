@@ -3,10 +3,22 @@
     <div id="id"></div>
     <div id="id2"></div>
 </div>
-<a class="btn btn-primary" style="margin-left: 10px;" href="{% url 'course' %}">add course</a>
-<div>
-    <h3 class="text-center">Course List</h3>
-    <hr>
+<h3 class="text-center">Course List</h3>
+<hr>
+<div style="display: flex;justify-content: space-between; margin-bottom:5px;">
+    <div>
+        <a class="btn btn-primary" style="margin-left: 10px;" href="{% url 'course' %}">add course</a>
+    </div>
+    <div>
+        <form class="form-inline my-2 my-lg-0" action="" method="GET">
+            {% csrf_token %}
+            <input class="form-control mr-sm-2" id="search_here" name="search" type="text" placeholder="Search" aria-label="Search">
+
+        </form>
+    </div>
+</div>
+
+<div class="box">
     <table>
         <thead>
             <th>SL No</th>
@@ -31,6 +43,21 @@
         </tbody>
     </table>
 </div>
+<div class="table-output">
+    <table>
+        <thead>
+            <th>SL No</th>
+            <th>Course Code</th>
+            <th>Course Title</th>
+            <th>Course Credit</th>
+            <th>Course Type</th>
+            <th>Semester</th>
+        </thead>
+        <tbody class="table-body">
+
+        </tbody>
+    </table>
+</div>
 {% else %}
 <div class="row">
     <div class="col"></div>
@@ -45,6 +72,44 @@
 
 {% endif %}{% endblock %} {% block js_script %}
 <script>
+    const box = document.querySelector('.box');
+    const data = `{{qs_json}}`;
+    const rdata = JSON.parse(data.replace(/&quot;/g, '"'));
+    const input = document.getElementById('search_here');
+    const tableOutput = document.querySelector(".table-output");
+    const tbody = document.querySelector(".table-body");
+    tableOutput.style.display = 'None';
+    let filteredArr = []
+    input.addEventListener('keyup', (e) => {
+        box.style.display = 'none';
+        filteredArr = rdata.filter(course_list => course_list['course_code'].includes(e.target.value));
+
+        console.log(filteredArr)
+        if (filteredArr.length > 0) {
+            tableOutput.style.display = "block";
+            box.style.display = 'none'
+            tbody.innerHTML = ''
+            filteredArr.map(item => {
+                tbody.innerHTML += `
+                <tr>
+                    <td>${item.course_code.pk}</td>
+                    <td class="editable" data-id="{{course.pk}}" data-type="course_code">${item.course_code}</td>
+                    <td class="editable" data-id="{{course.pk}}" data-type="title">${item.title}</td>
+                    <td class="editable" data-id="{{course.pk}}" data-type="credit">${item.credit}</td>
+                    <td class="editable" data-id="{{course.pk}}" data-type="course_type">${item.course_type}</td>
+                    <td class="editable" data-id="{{course.pk}}" data-type="semester">${item.semester}</td>
+                </tr>
+
+                `
+            });
+
+        } else {
+            tableOutput.style.display = 'none';
+            box.style.display = 'block';
+            box.innerHTML = 'No result found'
+
+        }
+    });
     $(document).ready(function() {
         $(document).on("dblclick", ".editable", function() {
             var value = $(this).text();
