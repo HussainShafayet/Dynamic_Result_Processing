@@ -7,8 +7,11 @@ from django.views.decorators.csrf import csrf_exempt
 urlpatterns = [
     path('depthead_dashboard/',views.depthead_home,name='depthead_dashboard'),
     path('users', views.users, name='users'),
+    #path('users_search', views.users_search, name='users_search'),
     #path('users',Users.as_view(), name='users'),
-    #path('search',csrf_exempt(views.search),name='search'),
+    path('user_search/',csrf_exempt(views.search),name='search'),
+    path('student_search/',csrf_exempt(views.student_search),name='student_search'),
+    path('teacher_search/',csrf_exempt(views.teacher_search),name='teacher_search'),
     path('user_details/<int:id>', views.userdetails, name='userdetails'),
     path('allow_user/<int:id>', views.allow_user, name='allowuser'),
     path('student_info', views.student_info, name='student_info'),

@@ -168,3 +168,10 @@ class StudentRegForm(UserCreationForm):
         student.image = self.cleaned_data.get('image')
         student.save()
         return user
+
+class Profile_edit_Form(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = [
+            'first_name','last_name','username','email',
+        ]

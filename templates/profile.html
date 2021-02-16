@@ -7,11 +7,12 @@
     </div>
     <div class="but-div">
         <a href="{% url 'profile' %}">About me</a>
-        <a href="">Edit Profile</a>
+        <a href="{% url 'edit_profile' %}">Edit Profile</a>
         <a href="{% url 'password' %}">Change password</a>
     </div>
+
     {% if messages %} {% for message in messages %}
-    <div class="alert alert-success" role="alert">
+    <div class="alert alert-{{message.tags}}" role="alert" id="profile_message">
         <button type="button" class="close" data-dismiss="alert">X</button> {{message}}
     </div>
 
@@ -19,6 +20,7 @@
     <div class="pro-value">
 
         <table>
+            {% if profile_value.user.is_depthead %}
             <tr>
                 <td>Name</td>
                 <td>{{user.first_name}} {{user.last_name}}</td>
@@ -35,6 +37,61 @@
                 <td>Designation: </td>
                 <td>{{profile_value.designation}}</td>
             </tr>
+            {% elif profile_value.user.is_student %}
+            <tr>
+                <td>Name</td>
+                <td>{{user.first_name}} {{user.last_name}}</td>
+            </tr>
+            <tr>
+                <td>Username </td>
+                <td>{{user.username}}</td>
+            </tr>
+            <tr>
+                <td>Department </td>
+                <td>{{profile_value.dept}}</td>
+            </tr>
+            <tr>
+                <td>Batch</td>
+                <td>{{profile_value.batch}}</td>
+            </tr>
+            <tr>
+                <td>Session</td>
+                <td>{{profile_value.session}}</td>
+            </tr>
+            <tr>
+                <td>Registration No</td>
+                <td>{{profile_value.reg_no}}</td>
+            </tr>
+            <tr>
+                <td>Mobile</td>
+                <td>{{profile_value.mobile}}</td>
+            </tr>
+            <tr>
+                <td>Gender</td>
+                <td>{{profile_value.gender}}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td>Name</td>
+                <td>{{user.first_name}} {{user.last_name}}</td>
+            </tr>
+            <tr>
+                <td>Username: </td>
+                <td>{{user.username}}</td>
+            </tr>
+            <tr>
+                <td>Designation: </td>
+                <td>{{profile_value.designation}}</td>
+            </tr>
+            <tr>
+                <td>Teaching field</td>
+                <td>{{profile_value.teach_fields}}</td>
+            </tr>
+            <tr>
+                <td>Contact no</td>
+                <td>{{profile_value.contact}}</td>
+            </tr>
+            {% endif %}
         </table>
     </div>{% else %}
     <div class="pro-edtform">
@@ -43,5 +100,6 @@
             <input style="width:100px;margin:5px auto;position:absolute" type="submit" class="btn alert-primary " value="Save ">
         </form>
     </div>
+    {% endif %}
 </div>
-{% endif %} {% endblock %}
+{% endblock %}

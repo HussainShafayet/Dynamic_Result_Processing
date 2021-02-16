@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse,JsonResponse
 from django.contrib import messages
 #User Reg,login and Logout
-from .forms import (TeacherRegForm, StudentRegForm)
+from .forms import (TeacherRegForm, StudentRegForm,Profile_edit_Form)
 from .models import (User, Teacher, Student, Depthead)
 from depthead.models import (Dept,Batch,Session)
 from django.contrib.auth.forms import AuthenticationForm
@@ -237,7 +237,7 @@ def profile(request):
             'profile_details': profile_details
         }
         return render(request, 'profile.html', context)
-    elif current_user.is_teacher:
+    elif current_user.is_student:
         profile_value = Student.objects.get(user=current_user)
         user = User.objects.get(username=current_user)
         profile_details = 'profile_details'
@@ -251,19 +251,46 @@ def profile(request):
         return HttpResponse('You are not authorised user!')
 
 
-def edit_profile(request):
+def profile_edit(request):
     if request.method == 'POST':
-        form = UserProfileForm(request.POST, instance=request.user)
+        form = Profile_edit_Form(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Profile update success')
+            messages.success(request, 'Profile update successfully!')
             return redirect('profile')
         else:
-            messages.error(request, 'Try again')
-            return redirect('edit-profile')
+            messages.warning(request, 'Try again!!!')
+            if request.user.is_depthead:
+                profile_value = Depthead.objects.get(user=request.user)
+                context = {
+                    'form': form,
+                    'profile_value':profile_value,
+                }
+            return render(request,'profile.html',context)
     else:
-        form = UserProfileForm(instance=request.user)
-    return render(request, 'profile-edit.html', {'form': form})
+        current_user = request.user
+        if current_user.is_depthead:
+            form = Profile_edit_Form(instance=current_user)
+            profile_value = Depthead.objects.get(user=current_user)
+            context = {
+                'form': form,
+                'profile_value':profile_value
+            }
+        elif current_user.is_teacher:
+            form = Profile_edit_Form(instance=current_user)
+            profile_value = Teacher.objects.get(user=current_user)
+            context = {
+                'form': form,
+                'profile_value': profile_value
+            }
+        elif current_user.is_student:
+            form = Profile_edit_Form(instance=current_user)
+            profile_value = Student.objects.get(user=current_user)
+            context = {
+                'form': form,
+                'profile_value': profile_value
+            }
+    return render(request, 'profile.html', context)
 
 def password_change(request):
     if request.method == 'POST':
@@ -274,8 +301,8 @@ def password_change(request):
             update_session_auth_hash(request, form.user)
             return redirect('profile')
         else:
-            messages.error(request, 'Try again')
-            return redirect('password')
+            messages.warning(request, 'Try again')
+            return render(request, 'profile.html', {'form':form})
     else:
         current_user = request.user
         if current_user.is_depthead:

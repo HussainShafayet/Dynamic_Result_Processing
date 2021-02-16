@@ -1,16 +1,9 @@
 {% extends 'base.html' %}{% block body %}
 <h1>2nd Semester</h1>
 {% if messages %} {% for message in messages %} {%if "student" in message.tags %} {{message}} {%endif%} {% endfor %} {% endif %}
-<style>
-    table,
-    th,
-    td {
-        border: 1px solid black;
-        border-collapse: collapse;
-    }
-</style>
 
-<table>
+
+<table class="table table-striped table-hover">
     {% for stu in result_list %}
     <tr>
         <td>{{stu.Reg_No}} </td>

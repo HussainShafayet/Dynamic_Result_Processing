@@ -82,7 +82,7 @@
     let filteredArr = []
     input.addEventListener('keyup', (e) => {
         box.style.display = 'none';
-        filteredArr = rdata.filter(course_list => course_list['course_code'].includes(e.target.value));
+        filteredArr = rdata.filter(course_list => course_list['course_code', 'title', 'course_type', 'semester'].includes(e.target.value));
 
         console.log(filteredArr)
         if (filteredArr.length > 0) {
@@ -92,10 +92,10 @@
             filteredArr.map(item => {
                 tbody.innerHTML += `
                 <tr>
-                    <td>${item.course_code.pk}</td>
-                    <td class="editable" data-id="{{course.pk}}" data-type="course_code">${item.course_code}</td>
+                    <td>${item.id}</td>
+                    <td class="editable" data-id="{{course.id}}" data-type="course_code">${item.course_code}</td>
                     <td class="editable" data-id="{{course.pk}}" data-type="title">${item.title}</td>
-                    <td class="editable" data-id="{{course.pk}}" data-type="credit">${item.credit}</td>
+                    <td class="editable" data-id="{{course.id}}" data-type="credit">${item.credit}</td>
                     <td class="editable" data-id="{{course.pk}}" data-type="course_type">${item.course_type}</td>
                     <td class="editable" data-id="{{course.pk}}" data-type="semester">${item.semester}</td>
                 </tr>

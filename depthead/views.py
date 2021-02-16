@@ -1,9 +1,11 @@
+from django.views.generic import ListView
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import (User, Group,)
-from accounts.models import (Student, Teacher,Depthead)
+from accounts.models import (Student, Teacher, Depthead)
 from django.contrib.auth import get_user_model
-from .forms import (AddCourse,Create_batch)
-from .models import (Course_list, Batch, Session,Student_Sessions,batch_result,Dept)
+from .forms import (AddCourse, Create_batch)
+from .models import (Course_list, Batch, Session,
+                     Student_Sessions, batch_result, Dept)
 from teacher.models import (Teachers, Course, Course_Result)
 from student.models import(Students)
 from django.contrib import messages
@@ -12,11 +14,13 @@ from django.db.models import Q
 import json
 from django.http import JsonResponse
 from django.core.serializers.json import DjangoJSONEncoder
+from django.shortcuts import render_to_response
 # Create your views here.
 
+
 def depthead_home(request):
-    return render(request, 'user_Dashboard.html', {'val': 'user_dh',})
-    
+    return render(request, 'user_Dashboard.html', {'val': 'user_dh', })
+
 #Users,Userdetails and Allowuser
 
 @login_required
@@ -28,17 +32,16 @@ def users(request):
             group = Group.objects.get(name='None')
             User = get_user_model()
             user_list = User.objects.filter(groups=group).filter(
-                Q(first_name__icontains=str(q)) | Q(last_name__icontains=str(q)) | Q(username__icontains=q))
+                Q(first_name__icontains=q) | Q(last_name__icontains=str(q)) | Q(username__icontains=q) | Q(email__icontains=str(q)))
             if user_list:
                val = 'user_val'
                context = {
                    'user_list': user_list,
-                   'qs_json': json.dumps(list(user_list.values()), cls=DjangoJSONEncoder),
                    'val': val,
                }
                return render(request, 'users.html', context)
             else:
-                messages.error(request, 'No result found')
+                messages.warning(request, 'No result found')
                 val = 'user_val'
                 context = {
                     'val': val,
@@ -50,7 +53,6 @@ def users(request):
             val = 'user_val'
             context = {
                 'user_list':user_list,
-                'qs_json': json.dumps(list(user_list.values()), cls=DjangoJSONEncoder),
                 'val': val,
             }
             return render(request, 'users.html', context)
@@ -60,75 +62,21 @@ def users(request):
         user_list = User.objects.filter(groups__name='None')
         val = 'user_val'
         context = {
-            'user_list':user_list,
-            'qs_json': json.dumps(list(user_list.values()), cls=DjangoJSONEncoder),
+            'user_list': user_list,
             'val': val,
         }
         return render(request, 'users.html', context)
-"""if 'search' in request.GET:
-        q = request.GET.get('search')
-        if q:
-            User = get_user_model()
-            user_list = User.objects.filter(Q(first_name__icontains=str(q))|Q(username=q)|Q(last_name=q))
-            val = 'user_val'
-            context = {
-                'user_list': user_list,
-                'val':val,
-            }
-            return render(request, 'users.html', context)
-        else:
-            messages.info(request, 'No results found')
-            User = get_user_model()
-            user_list = User.objects.filter(groups__name='None')
-            val = 'user_val'
-            context = {
-                'val': val,
-            }
-            return render(request, 'users.html', context)
 
-    else: """
-    
-""" def search(request):
+
+def search(request):
     if request.method == "POST":
-        search_str = json.loads(request.body).get("search")
-        group = Group.objects.get(name='None')
+        search_str = json.loads(request.body).get("searchText")
         User = get_user_model()
-        user_list = User.objects.filter(groups=group).filter(
-            Q(first_name__icontains=search_str) | Q(last_name__icontains=str(search_str)))
+        user_list = User.objects.filter(groups__name='None').filter(
+            Q(first_name__icontains=search_str) | Q(last_name__icontains=str(search_str)) | Q(username__icontains=str(search_str)) | Q(email__icontains=str(search_str)))
         data = user_list.values()
         return JsonResponse(list(data), safe=False)
-    else:
-        search_str = ''
-        data = search_str.values()
-        print(data)
-        return JsonResponse(list(data),safe=False)"""
-        
-from django.views.generic import ListView
-
-""" class Users(ListView):
-    User=get_user_model()
-    model = User
-    template_name = 'users.html'
-    context_object_name = 'user_list'
-    queryset=[]
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        User = get_user_model()
-        group = Group.objects.get(name='None')
-        users = User.objects.filter(groups=group)
-        context['val'] = 'user_val'
-        context["qs_json"] = json.dumps(
-            list(users.values()), cls=DjangoJSONEncoder)
-        return context
-
-    def get_queryset(self, **kwargs):
-        User = get_user_model()
-        group = Group.objects.get(name='None')
-        queryset=User.objects.filter(groups=group)
-        return queryset """
-
-   
-
+            
 @login_required
 @allowed_user(allowed_roles=['DeptHead'])
 def userdetails(request, id):
@@ -174,7 +122,7 @@ def allow_user(request, id):
             user_det.is_none = False
             user_det.is_student = True
             user_det.save()
-            n1=user_det.first_name
+            n1 = user_det.first_name
             n2 = user_det.last_name
             name = n1 + ' ' + n2
             stud = Student.objects.get(user=user_det)
@@ -182,9 +130,10 @@ def allow_user(request, id):
             batch = stud.batch
             Sess = Student_Sessions.objects.get(Batch=batch)
             New_Student = Students(
-                Reg_No=stud.reg_no, Name=name, Gender=stud.gender, Dept=dept,Phone=stud.mobile, session=Sess)
+                Reg_No=stud.reg_no, Name=name, Gender=stud.gender, Dept=dept, Phone=stud.mobile, session=Sess)
             New_Student.save()
-            Result_Table = batch_result(Reg_No=stud.reg_no, Name=name, Result_Session=Sess)
+            Result_Table = batch_result(
+                Reg_No=stud.reg_no, Name=name, Result_Session=Sess)
             Result_Table.save()
             return redirect('users')
     else:
@@ -205,12 +154,11 @@ def student_info(request):
             group = Group.objects.get(name='Student')
             User = get_user_model()
             stud_info = User.objects.filter(groups=group).filter(
-                    Q(first_name__icontains=str(q)) | Q(last_name__icontains=str(q)) | Q(username__icontains=q))
+                Q(first_name__icontains=str(q)) | Q(last_name__icontains=str(q)) | Q(username__icontains=q)|Q(email__icontains=str(q)))
             if stud_info:
                 val = 'std_info'
                 context = {
                     'stud_info': stud_info,
-                    'qs_json': json.dumps(list(stud_info.values()), cls=DjangoJSONEncoder),
                     'val': val,
                 }
                 return render(request, 'users.html', context)
@@ -227,7 +175,6 @@ def student_info(request):
             val = 'std_info'
             context = {
                 'stud_info': stud_info,
-                'qs_json': json.dumps(list(stud_info.values()), cls=DjangoJSONEncoder),
                 'val': val,
             }
             return render(request, 'users.html', context)
@@ -237,10 +184,18 @@ def student_info(request):
         val = 'std_info'
         context = {
             'stud_info': stud_info,
-            'qs_json': json.dumps(list(stud_info.values()), cls=DjangoJSONEncoder),
             'val': val,
         }
         return render(request, 'users.html', context)
+
+def student_search(request):
+    if request.method == "POST":
+        search_str = json.loads(request.body).get("searchText")
+        User = get_user_model()
+        user_list = User.objects.filter(groups__name='Student').filter(
+            Q(first_name__icontains=search_str) | Q(last_name__icontains=str(search_str)) | Q(username__icontains=str(search_str)) | Q(email__icontains=str(search_str)))
+        data = user_list.values()
+        return JsonResponse(list(data), safe=False)
 
 
 @login_required
@@ -249,48 +204,54 @@ def teacher_info(request):
     if 'search' in request.GET:
         q = request.GET.get('search')
         if q:
-                group = Group.objects.get(name='Teacher')
-                User = get_user_model()
-                teacher_info = User.objects.filter(groups=group).filter(
-                    Q(first_name__icontains=str(q)) | Q(last_name__icontains=str(q)) | Q(username__icontains=q))
-                if teacher_info:
-                    val = 'teach_info'
-                    context = {
-                        'teacher_info': teacher_info,
-                        'qs_json': json.dumps(list(teacher_info.values()), cls=DjangoJSONEncoder),
-                        'val': val,
-                    }
-                    return render(request, 'users.html', context)
-                else:
-                    messages.error(request, 'No result found')
-                    val = 'teach_info'
-                    context = {
-                        'val': val,
-                    }
-                    return render(request, 'users.html', context)
-        else:
-                User = get_user_model()
-                teacher_info = User.objects.filter(groups__name='Teacher')
+            group = Group.objects.get(name='Teacher')
+            User = get_user_model()
+            teacher_info = User.objects.filter(groups=group).filter(
+                Q(first_name__icontains=str(q)) | Q(last_name__icontains=str(q)) | Q(username__icontains=str(q))|Q(email__icontains=str(q)))
+            if teacher_info:
                 val = 'teach_info'
                 context = {
                     'teacher_info': teacher_info,
-                    'qs_json': json.dumps(list(teacher_info.values()), cls=DjangoJSONEncoder),
                     'val': val,
                 }
                 return render(request, 'users.html', context)
+            else:
+                messages.error(request, 'No result found')
+                val = 'teach_info'
+                context = {
+                    'val': val,
+                }
+                return render(request, 'users.html', context)
+        else:
+            User = get_user_model()
+            teacher_info = User.objects.filter(groups__name='Teacher')
+            val = 'teach_info'
+            context = {
+                'teacher_info': teacher_info,
+                'val': val,
+            }
+            return render(request, 'users.html', context)
     else:
         User = get_user_model()
         teacher_info = User.objects.filter(groups__name='Teacher')
         val = 'teach_info'
         context = {
             'teacher_info': teacher_info,
-            'qs_json':json.dumps(list(teacher_info.values()),cls=DjangoJSONEncoder),
             'val': val,
         }
         return render(request, 'users.html', context)
 
-        
-#Course create and Show
+
+def teacher_search(request):
+    if request.method == "POST":
+        search_str = json.loads(request.body).get("searchText")
+        User = get_user_model()
+        user_list = User.objects.filter(groups__name='Teacher').filter(
+            Q(first_name__icontains=search_str) | Q(last_name__icontains=str(search_str)) | Q(username__icontains=str(search_str)) | Q(email__icontains=str(search_str)))
+        data = user_list.values()
+        return JsonResponse(list(data), safe=False)
+
+# Course create and Show
 @login_required
 @allowed_user(allowed_roles=['DeptHead'])
 def addcourse(request):
@@ -314,12 +275,12 @@ def addcourse(request):
 
 @login_required
 @allowed_user(allowed_roles=['DeptHead'])
-def show_course(request): 
-    course_list = Course_list.objects.all().order_by('semester','course_code')
+def show_course(request):
+    course_list = Course_list.objects.all().order_by('semester', 'course_code')
     val = 'course_li'
     context = {
         'course_list': course_list,
-        'qs_json':json.dumps(list(course_list.values()),cls=DjangoJSONEncoder),
+        'qs_json': json.dumps(list(course_list.values()), cls=DjangoJSONEncoder),
         'val': val,
     }
     return render(request, 'course.html', context)
@@ -341,15 +302,15 @@ def create_batch(request):
             return redirect('depthead_dashboard')
         else:
             context = {
-                'form':form,
+                'form': form,
             }
             return render(request, 'create_batch.html', context)
     else:
         form = Create_batch()
         context = {
-            'form':form,
+            'form': form,
         }
-        return render(request, 'create_batch.html',context)
+        return render(request, 'create_batch.html', context)
 
 
 @login_required
@@ -360,19 +321,19 @@ def batch_info(request, Dy_id):
     if query_set.exists() == False:
         messages.error(
             request, "No Student of this session has been added yet")
-    return render(request, 'batch_info.html', {'student_list': batch,})
+    return render(request, 'batch_info.html', {'student_list': batch, })
 
 
 @login_required
 @allowed_user(allowed_roles=['DeptHead'])
 def find_batch(request):
     batches = Student_Sessions.objects.all()
-    val='batch_info'
+    val = 'batch_info'
     context = {
         'batches': batches,
-        'val':val
+        'val': val
     }
-    return render(request,'batch_info.html',context)
+    return render(request, 'batch_info.html', context)
 
 
 """ def show_batch(request):
@@ -409,6 +370,8 @@ def batch_results(request, Dy_id):
 
 """ @login_required
 @allowed_user(allowed_roles=['DeptHead']) """
+
+
 def calculate(batch, start, end, credit, point, grade):
     for i in batch.batch_result_set.all():
         credit_count = 0
@@ -464,7 +427,6 @@ def calculate(batch, start, end, credit, point, grade):
         letter_grade = ' '
 
 
-
 def get_courses(sem):
     course_list_01 = Course_list.objects.filter(semester=sem)
     course_list_02 = []
@@ -477,7 +439,6 @@ def get_courses(sem):
 
     course_list_zip = zip(course_list_02, course_list_03)
     return course_list_zip
-
 
 
 def get_teachers():
@@ -496,6 +457,8 @@ def get_teachers():
 
 """ @login_required
 @allowed_user(allowed_roles=['DeptHead']) """
+
+
 def assign_teacher(string01, string02, string03):
     course = string01
     teacher = string02
