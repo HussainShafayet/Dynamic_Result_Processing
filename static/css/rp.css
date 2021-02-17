@@ -208,16 +208,6 @@
         -ms-transition: 0.5s;
         -o-transition: 0.5s;
     }
-    /*footer*/
-    
-    .footer {
-        background-color: #f1f1f1;
-        padding: 10px;
-        text-align: center;
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-    }
     /* The Modal (background) */
     
     .modal {

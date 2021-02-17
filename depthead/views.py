@@ -143,7 +143,11 @@ def allow_user(request, id):
         'val': 'user_details'
     }
     return render(request, 'users.html', context)
-
+def delete_user(request, id):
+        User=get_user_model()
+        user_del = User.objects.get(id=id)
+        user_del.delete()
+        return redirect('users')
 
 @login_required
 @allowed_user(allowed_roles=['DeptHead'])

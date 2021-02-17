@@ -14,6 +14,7 @@ urlpatterns = [
     path('teacher_search/',csrf_exempt(views.teacher_search),name='teacher_search'),
     path('user_details/<int:id>', views.userdetails, name='userdetails'),
     path('allow_user/<int:id>', views.allow_user, name='allowuser'),
+    path('delete_user/<int:id>', views.delete_user, name='delete_user'),
     path('student_info', views.student_info, name='student_info'),
     path('teacher_info', views.teacher_info, name='teacher_info'),
     path('course/', views.addcourse, name='course'),

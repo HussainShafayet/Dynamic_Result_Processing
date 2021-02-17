@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 
 # My views here.
 def student_dashboard(request):
-    return render(request, 'user_dashboard.html')
+    return render(request, 'user_dashboard.html',{'val':'user_stud'})
     
 def student_result(request):
     user2 = request.user

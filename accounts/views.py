@@ -23,7 +23,7 @@ from depthead.decorators import unauthenticated_user
 
 #My views here.
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'user_dashboard.html')
 
 #User Registration and Activation
 @unauthenticated_user

@@ -1,4 +1,5 @@
-{% extends 'base.html' %}{% load static%} {% block title %} {% if val == 'user_val' %}Users{% elif val == 'userdetails' %}{{user_det.first_name}}'s details{% endif %}{% endblock %}{% block body %}
+{% extends 'base.html' %}{% load static%} {% block title %} {% if val == 'user_val' %}Users{% elif val == 'std_info' %}Student Info{% elif val == 'teach_info' %}Teacher Info{% elif val == 'userdetails' %}{{user_det.first_name}}'s details{% endif %}{%endblock%}
+{%block body%}
 
 <!-- Users info -->
 {% if val == 'user_val' %} {% load static%}
@@ -18,7 +19,7 @@
     </div>{% if user_list %}
     <div class="app-table table-responsive">
         <table class="table table-striped table-hover">
-            <thead>
+            <thead class="thead bg-info">
                 <tr>
                     <th>First Name</th>
                     <th>Last Name</th>
@@ -46,7 +47,7 @@
 
     <div class="table-output">
         <table class="table table-striped table-hover">
-            <thead>
+            <thead class="thead bg-info">
                 <tr>
                     <th>First Name</th>
                     <th>Last Name</th>
@@ -139,7 +140,7 @@
                     <option value="Students">Student</option>
                 </select>-->
                     <input type="submit" class="btn btn-primary" value="allow" id="allow">
-                    <a class="btn btn-danger" href="">Delete user</a>
+                    <a class="btn btn-danger" href="{% url 'delete_user' user_det.id %}" id="remove_user">Delete user</a>
                 </form>
                 {% endif %}
             </div>
@@ -171,7 +172,7 @@
     {% if stud_info %}
     <div class="app-table table-responsive">
         <table class="table table-striped table-hover">
-            <thead>
+            <thead class="thead bg-info">
                 <tr>
                     <th>First Name</th>
                     <th>Last Name</th>
@@ -197,7 +198,7 @@
     </div>
     <div class="table-output table-responsive">
         <table class="table table-striped table-hover">
-            <thead>
+            <thead class="thead bg-info">
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Username</th>
@@ -234,7 +235,7 @@
     {% if teacher_info %}
     <div class="app-table table-responsive">
         <table class="table table-striped table-hover">
-            <thead>
+            <thead class="thead bg-info">
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Username</th>
@@ -258,7 +259,7 @@
     </div>
     <div class="table-output table-responsive">
         <table class="table table-striped table-hover">
-            <thead>
+            <thead class="thead bg-info">
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Username</th>

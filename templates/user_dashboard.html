@@ -1,4 +1,4 @@
-{% extends 'base.html' %}{% block title %}{% if val == 'user_dh' %}Depthead Dashboard{% elif val == 'user_t' %}Teacher Dashboard{% else %}Student Dasdboard {% endif %}{% endblock %}{% block body %}
+{% extends 'base.html' %}{% block title %}{% if val == 'user_dh' %}Depthead Dashboard{% elif val == 'user_t' %}Teacher Dashboard{% elif val == 'user_stud' %}Student Dasdboard {% else %}Result Processing{% endif %}{% endblock %}{% block body %}
 <h1>user page</h1>
 
 <p>Welcome{{user}}</p>{% if val == 'user_dh'%} {% if messages %} {% for message in messages %}
@@ -8,6 +8,6 @@
 </div> {% endfor %} {% endif %}
 <p>DeptHead</p>
 {% elif val == 'user_t' %}
-<p>Teacher</p>{% else %}Student{% endif %}
+<p>Teacher</p>{% elif val == 'user_stud' %}Student{% else %} normal user {% endif %}
 
 <br> {% endblock %}

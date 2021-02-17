@@ -11,7 +11,9 @@ $(document).ready(function() {
     $('#allow').on('click', function() {
         return confirm("Please Check again!!");
     });
-
+    $('#remove_user').on('click', function() {
+        return confirm("Are you sure!!!");
+    });
     $('#icon').click(function() {
         if ($(window).on("click")) {
             $('#side-menu').slideToggle();

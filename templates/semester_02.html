@@ -2,39 +2,52 @@
 <h1>2nd Semester</h1>
 {% if messages %} {% for message in messages %} {%if "student" in message.tags %} {{message}} {%endif%} {% endfor %} {% endif %}
 
-
-<table class="table table-striped table-hover">
-    {% for stu in result_list %}
-    <tr>
-        <td>{{stu.Reg_No}} </td>
-        <td>{{stu.Name}} </td>
-        <td>{{stu.CSE_201_GP}} </td>
-        <td>{{stu.CSE_201_LG}} </td>
-        <td>{{stu.CSE_202_GP}} </td>
-        <td>{{stu.CSE_202_LG}} </td>
-        <td>{{stu.CSE_203_GP}} </td>
-        <td>{{stu.CSE_203_LG}} </td>
-        <td>{{stu.MATH_201_GP}} </td>
-        <td>{{stu.MATH_201_LG}} </td>
-        <td>{{stu.CHEM_201_GP}} </td>
-        <td>{{stu.CHEM_201_LG}} </td>
-        <td>{{stu.CHEM_202_GP}} </td>
-        <td>{{stu.CHEM_202_LG}} </td>
-        <td>{{stu.ENG_201_GP}} </td>
-        <td>{{stu.ENG_201_LG}} </td>
-        <td>{{stu.ENG_202_GP}} </td>
-        <td>{{stu.ENG_202_LG}} </td>
-        <td>{{stu.SS_201_GP}} </td>
-        <td>{{stu.SS_201_LG}} </td>
-        <td>{{stu.Sem_02_Total_Credit}} </td>
-        <td>{{stu.Sem_02_Grade_Point}} </td>
-        <td>{{stu.Sem_02_LG}} </td>
-        <td>{{stu.Total_Credit_Till_Sem_02}} </td>
-        <td>{{stu.Grade_Point_Till_Sem_02}} </td>
-        <td>{{stu.Letter_Grade_Till_Sem_02}} </td>
-    </tr>
-    {% endfor %}
-</table>
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead class="thead bg-info">
+            <tr>
+                <th>Registration No</th>
+                <th>Name</th>
+                <th>CSE 201<br>GP<br>LG</th>
+                <th>CSE 202<br>GP<br>LG</th>
+                <th>CSE 203<br>GP<br>LG</th>
+                <th>MATH 201<br>GP<br>LG</th>
+                <th>CHEM 201<br>GP<br>LG</th>
+                <th>CHEM 202<br>GP<br>LG</th>
+                <th>ENG 201<br>GP<br>LG</th>
+                <th>ENG 202<br>GP<br>LG</th>
+                <th>SS 201<br>GP<br>LG</th>
+                <th>Total Credit S2</th>
+                <th>Total Grade Point S2</th>
+                <th>LG S2</th>
+                <th>TC till S2</th>
+                <th>GP till S2</th>
+                <th>LG till S2</th>
+            </tr>
+        </thead>
+        {% for stu in result_list %}
+        <tr>
+            <td>{{stu.Reg_No}} </td>
+            <td>{{stu.Name}} </td>
+            <td>{{stu.CSE_201_GP}} <br>{{stu.CSE_201_LG}} </td>
+            <td>{{stu.CSE_202_GP}} <br>{{stu.CSE_202_LG}} </td>
+            <td>{{stu.CSE_203_GP}} <br>{{stu.CSE_203_LG}} </td>
+            <td>{{stu.MATH_201_GP}} <br>{{stu.MATH_201_LG}} </td>
+            <td>{{stu.CHEM_201_GP}} <br>{{stu.CHEM_201_LG}} </td>
+            <td>{{stu.CHEM_202_GP}} <br>{{stu.CHEM_202_LG}} </td>
+            <td>{{stu.ENG_201_GP}} <br>{{stu.ENG_201_LG}} </td>
+            <td>{{stu.ENG_202_GP}} <br>{{stu.ENG_202_LG}} </td>
+            <td>{{stu.SS_201_GP}} <br>{{stu.SS_201_LG}} </td>
+            <td>{{stu.Sem_02_Total_Credit}} </td>
+            <td>{{stu.Sem_02_Grade_Point}} </td>
+            <td>{{stu.Sem_02_LG}} </td>
+            <td>{{stu.Total_Credit_Till_Sem_02}} </td>
+            <td>{{stu.Grade_Point_Till_Sem_02}} </td>
+            <td>{{stu.Letter_Grade_Till_Sem_02}} </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 <br>
 <br>
 <form action="semester_02" method="POST">

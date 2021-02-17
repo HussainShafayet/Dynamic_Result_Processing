@@ -11,7 +11,10 @@
 </head>
 
 <body>
-
+    <div class="jumbotron text-center" style="margin-bottom:0;background-color:darkgray">
+        <h1>Dynamic Result Processing</h1>
+        <p>This is a Django web based software!</p>
+    </div>
     <!-- <nav>
         <div id="logo">
             <h3>Result Processing</h3>
@@ -108,88 +111,90 @@
         </div>
     </div> -->
     <!-- demo -->
-    <nav class="navbar navbar-expand-lg navbar-light  " style="background-color: #3f72af;">
-        <a class="navbar-brand" href="#">Result Processing</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+    <div style="position:sticky;top:0;z-index:1">
+        <nav class="navbar navbar-expand-lg navbar-light  " style="background-color: #3f72af; ">
+            <a class="navbar-brand" href="#">Result Processing</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                {% if user.is_depthead %}
-                <li class="nav-item ">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'users' %}">Users</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'student_info' %}">Student Info</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'teacher_info'%}">Teacher Info</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'show_course' %}">Course List</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'results' %}">Result</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'find_batch' %}">Batch Info</a>
-                </li>
-                {% elif user.is_teacher %}
-                <li class="nav-item"><a class="nav-link" href="{% url 'teacher_dashboard' %}">Home</a></li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'assign_course' %}">Courses</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'assign_course_result' %}">Course Result</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">contact</a>
-                </li>
-                {% elif user.is_student %}
-                <li class="nav-item"><a class="nav-link" href="{% url 'student_dashboard' %}">Home</a></li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'student_result' %}">Result</a>
-                </li>
-                {% elif user.is_student == False and user.is_teacher == False and user.is_depthead == False%}
-                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="">contact</a></li>
-                {% else %}
-                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
-                <li class="nav-item">
-                    <a class="nav-link" href="">About</a>
-                </li> {% endif %}
-            </ul>
-            <div id="prof">
-                <ul>
-                    {% if user.is_authenticated %}{% if user.is_depthead %}
-
-                    <li class="pro"><img id="icon" src="{{user.depthead.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer"></li>{% elif user.is_teacher %}
-                    <li class="pro"><img id="icon" src="{{user.teacher.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer"></li>{% elif user.is_student %}
-                    <li class="pro"><img id="icon" src="{{user.student.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer"></li>
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                    {% if user.is_depthead %}
+                    <li class="nav-item ">
+                        <a class="nav-link" href="{% url 'depthead_dashboard' %}">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'users' %}">Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'student_info' %}">Student Info</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'teacher_info'%}">Teacher Info</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'show_course' %}">Course List</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'results' %}">Result</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'find_batch' %}">Batch Info</a>
+                    </li>
+                    {% elif user.is_teacher %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'teacher_dashboard' %}">Home</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'assign_course' %}">Courses</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'assign_course_result' %}">Course Result</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">contact</a>
+                    </li>
+                    {% elif user.is_student %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'student_dashboard' %}">Home</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'student_result' %}">Result</a>
+                    </li>
+                    {% elif user.is_student == False and user.is_teacher == False and user.is_depthead == False%}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="">contact</a></li>
                     {% else %}
-                    <li>
-                        <a href="{% url 'logout' %}">logout</a>
-                    </li>
-                    {% endif %} {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
                     <li class="nav-item">
-                        <a class="nav-link" onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Registration</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">Login</a>
-                    </li>
-                    {% endif %}
+                        <a class="nav-link" href="">About</a>
+                    </li> {% endif %}
                 </ul>
-            </div>
-            <!-- <form class="form-inline my-2 my-lg-0">
+                <div id="prof">
+                    <ul>
+                        {% if user.is_authenticated %}{% if user.is_depthead %}
+
+                        <li class="pro"><img id="icon" src="{{user.depthead.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer"></li>{% elif user.is_teacher %}
+                        <li class="pro"><img id="icon" src="{{user.teacher.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer"></li>{% elif user.is_student %}
+                        <li class="pro"><img id="icon" src="{{user.student.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer"></li>
+                        {% else %}
+                        <li>
+                            <a href="{% url 'logout' %}">logout</a>
+                        </li>
+                        {% endif %} {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link " onclick="document.getElementById('id01').style.display='block'" style="width:auto;cursor:pointer;">Registration</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <!-- <form class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form> -->
-        </div>
-    </nav>
+            </div>
+        </nav>
+    </div>
     <div id="side-menu">
         <ul>
             <li><a href="{% url 'profile' %}">profile</a></li>
@@ -210,8 +215,57 @@
 
         </div>
     </div>
-    {% block body %}{% endblock %}
+    <!-- Body -->
+    <div style="margin-top:30px">
+        <div class="row ">
+            <div class="col-sm-2" style="border: 1px solid darkgray; height:300px;">
+                <h3>Some Links</h3>
+                <p>Lorem ipsum dolor sit ame.</p>
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link " href="#">Link</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#">Disabled</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-8" style="border: 1px solid darkgray; min-height:800px">
 
+                {% block body %}{% endblock %}
+
+            </div>
+            <div class="col-sm-2">
+                <h3>Some Links</h3>
+                <p>Lorem ipsum dolor sit ame.</p>
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link " href="#">Link</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#">Disabled</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <div class="jumbotron text-center" style="margin-bottom:0;margin-top: 100px;">
+        <p>Footer</p>
+    </div>
+    <!-- Javascript -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/bf12ee2437.js " crossorigin="anonymous "></script>
@@ -219,16 +273,6 @@
     <script src="{% static 'Js/Rp.js' %} "></script>
     {% block js_script %}{% endblock %}
 
-
-
-
 </body>
-
-
-
-
-
-
-
 
 </html>
