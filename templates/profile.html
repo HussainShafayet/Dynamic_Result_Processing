@@ -1,105 +1,160 @@
-{% extends 'base.html' %}{% load static %}{% load crispy_forms_tags %}{% block body %}
-<div class="pro-dashboard">
-    <div class="pro-header"></div>
-    <div class="pro-img">
-        <img src="{{profile_value.image.url }}" alt="image" width="180px" height="180px" style="border-radius: 50%; align-items:center">
+{% extends 'base.html' %}{% load static %}{% load crispy_forms_tags %} {%block style %}
+<style>
+    .card1 {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        max-width: 800px;
+        margin: auto;
+        text-align: center;
+        font-family: arial;
+    }
+    
+    .title1 {
+        color: grey;
+        font-size: 18px;
+    }
+    
+    .test2 button {
+        border: none;
+        outline: 0;
+        display: inline-block;
+        padding: 8px;
+        color: white;
+        background-color: #000;
+        text-align: center;
+        cursor: pointer;
+        width: 100%;
+        font-size: 18px;
+    }
+    
+    .test1 {
+        background-color: #71c9ce;
+        text-align: start;
+        display: flex;
+        margin-bottom: 20px;
+    }
+    
+    .test1 a {
+        text-decoration: none;
+        padding: 8px;
+        color: black;
+    }
+    
+    button:hover,
+    a:hover {
+        opacity: 0.7;
+    }
+</style>
 
-    </div>
-    <div class="but-div">
-        <a href="{% url 'profile' %}">About me</a>
-        <a href="{% url 'edit_profile' %}">Edit Profile</a>
-        <a href="{% url 'password' %}">Change password</a>
-    </div>
-
-    {% if messages %} {% for message in messages %}
-    <div class="alert alert-{{message.tags}}" role="alert" id="profile_message">
-        <button type="button" class="close" data-dismiss="alert">X</button> {{message}}
-    </div>
-
-    {% endfor %} {% endif %} {% if profile_details == 'profile_details' %}
-    <div class="pro-value">
-
-        <table>
-            {% if profile_value.user.is_depthead %}
-            <tr>
-                <td>Name</td>
-                <td>{{user.first_name}} {{user.last_name}}</td>
-            </tr>
-            <tr>
-                <td>Username: </td>
-                <td>{{user.username}}</td>
-            </tr>
-            <tr>
-                <td>Department: </td>
-                <td>{{profile_value.dept}}</td>
-            </tr>
-            <tr>
-                <td>Designation: </td>
-                <td>{{profile_value.designation}}</td>
-            </tr>
-            {% elif profile_value.user.is_student %}
-            <tr>
-                <td>Name</td>
-                <td>{{user.first_name}} {{user.last_name}}</td>
-            </tr>
-            <tr>
-                <td>Username </td>
-                <td>{{user.username}}</td>
-            </tr>
-            <tr>
-                <td>Department </td>
-                <td>{{profile_value.dept}}</td>
-            </tr>
-            <tr>
-                <td>Batch</td>
-                <td>{{profile_value.batch}}</td>
-            </tr>
-            <tr>
-                <td>Session</td>
-                <td>{{profile_value.session}}</td>
-            </tr>
-            <tr>
-                <td>Registration No</td>
-                <td>{{profile_value.reg_no}}</td>
-            </tr>
-            <tr>
-                <td>Mobile</td>
-                <td>{{profile_value.mobile}}</td>
-            </tr>
-            <tr>
-                <td>Gender</td>
-                <td>{{profile_value.gender}}</td>
-            </tr>
-            {% else %}
-            <tr>
-                <td>Name</td>
-                <td>{{user.first_name}} {{user.last_name}}</td>
-            </tr>
-            <tr>
-                <td>Username: </td>
-                <td>{{user.username}}</td>
-            </tr>
-            <tr>
-                <td>Designation: </td>
-                <td>{{profile_value.designation}}</td>
-            </tr>
-            <tr>
-                <td>Teaching field</td>
-                <td>{{profile_value.teach_fields}}</td>
-            </tr>
-            <tr>
-                <td>Contact no</td>
-                <td>{{profile_value.contact}}</td>
-            </tr>
+{%endblock%} {% block body %}
+<div class="container">
+    <h2 style="text-align:center">User Profile Card</h2>
+    <div class="card1">
+        <div style="background-color: rgb(92, 160, 137); ">
+            <img src="{{profile_value.image.url }}" alt="Profile picture" width="180px" height="180px" style="border-radius: 50%;z-index:1;">
+        </div>
+        <div class="test1 ">
+            <a href="{% url 'profile' %} ">About me</a>
+            <a class=" " href="{% url 'edit_profile' profile_value.user.id %} ">Edit Profile</a>
+            <a class=" " href="{% url 'password' %} ">Change password</a>
+        </div>
+        <div style="border: 1px solid red; height:50px ">
+            {% if messages %} {% for message in messages %}
+            <div class="alert alert-{{message.tags}} " role="alert " id="profile_message ">
+                <button type="button " class="close " data-dismiss="alert ">X</button> {{message}}
+            </div>
+            {% endfor %} {% endif %}
+        </div>
+        <!-- Profile_Details -->
+        <div class=" "> {% if profile_details == 'profile_details' %}
+            <div class=" ">
+                <table class="table ">
+                    {% if profile_value.user.is_depthead %}
+                    <tr>
+                        <td>Name</td>
+                        <td>{{user.first_name}} {{user.last_name}}</td>
+                    </tr>
+                    <tr>
+                        <td>Username: </td>
+                        <td>{{user.username}}</td>
+                    </tr>
+                    <tr>
+                        <td>Department: </td>
+                        <td>{{profile_value.dept}}</td>
+                    </tr>
+                    <tr>
+                        <td>Designation: </td>
+                        <td>{{profile_value.designation}}</td>
+                    </tr>
+                    {% elif profile_value.user.is_student %}
+                    <tr>
+                        <td>Name</td>
+                        <td>{{user.first_name}} {{user.last_name}}</td>
+                    </tr>
+                    <tr>
+                        <td>Username </td>
+                        <td>{{user.username}}</td>
+                    </tr>
+                    <tr>
+                        <td>Department </td>
+                        <td>{{profile_value.dept}}</td>
+                    </tr>
+                    <tr>
+                        <td>Batch</td>
+                        <td>{{profile_value.batch}}</td>
+                    </tr>
+                    <tr>
+                        <td>Session</td>
+                        <td>{{profile_value.session}}</td>
+                    </tr>
+                    <tr>
+                        <td>Registration No</td>
+                        <td>{{profile_value.reg_no}}</td>
+                    </tr>
+                    <tr>
+                        <td>Mobile</td>
+                        <td>{{profile_value.mobile}}</td>
+                    </tr>
+                    <tr>
+                        <td>Gender</td>
+                        <td>{{profile_value.gender}}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td>Name</td>
+                        <td>{{user.first_name}} {{user.last_name}}</td>
+                    </tr>
+                    <tr>
+                        <td>Username: </td>
+                        <td>{{user.username}}</td>
+                    </tr>
+                    <tr>
+                        <td>Designation: </td>
+                        <td>{{profile_value.designation}}</td>
+                    </tr>
+                    <tr>
+                        <td>Teaching field</td>
+                        <td>{{profile_value.teach_fields}}</td>
+                    </tr>
+                    <tr>
+                        <td>Contact no</td>
+                        <td>{{profile_value.contact}}</td>
+                    </tr>
+                    {% endif %}
+                </table>
+            </div>{% else %}
+            <div class="row ">
+                <div class="col "></div>
+                <div class="col-mid-auto " style="text-align: start; ">
+                    <form action=" " method="POST ">
+                        {% csrf_token %}{{form|crispy}}{{form2|crispy}}
+                        <input type="submit " class="btn alert-primary " value="Save ">
+                    </form>
+                </div>
+                <div class="col "></div>
+            </div>
             {% endif %}
-        </table>
-    </div>{% else %}
-    <div class="pro-edtform">
-        <form action="" method="POST">
-            {% csrf_token %}{{form|crispy}}
-            <input style="width:100px;margin:5px auto;position:absolute" type="submit" class="btn alert-primary " value="Save ">
-        </form>
+        </div>
     </div>
-    {% endif %}
 </div>
+
 {% endblock %}

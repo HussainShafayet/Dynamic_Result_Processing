@@ -397,10 +397,11 @@
     /*Profile*/
     
     .pro-dashboard {
-        width: 800px;
-        height: 700px;
+        max-width: 800px;
+        min-height: 700px;
         margin: 0px auto;
         margin-top: 100px;
+        margin-bottom: 20px;
         position: relative;
         border: 2px solid #2ecc71;
         background-color: rgb(151, 183, 241);
@@ -463,10 +464,11 @@
         display: flex;
     }
     
-    .but-div a {
-        color: black;
+    .profile a {
+        color: rgb(190, 29, 29);
         display: flex;
         justify-content: start;
+        flex-direction: row;
         align-items: center;
         text-decoration: none;
         padding: 5px;

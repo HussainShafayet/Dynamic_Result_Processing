@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse,JsonResponse
 from django.contrib import messages
 #User Reg,login and Logout
-from .forms import (TeacherRegForm, StudentRegForm,Profile_edit_Form)
+from .forms import (TeacherRegForm, StudentRegForm,Profile_edit_Form,Depthead_profile_edit_form,Teacher_profile_edit_form,Student_profile_edit_form)
 from .models import (User, Teacher, Student, Depthead)
 from depthead.models import (Dept,Batch,Session)
 from django.contrib.auth.forms import AuthenticationForm
@@ -19,7 +19,7 @@ from django.utils.encoding import force_bytes,force_text
 from .tokens import account_activation_token
 from django.core.mail import EmailMessage
 #Decorators
-from depthead.decorators import unauthenticated_user
+from depthead.decorators import unauthenticated_user,login_required
 
 #My views here.
 def home(request):
@@ -213,7 +213,7 @@ class ResetPasswordConfirm(PasswordResetConfirmView):
 class ResetPasswordComplete(PasswordResetCompleteView):
     template_name = 'password_reset_complete.html'
 
-
+@login_required
 def profile(request):
     current_user = request.user
     if current_user.is_depthead:
@@ -250,48 +250,94 @@ def profile(request):
     else:
         return HttpResponse('You are not authorised user!')
 
-
-def profile_edit(request):
+@login_required
+def profile_edit(request,id):
     if request.method == 'POST':
+        current_user = User.objects.get(id=id)
         form = Profile_edit_Form(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Profile update successfully!')
-            return redirect('profile')
-        else:
-            messages.warning(request, 'Try again!!!')
-            if request.user.is_depthead:
+        if current_user.is_depthead:
+            profile = current_user.depthead
+            form2=Depthead_profile_edit_form(request.POST,instance=profile)
+            if form.is_valid() and form2.is_valid():
+                form.save()
+                form2.save()
+                messages.success(request, 'Profile update successfully!')
+                return redirect('profile')
+            else:
+                messages.warning(request, 'Try again!!!')
                 profile_value = Depthead.objects.get(user=request.user)
                 context = {
                     'form': form,
+                    'form2':form2,
                     'profile_value':profile_value,
                 }
-            return render(request,'profile.html',context)
+            return render(request, 'profile.html', context)
+        elif current_user.is_teacher:
+            profile = current_user.teacher
+            form2 = Teacher_profile_edit_form(request.POST, instance=profile)
+            if form.is_valid() and form2.is_valid():
+                form.save()
+                form2.save()
+                messages.success(request, 'Profile update successfully!')
+                return redirect('profile')
+            else:
+                profile_value = Teacher.objects.get(user=request.user)
+                context = {
+                    'form': form,
+                    'form2': form2,
+                    'profile_value': profile_value,
+                }
+            return render(request, 'profile.html', context)
+        else:
+            profile = current_user.student
+            form2 = Student_profile_edit_form(request.POST, instance=profile)
+            if form.is_valid() and form2.is_valid():
+                form.save()
+                form2.save()
+                messages.success(request, 'Profile update successfully!')
+                return redirect('profile')
+            else:
+                profile_value = Student.objects.get(user=request.user)
+                context = {
+                    'form': form,
+                    'form2': form2,
+                    'profile_value': profile_value,
+                }
+            return render(request, 'profile.html', context)
     else:
-        current_user = request.user
+        current_user = User.objects.get(id=id)
         if current_user.is_depthead:
+            profile=current_user.depthead
             form = Profile_edit_Form(instance=current_user)
+            form2=Depthead_profile_edit_form(instance=profile)
             profile_value = Depthead.objects.get(user=current_user)
             context = {
                 'form': form,
+                'form2': form2,
                 'profile_value':profile_value
             }
         elif current_user.is_teacher:
+            profile=current_user.teacher
             form = Profile_edit_Form(instance=current_user)
+            form2=Teacher_profile_edit_form(instance=profile)
             profile_value = Teacher.objects.get(user=current_user)
             context = {
                 'form': form,
+                'form2': form2,
                 'profile_value': profile_value
             }
         elif current_user.is_student:
+            profile=current_user.student
             form = Profile_edit_Form(instance=current_user)
+            form2=Student_profile_edit_form(instance=profile)
             profile_value = Student.objects.get(user=current_user)
             context = {
                 'form': form,
+                'form2': form2,
                 'profile_value': profile_value
             }
     return render(request, 'profile.html', context)
-
+@login_required
 def password_change(request):
     if request.method == 'POST':
         form = PasswordChangeForm(data=request.POST, user=request.user)

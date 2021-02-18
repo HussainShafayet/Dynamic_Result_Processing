@@ -175,3 +175,19 @@ class Profile_edit_Form(forms.ModelForm):
         fields = [
             'first_name','last_name','username','email',
         ]
+class Depthead_profile_edit_form(forms.ModelForm):
+    class Meta:
+        model = Depthead
+        exclude = ['user','image']
+
+
+class Teacher_profile_edit_form(forms.ModelForm):
+    class Meta:
+        model = Teacher
+        exclude = ['user', 'image']
+
+
+class Student_profile_edit_form(forms.ModelForm):
+    class Meta:
+        model = Student
+        exclude = ['user', 'image']

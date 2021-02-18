@@ -1,5 +1,45 @@
 {% extends 'base.html' %}{% load static%} {% block title %} {% if val == 'user_val' %}Users{% elif val == 'std_info' %}Student Info{% elif val == 'teach_info' %}Teacher Info{% elif val == 'userdetails' %}{{user_det.first_name}}'s details{% endif %}{%endblock%}
-{%block body%}
+{%block style %} {% if val == 'userdetails' %}
+<style>
+    .card1 {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        max-width: 800px;
+        margin: auto;
+        text-align: center;
+        font-family: arial;
+    }
+    
+    .title1 {
+        color: grey;
+        font-size: 18px;
+    }
+    
+    .test2 button {
+        border: none;
+        outline: 0;
+        display: inline-block;
+        padding: 8px;
+        color: white;
+        background-color: #000;
+        text-align: center;
+        cursor: pointer;
+        width: 100%;
+        font-size: 18px;
+    }
+    
+    .test1 a {
+        text-decoration: none;
+        font-size: 22px;
+        color: black;
+    }
+    
+    button:hover,
+    a:hover {
+        opacity: 0.7;
+    }
+</style>
+
+{%endif%}{%endblock%} {%block body%}
 
 <!-- Users info -->
 {% if val == 'user_val' %} {% load static%}
@@ -87,7 +127,134 @@
 
 <!--Users Details -->
 {% elif val == 'userdetails' %}
-<div class="row" id="userdetdiv">
+<div class="container">
+    <h2 style="text-align:center">{{user_det.first_name}} Details</h2>
+    <div class="card1">
+        <div style="background-color: rgb(92, 160, 137); margin-bottom:10px">{% if user_det.is_none %}<img src="{{user_det.student.image.url}}" alt="image" width="150px" height="150px" style="border-radius: 50%;z-index:1;">{% elif user_det.is_student %}<img src="{{user_det.student.image.url}}" alt="image" width="150px"
+                height="150px" style="border-radius: 50%; z-index:1"> {% else %}<img src="{{user_det.teacher.image.url}}" alt="image" width="150px" height="150px" style="border-radius: 50%;z-index: 1;">{%endif%}
+        </div>
+        <div style="margin-bottom:  20px;" class="test">
+            <h4>{{user_det.first_name}} {{user_det.last_name}}</h4>
+            <p style="font-size: large;">{{user_det.teacher.designation}}</p>
+            <table class="table ">
+                <tr>
+                    <td>Name</td>
+                    <td>{{user_det.first_name}} {{user_det.last_name}}</td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td>{{user_det.email}}</td>
+                </tr>{% if group.name == 'None' %}{% if user_det.is_none %}
+                <tr>
+                    <td>Department</td>
+                    <td>{{user_det.student.dept}}</td>
+                </tr>
+                <tr>
+                    <td>Batch</td>
+                    <td>{{user_det.student.batch}}</td>
+                </tr>
+                <tr>
+                    <td>Session</td>
+                    <td>{{user_det.student.session}}</td>
+                </tr>
+                <tr>
+                    <td>Registration</td>
+                    <td>{{user_det.student.reg_no}}</td>
+                </tr>
+                <tr>
+                    <td>Contact</td>
+                    <td>{{user_det.student.mobile}}</td>
+                </tr>
+                <tr>
+                    <td>Gender</td>
+                    <td>{{user_det.student.gender}}</td>
+                </tr>
+                {%else%}
+                <tr>
+                    <td>Designation</td>
+                    <td>{{user_det.teacher.designation}}</td>
+                </tr>
+                <tr>
+                    <td>Contact</td>
+                    <td>{{user_det.teacher.contact}}</td>
+                </tr>
+                <tr>
+                    <td>Teaching Field</td>
+                    <td>{{user_det.teacher.teach_fields}}</td>
+                </tr>
+                {%endif%} {% elif group.name == 'Teacher'%}
+                <tr>
+                    <td>Designation</td>
+                    <td>{{user_det.teacher.designation}}</td>
+                </tr>
+                <tr>
+                    <td>Contact</td>
+                    <td>{{user_det.teacher.contact}}</td>
+                </tr>
+                <tr>
+                    <td>Teaching Field</td>
+                    <td>{{user_det.teacher.teach_fields}}</td>
+                </tr>
+                {% elif group.name == 'Student' %}
+                <tr>
+                    <td>Department</td>
+                    <td>{{user_det.student.dept}}</td>
+                </tr>
+                <tr>
+                    <td>Batch</td>
+                    <td>{{user_det.student.batch}}</td>
+                </tr>
+                <tr>
+                    <td>Session</td>
+                    <td>{{user_det.student.session}}</td>
+                </tr>
+                <tr>
+                    <td>Registration</td>
+                    <td>{{user_det.student.reg_no}}</td>
+                </tr>
+                <tr>
+                    <td>Contact</td>
+                    <td>{{user_det.student.mobile}}</td>
+                </tr>
+                <tr>
+                    <td>Gender</td>
+                    <td>{{user_det.student.gender}}</td>
+                </tr>
+                {%endif%}
+            </table>
+            {% if 'None' in group.name %}
+            <form action="{% url 'allowuser' user_det.id %}" method="POST">
+                {% csrf_token %}
+                <span style="font-weight:bold;">Allow user as:</span>
+                <!-- <input type="radio" id="teacher" name="group" value="Teacher" required>
+                <label for="teacher">Teacher</label>
+                <input type="radio" id="student" name="group" value="Student" required>
+                <label for="student">Student</label> --><br>
+
+                <label class="btn ">
+                <input type="radio" name="group" id="teacher" value="Teacher" required autocomplete="off"> Teacher
+                </label>
+                <label class="btn">
+                <input type="radio" name="group" id="student" value="Student" required autocomplete="off"> Teacher
+                </label><br>
+                <input type="submit" class="btn btn-primary" value="allow" id="allow">
+                <a class="btn btn-danger" href="{% url 'delete_user' user_det.id %}" id="remove_user">Delete user</a>
+            </form>
+            {% endif %}
+        </div>
+        <!-- Contact -->
+        <div>
+            <p id="">Any query? Send messsage <a href="">Here</a></p>
+            <form action="">
+                <label for="">Name</label>
+                <input type="text" name="name" placeholder="name">
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<!-- <div class="row" id="userdetdiv">
     <div class="col-2"></div>
     <div class="col-8">
         <div class="row">
@@ -133,12 +300,6 @@
                     <label for="teacher">Teacher</label>
                     <input type="radio" id="student" name="group" value="Student" required>
                     <label for="student">Student</label><br>
-                    <!--
-                    <select name="group" id="" required>
-                <option value="">--select group--</option>
-                    <option value="Teachers">Teacher</option>
-                    <option value="Students">Student</option>
-                </select>-->
                     <input type="submit" class="btn btn-primary" value="allow" id="allow">
                     <a class="btn btn-danger" href="{% url 'delete_user' user_det.id %}" id="remove_user">Delete user</a>
                 </form>
@@ -152,7 +313,7 @@
     </div>
     <div class="col-2"></div>
 </div>
-
+ -->
 <!--Student Info-->
 {% elif val == 'std_info' %}
 <h3 class="text-center">Students</h3>

@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404
 @login_required
 @allowed_user(allowed_roles=['Teacher'])
 def teacher_dashboard(request):
-    return render(request, 'user_dashboard.html')
+    return render(request, 'user_dashboard.html',{'val':'user_t'})
 
 
 @login_required
