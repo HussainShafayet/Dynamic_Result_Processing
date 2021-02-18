@@ -338,38 +338,69 @@ def profile_edit(request,id):
             }
     return render(request, 'profile.html', context)
 @login_required
-def password_change(request):
+def password_change(request,id):
     if request.method == 'POST':
-        form = PasswordChangeForm(data=request.POST, user=request.user)
-        if form.is_valid():
-            form.save()
+        current_user = User.objects.get(id=id)
+        password_form = PasswordChangeForm(data=request.POST, user=current_user)
+        if password_form.is_valid():
+            password_form.save()
             messages.success(request, 'Password change successfully!')
-            update_session_auth_hash(request, form.user)
+            update_session_auth_hash(request, password_form.user)
             return redirect('profile')
         else:
-            messages.warning(request, 'Try again')
-            return render(request, 'profile.html', {'form':form})
+            messages.warning(request, 'Try again!')
+            if current_user.is_depthead:
+                profile_value=Depthead.objects.get(user=current_user)
+                val='password_change'
+                context={
+                    'password_form':password_form,
+                    'profile_value':profile_value,
+                    'val':val,
+                }
+            elif current_user.is_teacher:
+                profile_value = Teacher.objects.get(user=current_user)
+                val = 'password_change'
+                context = {
+                    'password_form': password_form,
+                    'profile_value': profile_value,
+                    'val': val,
+                }
+            else:
+                profile_value = Student.objects.get(user=current_user)
+                val = 'password_change'
+                context = {
+                    'password_form': password_form,
+                    'profile_value': profile_value,
+                    'val': val,
+                }
+        return render(request, 'profile.html', context)
     else:
-        current_user = request.user
+        current_user = User.objects.get(id=id)
         if current_user.is_depthead:
             profile_value=Depthead.objects.get(user=current_user)
-            form = PasswordChangeForm(user=request.user)
+            password_form = PasswordChangeForm(user=current_user)
+            val='password_change'
             context = {
-                'form': form,
+                'password_form': password_form,
                 'profile_value':profile_value,
+                'val':val,
             }
         elif current_user.is_teacher:
             profile_value = Teacher.objects.get(user=current_user)
-            form = PasswordChangeForm(user=request.user)
+            password_form = PasswordChangeForm(user=current_user)
+            val = 'password_change'
             context = {
-                'form': form,
+                'password_form': password_form,
                 'profile_value': profile_value,
+                'val': val,
             }
         elif current_user.is_student:
             profile_value = Student.objects.get(user=current_user)
-            form = PasswordChangeForm(user=request.user)
+            password_form = PasswordChangeForm(user=current_user)
+            val = 'password_change'
             context = {
-                'form': form,
+                'password_form': password_form,
                 'profile_value': profile_value,
+                'val': val,
             }
     return render(request, 'profile.html', context)
