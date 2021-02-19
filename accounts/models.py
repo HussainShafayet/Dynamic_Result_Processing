@@ -16,7 +16,7 @@ class Depthead(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     dept = models.CharField(max_length=20)
     designation = models.CharField(max_length=20)
-    image = models.ImageField(upload_to='images/', default='images/profile.png')
+    image = models.ImageField(upload_to='images/profile', default='images/profile.png')
 
     def __str__(self):
         return self.user.username
@@ -25,7 +25,7 @@ class Teacher(models.Model):
     contact = models.CharField(max_length=15)
     designation = models.CharField(max_length=20)
     teach_fields = models.CharField(max_length=50)
-    image = models.ImageField(upload_to='images/', default='images/profile.png')
+    image = models.ImageField(upload_to='images/profile', default='images/profile.png')
 
     def __str__(self):
         return self.user.first_name+' '+self.user.last_name
@@ -43,7 +43,7 @@ class Student(models.Model):
     reg_no = models.IntegerField()
     mobile = models.CharField(max_length=15)
     gender = models.CharField(max_length=10, choices=Gender)
-    image = models.ImageField(upload_to='images/', default='images/profile.png')
+    image = models.ImageField(upload_to='images/profile', default='images/profile.png')
 
     def __str__(self):
         return self.user.first_name+' '+self.user.last_name

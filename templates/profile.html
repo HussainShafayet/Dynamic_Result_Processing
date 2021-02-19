@@ -161,7 +161,7 @@
         </div>{% elif val == 'password_change' %}
         <div class="row " style="margin-top: 30px; ">
             <div class="col "></div>
-            <div class="col-mid-auto " style="text-align: start; ">
+            <div class="col-mid-auto " style="text-align: start; margin-bottom:20px">
                 <form action=" " method="POST">
                     {% csrf_token %}{{password_form|crispy}}
                     <button type="submit" class="btn btn-primary mb-2">Save</button>
@@ -172,7 +172,7 @@
         {% else %}
         <div class="row " style="margin-top: 30px; ">
             <div class="col "></div>
-            <div class="col-mid-auto " style="text-align: start;">
+            <div class="col-mid-auto " style="text-align: start; margin-bottom:20px">
                 <form action=" " method="POST">
                     {% csrf_token %}{{form|crispy}}{{form2|crispy}}
                     <button type="submit" class="btn btn-primary mb-2">Save</button>
