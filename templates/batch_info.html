@@ -50,14 +50,15 @@
         border-collapse: collapse;
     }
 </style>
-<table>
+<table class="table">
     {% for stu in student_list.students_set.all %}
     <tr>
         <td>{{stu.Reg_No}}</td>
         <td>{{stu.Name}}</td>
-        <td>{{stu.Gender}}</td>
         <td>{{stu.Dept}}</td>
+        <td>{{stu.session}}</td>
         <td>{{stu.Phone}}</td>
+        <td>{{stu.Gender}}</td>
     </tr>
     {% endfor %}
 </table>

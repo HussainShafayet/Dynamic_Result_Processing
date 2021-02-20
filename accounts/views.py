@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse,JsonResponse
 from django.contrib import messages
 #User Reg,login and Logout
-from .forms import (TeacherRegForm, StudentRegForm,Profile_edit_Form,Depthead_profile_edit_form,Teacher_profile_edit_form,Student_profile_edit_form)
+from .forms import (DeptheadRegForm,TeacherRegForm, StudentRegForm,Profile_edit_Form,Depthead_profile_edit_form,Teacher_profile_edit_form,Student_profile_edit_form)
 from .models import (User, Teacher, Student, Depthead)
 from depthead.models import (Dept,Batch,Session)
 from django.contrib.auth.forms import AuthenticationForm
@@ -26,6 +26,53 @@ def home(request):
     return render(request, 'user_dashboard.html')
 
 #User Registration and Activation
+
+
+def depthead_registraion(request):
+    if request.method == 'POST':
+        form = DeptheadRegForm(request.POST, request.FILES)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+            group = Group.objects.get(name='None')
+            user.groups.add(group)
+            current_site = get_current_site(request)
+            mail_subject = 'Activate your account.'
+            message = render_to_string('acc_active_email.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': account_activation_token.make_token(user),
+            })
+            to_email = form.cleaned_data.get('email')
+            email = EmailMessage(
+                mail_subject, message, to=[to_email]
+            )
+            email.send()
+            val = 1
+            context = {
+                'val': val
+            }
+            return render(request, 'active_account.html', context)
+        else:
+            val = 'depthead_reg'
+            context = {
+                'form': form,
+                'val': val,
+            }
+            return render(request, 'registration.html', context)
+    else:
+        form = DeptheadRegForm()
+        val = 'depthead_reg'
+        context = {
+            'form': form,
+            'val': val,
+        }
+    return render(request, 'registration.html', context)
+
+
+
 @unauthenticated_user
 def teacher_registration(request):
     if request.method == 'POST':

@@ -14,8 +14,8 @@ class User(AbstractUser):
 
 class Depthead(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    dept = models.CharField(max_length=20)
-    designation = models.CharField(max_length=20)
+    dept = models.ForeignKey(Dept, on_delete=models.CASCADE,default=1)
+    designation = models.CharField(max_length=100)
     image = models.ImageField(upload_to='images/profile', default='images/profile.png')
 
     def __str__(self):

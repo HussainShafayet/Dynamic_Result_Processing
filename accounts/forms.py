@@ -5,6 +5,78 @@ from .models import User,Teacher,Student,Depthead
 from django.db import transaction
 from depthead.models import Dept, Batch, Session
 
+
+class DeptheadRegForm(UserCreationForm):
+    dept = forms.ModelChoiceField(queryset=Dept.objects.all(
+    ), label='Department', empty_label="Choose your Department")
+    designation = forms.CharField(max_length=20, required=True)
+    image = forms.ImageField(required=True)
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = [
+            'first_name', 'last_name', 'username', 'email', 'password1', 'password2'
+        ]
+        labels = {
+            'email': 'Email*'
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['dept'].queryset = Dept.objects.none()
+
+    def __init__(self, *args, **kwargs):
+        super(DeptheadRegForm, self).__init__(*args, **kwargs)
+        self.fields['first_name'].widget.attrs.update({
+            'required': True,
+            'autofocus': True,
+            'placeholder': 'first name'
+        })
+        self.fields['last_name'].widget.attrs.update({
+            'required': True,
+            'placeholder': 'last name'
+        })
+        self.fields['username'].widget.attrs.update({
+            'required': True,
+            'placeholder': 'username'
+        })
+        self.fields['email'].widget.attrs.update({
+            'required': True,
+            'placeholder': '***@gmail.com'
+        })
+        self.fields['password1'].widget.attrs.update({
+            'required': True,
+            'placeholder': '********'
+        })
+        self.fields['password2'].widget.attrs.update({
+            'required': True,
+            'placeholder': '********'
+        })
+        self.fields['designation'].widget.attrs.update({
+            'required': True,
+            'placeholder': 'designation'
+        })
+
+        self.fields['dept'].queryset = Dept.objects.none()
+        if 'dept' in self.data:
+            self.fields['dept'].queryset = Dept.objects.all()
+        elif self.instance.pk:
+            self.fields['dept'].queryset = Dept.objects.all().filter(
+                pk=self.instance.dept.pk)
+
+    @transaction.atomic
+    def save(self, *args, **kwargs):
+        user = super().save(commit=False)
+        user.is_none=True
+        user.save()
+        depthead=Depthead.objects.create(user=user)
+        depthead.dept = self.cleaned_data.get('dept')
+        depthead.designation = self.cleaned_data.get('designation')
+        depthead.image = self.cleaned_data.get('image')
+        depthead.save()
+        return user
+
+
 class TeacherRegForm(UserCreationForm):
     contact = forms.CharField(max_length=15,required=True)
     designation = forms.CharField(max_length=20,required=True)
