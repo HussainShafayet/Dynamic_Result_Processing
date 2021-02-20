@@ -1,7 +1,20 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Course_list,Batch,Student_Sessions,Session
+from .models import Course_list, Batch, Student_Sessions, Session, Syllabus, Course_Semester_List
 
+
+class AddSyllabus(forms.ModelForm):
+    class Meta():
+        model = Syllabus
+        fields = '__all__'
+
+
+class Add_Semester(forms.ModelForm):
+    class Meta():
+        model = Course_Semester_List
+        fields = [
+            'Semester'
+        ]
 
 class AddCourse(forms.ModelForm):
     class Meta():

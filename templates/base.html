@@ -142,6 +142,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'find_batch' %}">Batch Info</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'syllabus' %}">Syllabus</a>
+                    </li>
                     {% elif user.is_teacher %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'teacher_dashboard' %}">Home</a></li>
                     <li class="nav-item">

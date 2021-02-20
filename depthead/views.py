@@ -3,9 +3,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import (User, Group,)
 from accounts.models import (Student, Teacher, Depthead)
 from django.contrib.auth import get_user_model
-from .forms import (AddCourse, Create_batch)
+from .forms import (AddCourse, Create_batch,AddSyllabus,Add_Semester)
 from .models import (Course_list, Batch, Session,
-                     Student_Sessions, batch_result, Dept)
+                     Student_Sessions, batch_result, Dept, Syllabus, Course_Semester_List, Sessions, Result_Semester_List, Result_Table)
 from teacher.models import (Teachers, Course, Course_Result)
 from student.models import(Students)
 from django.contrib import messages
@@ -254,6 +254,88 @@ def teacher_search(request):
             Q(first_name__icontains=search_str) | Q(last_name__icontains=str(search_str)) | Q(username__icontains=str(search_str)) | Q(email__icontains=str(search_str)))
         data = user_list.values()
         return JsonResponse(list(data), safe=False)
+
+#add Syllabus and view syllabus
+
+def add_syllabus(request):
+    if request.method == 'POST':
+        form = AddSyllabus(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Add successfully!')
+            return redirect('syllabus')
+        else:
+            messages.warning(request, 'Try again!')
+            val = 'add_syllabus'
+            context = {
+                'val': val,
+            }
+        return render(request, 'syllabus.html', context)
+    else:
+        form = AddSyllabus()
+        val = 'add_syllabus'
+        context = {
+            'form': form,
+            'val': val,
+        }
+        return render(request, 'syllabus.html', context)
+
+
+def view_syllabus(request):
+    depthead = Depthead.objects.get(user=request.user)
+    dept = depthead.dept
+    syllabus = Syllabus.objects.filter(dept=dept)
+    val = 'view_syllabus'
+    context = {
+        'syllabus': syllabus,
+        'val': val,
+    }
+    return render(request, 'syllabus.html', context)
+
+
+def syllabus_semester(request, id):
+    semester = Course_Semester_List.objects.filter(syllabus=id)
+    syllabus_id = id
+    val = 'syllabus_semester'
+    context = {
+        'semester': semester,
+        'val': val,
+        'syllabus_id': syllabus_id,
+    }
+    return render(request, 'syllabus.html', context)
+
+
+def add_semester(request, id):
+    if request.method == 'POST':
+        form = Add_Semester(request.POST)
+        if form.is_valid():
+            syllabus = Syllabus.objects.get(Syllabus_Name=id)
+            semester = form.cleaned_data['Semester']
+            New_Course_Semester_List = Course_Semester_List(
+                syllabus=syllabus, Semester=semester)
+            New_Course_Semester_List.save()
+            messages.success(request, 'Semester added successfully!')
+            return redirect('syllabus_semester', id)
+        else:
+            messages.warning(request, 'Try again!')
+            val = 'add_semester'
+            context = {
+                'form': form,
+                'val': val,
+            }
+            return render(request, 'syllabus.html', context)
+    else:
+        form = Add_Semester()
+        val = 'add_semester'
+        context = {
+            'form': form,
+            'val': val,
+        }
+        return render(request, 'syllabus.html', context)
+
+
+def view_semester_list(request, id):
+    pass
 
 # Course create and Show
 @login_required
