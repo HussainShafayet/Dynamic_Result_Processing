@@ -5,7 +5,7 @@ from accounts.models import (Student, Teacher, Depthead)
 from django.contrib.auth import get_user_model
 from .forms import (AddCourse, Create_batch,AddSyllabus,Add_Semester)
 from .models import (Course_list, Batch, Session,
-                     Student_Sessions, batch_result, Dept, Syllabus, Course_Semester_List, Sessions, Result_Semester_List, Result_Table)
+                     Student_Sessions, batch_result, Dept, Syllabus, Course_Semester_List, Sessions, Result_Semester_List, Result_Table,Course_List_All)
 from teacher.models import (Teachers, Course, Course_Result)
 from student.models import(Students)
 from django.contrib import messages
@@ -334,8 +334,46 @@ def add_semester(request, id):
         return render(request, 'syllabus.html', context)
 
 
-def view_semester_list(request, id):
-    pass
+def view_course_list_all(request, syllabus_id, semester):
+    course_list = Course_List_All.objects.filter(semester=semester)
+    val = 'course_list_by_semester'
+    context = {
+        'course_list': course_list,
+        'val': val,
+        'semester': semester,
+        'syllabus_id': syllabus_id
+    }
+    return render(request, 'course_list.html', context)
+
+
+def add_course(request, syllabus_id, semester):
+    if request.method == 'POST':
+        form = AddCourse(request.POST)
+        if form.is_valid():
+            syllabus = Syllabus.objects.get(Syllabus_Name=syllabus_id)
+            dept = syllabus.dept
+            semester = Course_Semester_List.objects.get(Semester=semester)
+            course_code = form.cleaned_data['course_code']
+            title = form.cleaned_data['title']
+            credit = form.cleaned_data['credit']
+            course_type = form.cleaned_data['course_type']
+            Add_course = Course_List_All(
+                dept=dept, semester=semester, course_code=course_code, title=title, credit=credit, course_type=course_type)
+            Add_course.save()
+            messages.success(request, 'Courses added successfully!')
+            return redirect('view_course_list', syllabus_id, semester)
+        else:
+            messages.warning(request, 'Try again!')
+            context = {
+                'form': form,
+            }
+            return render(request, 'course_list.html', context)
+    else:
+        form = AddCourse()
+        context = {
+            'form': form,
+        }
+        return render(request, 'course_list.html', context)
 
 # Course create and Show
 @login_required

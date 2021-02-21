@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Course_list, Batch, Student_Sessions, Session, Syllabus, Course_Semester_List
+from .models import Course_list, Batch, Student_Sessions, Session, Syllabus, Course_Semester_List,Course_List_All
 
 
 class AddSyllabus(forms.ModelForm):
@@ -16,7 +16,22 @@ class Add_Semester(forms.ModelForm):
             'Semester'
         ]
 
+
 class AddCourse(forms.ModelForm):
+    class Meta():
+        model = Course_List_All
+        fields = [
+            'course_code', 'title', 'course_type', 'credit'
+        ]
+
+    def clean(self):
+        cleaned_data = super(AddCourse, self).clean()
+        course_code = cleaned_data.get('course_code')
+        if Course_List_All.objects.filter(course_code=course_code):
+            raise forms.ValidationError('Course code already Exists!')
+        return self.cleaned_data
+
+""" class AddCourse(forms.ModelForm):
     class Meta():
         model = Course_list
         fields = '__all__'
@@ -26,7 +41,7 @@ class AddCourse(forms.ModelForm):
         course_code = cleaned_data.get('course_code')
         if Course_list.objects.filter(course_code=course_code):
             raise forms.ValidationError('Course code already Exists!')
-        return self.cleaned_data
+        return self.cleaned_data """
 class Create_batch(forms.ModelForm):
     class Meta():
         model= Student_Sessions

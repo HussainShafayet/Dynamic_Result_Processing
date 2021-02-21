@@ -1,0 +1,49 @@
+{% extends 'base.html' %}{% load crispy_forms_tags %}{% block body %}{% if val == 'course_list_by_semester' %}
+
+<div class="container">
+    <div>
+        {% if messages %} {% for message in messages %}
+        <div class="alert alert-{{message.tags}} " role="alert" id=" ">
+            <button type="button" class="close" data-dismiss="alert">X</button> {{message}}
+        </div>
+        {% endfor %} {% endif %}
+    </div>
+    <div style="margin-left: 10px; margin-bottom:10px;">
+        <a class="btn btn-primary" href="{% url 'add_course' syllabus_id semester %}">Add New Course</a>
+    </div>{% if course_list %}
+    <div class="table-responsive">
+        <h1 class="text-center">{{semester}} semester courses will be displayed here</h1>
+        <hr>
+        <table class="table table-hover table-striped ">
+            <thead class="thead bg-info">
+                <tr>
+                    <th scope="col">Course Code</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Course Type</th>
+                    <th scope="col">Course Credit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in course_list %}
+                <tr>
+                    <td>{{course.course_code}}</td>
+                    <td>{{course.title}}</td>
+                    <td>{{course.course_type}}</td>
+                    <td>{{course.credit}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>{% else %} No coureses has been added yet. {%endif%}
+</div>
+{%else%}
+<div class="row">
+    <div class="col"></div>
+    <div class="col-mid-auto">
+        <form action="" method="post">
+            {% csrf_token %} {{form|crispy}}
+            <button class="btn btn-primary" type="submit">Add Course</button>
+        </form>
+    </div>
+    <div class="col"></div>
+</div>{%endif%}{% endblock %}
