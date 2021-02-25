@@ -15,102 +15,6 @@
         <h1>Dynamic Result Processing</h1>
         <p>This is a Django web based software!</p>
     </div>
-    <!-- <nav>
-        <div id="logo">
-            <h3>Result Processing</h3>
-        </div>
-        <div id="menu">
-            <ul>
-                {% if user.is_depthead %}
-                <li class="items"><a href="{% url 'depthead_dashboard' %}">home</a></li>
-                <li class="items">
-                    <a href="{% url 'users' %}">users</a>
-                </li>
-                <li class="items">
-                    <a href="{% url 'student_info' %}">Student Info</a>
-                </li>
-                <li class="items">
-                    <a href="{% url 'teacher_info'%}">Teacher Info</a>
-                </li>
-                <li class="items">
-                    <a href="{% url 'show_course' %}">Course list</a>
-                </li>
-
-                <li class="items">
-                    <a href="{% url 'results' %}">Results</a>
-                </li>
-                <li class="items">
-                    <a href="{% url 'find_batch' %}">Batch Info</a>
-                </li>
-                {% elif user.is_teacher %}
-                <li><a href="{% url 'teacher_dashboard' %}">Home</a></li>
-                <li>
-                    <a href="{% url 'assign_course' %}">Courses</a>
-                </li>
-                <li>
-                    <a href="{% url 'assign_course_result' %}">Course Result</a>
-                </li>
-                <li>
-                    <a href="">contact</a>
-                </li>
-                {% elif user.is_student %}
-                <li><a href="{% url 'student_dashboard' %}">Home</a></li>
-                <li>
-                    <a href="{% url 'student_result' %}">Result</a>
-                </li>
-                {% elif user.is_student == False and user.is_teacher == False and user.is_depthead == False%}
-                <li><a href="{% url 'home' %}">Home</a></li>
-                <li><a href="">contact</a></li>
-                {% else %}
-                <li><a href="{% url 'home' %}">Home</a></li>
-                <li>
-                    <a href="">About</a>
-                </li> {% endif %}
-            </ul>
-
-        </div>
-        <div id="prof">
-            <ul>
-                {% if user.is_authenticated %}{% if user.is_depthead %}
-                <li class="pro"><img id="icon" src="{{user.depthead.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer"></li>{% elif user.is_teacher %}
-                <li class="pro"><img id="icon" src="{{user.teacher.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer"></li>{% elif user.is_student %}
-                <li class="pro"><img id="icon" src="{{user.student.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer"></li>
-                {% else %}
-                <li>
-                    <a href="{% url 'logout' %}">logout</a>
-                </li>
-                {% endif %} {% else %}
-                <li style="cursor: pointer;">
-                    <a onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Registration</a>
-                </li>
-                <li style="cursor:pointer">
-                    <a href="{% url 'login' %}">Login</a>
-                </li>
-                {% endif %}
-            </ul>
-        </div>
-    </nav> -->
-    <!-- <div id="side-menu">
-        <ul>
-            <li><a href="{% url 'profile' %}">profile</a></li>
-            <li><a href=" ">settings</a></li>
-            <li><a href="{% url 'logout' %} ">logout</a></li>
-        </ul>
-    </div>
-    <div id="id01" class="modal animate">
-        <div class="modal-content ">
-            <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
-            <div id="link">
-                <h5>Register as</h5>
-                <hr>
-                <a href="{% url 'teacher_registration' %}">Teacher</a>
-                <a href="{% url 'student_registration' %}">Student</a>
-                <a href=" ">Dept Head</a>
-            </div>
-
-        </div>
-    </div> -->
-    <!-- demo -->
     <div style="position:sticky;top:0;z-index:1">
         <nav class="navbar navbar-expand-lg navbar-light  " style="background-color: #3f72af; ">
             <a class="navbar-brand" href="#">Result Processing</a>
@@ -133,9 +37,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'teacher_info'%}">Teacher Info</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'show_course' %}">Course List</a>
-                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'results' %}">Result</a>
                     </li>
@@ -239,7 +141,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="col-sm-8" style=" min-height:800px">
+            <div class="col-sm-10" style=" min-height:800px">
 
                 {% block body %}{% endblock %}
 

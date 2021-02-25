@@ -1,18 +1,20 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from accounts.models import Teacher
-from .models import (Teachers, Course, Course_Result)
+from .models import (Course, Course_Result_Theory,
+                     Course_Result_Sessional, Teacher_name)
 from django.contrib.auth.models import (User, auth, Group)
 from django.contrib import messages
-from depthead.models import batch_result,Course_list
-from depthead.decorators import login_required,allowed_user
+from depthead.models import batch_result, Course_list
+from depthead.decorators import login_required, allowed_user
 #from .forms import (Course_Result_Form)
 from django.shortcuts import get_object_or_404
 # Create your views here.
 
+
 @login_required
 @allowed_user(allowed_roles=['Teacher'])
 def teacher_dashboard(request):
-    return render(request, 'user_dashboard.html',{'val':'user_t'})
+    return render(request, 'user_dashboard.html', {'val': 'user_t'})
 
 
 @login_required
@@ -21,16 +23,17 @@ def assign_course(request):
     current_user = request.user
     v1 = current_user.first_name
     v2 = current_user.last_name
-    t_name = v1+' '+v2
-    assaigned_courses = Course.objects.filter(teacher=t_name)
-    val= 'user_t'
+    t_name = v1 + ' ' + v2
+    teacher_obj = Teacher_name.objects.get(teacher=t_name)
+    assaigned_courses = Course.objects.filter(teacher=teacher_obj)
+    val = 'user_t'
     if assaigned_courses.exists() == False:
         messages.error(request, 'No Course Has Been Assaigned To You Yet')
     context = {
         'name': t_name,
         'course': assaigned_courses,
         'val': val,
-        
+
     }
     return render(request, 'teacher_Dashboard.html', context)
 
@@ -51,23 +54,26 @@ def assign_course_result(request):
 
     }
     return render(request, 'teacher_Dashboard.html', context)
-def details_course(request,batch,course):
+
+
+def details_course(request, batch, course):
     course_details = Course.objects.get(Batch=batch, Course=course)
     course_details2 = Course_list.objects.get(course_code=course_details)
     print(course_details2)
-    val='course_det'
+    val = 'course_det'
     context = {
         'course_details': course_details,
         'course_details2': course_details2,
-        'val':val,
+        'val': val,
     }
-    return render(request,'teacher_Dashboard.html',context)
+    return render(request, 'teacher_Dashboard.html', context)
+
 
 @login_required
 @allowed_user(allowed_roles=['Teacher'])
-def course_result(request, batch,course):
+def course_result(request, batch, course):
     #x = Dy_id.find('+')
-    Dy_id=batch
+    Dy_id = batch
     #batch = Dy_id[0:x]
     #course = Dy_id[(x+1):]
     assigned_course = Course.objects.get(Batch=batch, Course=course)
@@ -76,7 +82,7 @@ def course_result(request, batch,course):
         if('Calculate' in request.POST):
             gpa = 0.00
             grade = ''
-            for i in assigned_course.course_result_set.all():
+            for i in assigned_course.course_result_theory_set.all():
                 total_marks = i.Term_test + i.Attendence + i.Exam_Part_A + i.Exam_Part_B
                 if (total_marks < 40):
                     gpa = 0.00
@@ -121,7 +127,7 @@ def course_result(request, batch,course):
             string_04 = course+string_02
             string_05 = string_03.replace(' ', '_')
             string_06 = string_04.replace(' ', '_')
-            for i in assigned_course.course_result_set.all():
+            for i in assigned_course.course_result_theory_set.all():
                 reg = i.Reg_No
                 GPA = i.Grade_point
                 GRADE = i.Letter_grade
@@ -131,6 +137,8 @@ def course_result(request, batch,course):
                 batch_result_2.save()
     #group = Group.objects.get(name='Teacher')
     return render(request, 'course_result.html', {'context': assigned_course, 'id': Dy_id})
+
+
 """ def assignteacher(request):
     teacher = get_object_or_404(Teacher, user=request.user)
     assign_teacher_list = AssignTeacher.objects.filter(teacher=teacher)
@@ -149,4 +157,3 @@ class Assignteacher(ListView):
         user2 = self.request.user
         teacher=get_object_or_404(Teacher,user=user2)
         return AssignTeacher.objects.filter(teacher=teacher) """
-

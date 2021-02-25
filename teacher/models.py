@@ -1,40 +1,59 @@
 from django.db import models
 from accounts.models import Teacher
-#from depthead.models import Course_List
+from depthead.models import Sessions
 # Create your models here.
 
 
-class Teachers(models.Model):
+class Teacher_name(models.Model):
     objects = models.Manager()
-    Name = models.CharField(max_length=100, primary_key=True)
+    teacher = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.Name
+        return self.teacher
+
 
 class Course(models.Model):
     objects = models.Manager()
-    teacher = models.ForeignKey(Teachers, on_delete=models.CASCADE)
-    Session = models.CharField(max_length=20, null=True, blank=True)
-    Course = models.CharField(max_length=10, null=True, blank=True)
-    Active = models.BooleanField(default=True, null=True, blank=True)
-    Batch = models.CharField(max_length=30, null=True, blank=True)
+    teacher = models.ForeignKey(Teacher_name, on_delete=models.CASCADE)
+    Course = models.CharField(max_length=20)
+    Active = models.BooleanField(default=True)
+    Batch = models.ForeignKey(Sessions, on_delete=models.CASCADE)
+    Course_type = models.CharField(max_length=20)
 
     def __str__(self):
         return self.Course
 
-class Course_Result(models.Model):
+
+class Course_Result_Theory(models.Model):
     objects = models.Manager()
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    Reg_No = models.CharField(max_length=20, null=True, blank=True)
-    Name = models.CharField(max_length=100, null=True, blank=True)
-    Term_test = models.IntegerField(default=0, null=True, blank=True)
-    Attendence = models.IntegerField(default=0, null=True, blank=True)
-    Exam_Part_A = models.IntegerField(default=0, null=True, blank=True)
-    Exam_Part_B = models.IntegerField(default=0, null=True, blank=True)
-    Total_mark = models.IntegerField(default=0, null=True, blank=True)
-    Grade_point = models.FloatField(
-        default=0, max_length=10, null=True, blank=True)
-    Letter_grade = models.CharField(max_length=10, default=' ', blank=True)
+    Reg_No = models.CharField(max_length=20)
+    Name = models.CharField(max_length=100)
+    Term_test = models.IntegerField()
+    Attendence = models.IntegerField()
+    Exam_Part_A = models.IntegerField()
+    Exam_Part_B = models.IntegerField()
+    Total_mark = models.IntegerField()
+    Grade_point = models.FloatField()
+    Letter_grade = models.CharField(max_length=10)
+    batch = models.ForeignKey(Sessions, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.Reg_No
+
+
+class Course_Result_Sessional(models.Model):
+    objects = models.Manager()
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    Reg_No = models.CharField(max_length=20)
+    Name = models.CharField(max_length=100)
+    Attendence = models.IntegerField()
+    Lab_performance = models.IntegerField()
+    Exam = models.IntegerField()
+    Total_mark = models.IntegerField()
+    Grade_point = models.FloatField()
+    Letter_grade = models.CharField(max_length=10)
+    batch = models.ForeignKey(Sessions, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.Reg_No

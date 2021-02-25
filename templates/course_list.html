@@ -37,6 +37,14 @@
     </div>{% else %} No coureses has been added yet. {%endif%}
 </div>
 {%else%}
+<div>
+    {% if messages %} {% for message in messages %}
+    <div class="alert alert-{{message.tags}} " role="alert" id=" ">
+        <button type="button" class="close" data-dismiss="alert">X</button> {{message}}
+    </div>
+    {% endfor %} {% endif %}
+</div>
+
 <div class="row">
     <div class="col"></div>
     <div class="col-mid-auto">

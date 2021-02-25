@@ -13,7 +13,7 @@ class Dept(models.Model):
 class Syllabus(models.Model):
     objects = models.Manager()
     dept = models.ForeignKey(Dept, on_delete=models.CASCADE)
-    Syllabus_Name = models.CharField(max_length=100, primary_key=True)
+    Syllabus_Name = models.CharField(max_length=100)
     Year_created = models.CharField(max_length=20)
 
     def __str__(self):
@@ -23,7 +23,7 @@ class Syllabus(models.Model):
 class Course_Semester_List(models.Model):
     objects = models.Manager()
     syllabus = models.ForeignKey(Syllabus, on_delete=models.CASCADE)
-    Semester = models.CharField(max_length=20, primary_key=True)
+    Semester = models.CharField(max_length=20)
 
     def __str__(self):
         return self.Semester
@@ -34,31 +34,38 @@ class Course_List_All(models.Model):
     dept = models.ForeignKey(Dept, on_delete=models.CASCADE)
     semester = models.ForeignKey(
         Course_Semester_List, on_delete=models.CASCADE)
-    course_code = models.CharField(max_length=10, primary_key=True)
+    course_code = models.CharField(max_length=20)
     title = models.CharField(max_length=100)
     credit = models.FloatField(max_length=10)
     course_type = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.course_code
 
 
 class Sessions(models.Model):
     objects = models.Manager()
     syllabus = models.ForeignKey(Syllabus, on_delete=models.CASCADE)
-    Batch = models.CharField(max_length=40, primary_key=True)
+    Batch = models.CharField(max_length=40)
     Session = models.CharField(max_length=20)
     dept = models.ForeignKey(Dept, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.Batch
 
 class Result_Semester_List(models.Model):
     objects = models.Manager()
     session = models.ForeignKey(Sessions, on_delete=models.CASCADE)
-    Semester = models.CharField(max_length=20, primary_key=True)
+    Semester = models.CharField(max_length=20)
 
+    def __str__(self):
+        return self.Semester
 
 class Result_Table(models.Model):
     objects = models.Manager()
     result_semester = models.ForeignKey(
         Result_Semester_List, on_delete=models.CASCADE)
-    Reg = models.CharField(max_length=20, primary_key=True)
+    Reg = models.CharField(max_length=20)
     Name = models.CharField(max_length=40)
     Column_01 = models.CharField(max_length=20, null=True, blank=True)
     Column_02 = models.CharField(max_length=20, null=True, blank=True)
@@ -111,8 +118,11 @@ class Result_Table(models.Model):
     Column_49 = models.CharField(max_length=20, null=True, blank=True)
     Column_50 = models.CharField(max_length=20, null=True, blank=True)
 
-    
-#previous model 
+    def __str__(self):
+        return self.Reg
+
+
+# previous model
 class Course_list(models.Model):
     objects = models.Manager()
     course_code = models.CharField(max_length=10, primary_key=True)
@@ -129,8 +139,11 @@ class Student_Sessions(models.Model):
     objects = models.Manager()
     Batch = models.CharField(max_length=20, primary_key=True)
     Session = models.CharField(max_length=20)
+
     def __str__(self):
         return self.Batch+' '+self.Session
+
+
 class Batch(models.Model):
     batch = models.CharField(max_length=20)
 
@@ -145,16 +158,13 @@ class Session(models.Model):
         return self.session
 
 
-
-
-
 class batch_result(models.Model):
     objects = models.Manager()
     Result_Session = models.ForeignKey(
         Student_Sessions, on_delete=models.CASCADE)
     Reg_No = models.CharField(max_length=50, primary_key=True)
     Name = models.CharField(max_length=100)
-    #1ST_SEMESTER
+    # 1ST_SEMESTER
     CSE_101_GP = models.FloatField(max_length=10, null=True, blank=True)
     CSE_101_LG = models.CharField(max_length=50, null=True, blank=True)
     CSE_102_GP = models.FloatField(max_length=10, null=True, blank=True)
@@ -182,7 +192,7 @@ class batch_result(models.Model):
     Sem_01_Grade_Point = models.FloatField(
         max_length=10, null=True, blank=True)
     Sem_01_LG = models.CharField(max_length=10, null=True, blank=True)
-    #2ND SEMESTER
+    # 2ND SEMESTER
     CSE_201_GP = models.FloatField(max_length=10, null=True, blank=True)
     CSE_201_LG = models.CharField(max_length=50, null=True, blank=True)
     CSE_202_GP = models.FloatField(max_length=10, null=True, blank=True)
@@ -212,7 +222,7 @@ class batch_result(models.Model):
         max_length=10, null=True, blank=True)
     Letter_Grade_Till_Sem_02 = models.CharField(
         max_length=10, null=True, blank=True)
-    #3RD SEMESTER
+    # 3RD SEMESTER
     CSE_301_GP = models.FloatField(max_length=10, null=True, blank=True)
     CSE_301_LG = models.CharField(max_length=50, null=True, blank=True)
     CSE_302_GP = models.FloatField(max_length=10, null=True, blank=True)
@@ -242,7 +252,7 @@ class batch_result(models.Model):
         max_length=10, null=True, blank=True)
     Letter_Grade_Till_Sem_03 = models.CharField(
         max_length=10, null=True, blank=True)
-    #4TH SEMESTER
+    # 4TH SEMESTER
     CSE_401_GP = models.FloatField(max_length=10, null=True, blank=True)
     CSE_401_LG = models.CharField(max_length=50, null=True, blank=True)
     CSE_402_GP = models.FloatField(max_length=10, null=True, blank=True)
@@ -272,7 +282,7 @@ class batch_result(models.Model):
         max_length=10, null=True, blank=True)
     Letter_Grade_Till_Sem_04 = models.CharField(
         max_length=10, null=True, blank=True)
-    #5TH SEMESTER
+    # 5TH SEMESTER
     CSE_501_GP = models.FloatField(max_length=10, null=True, blank=True)
     CSE_501_LG = models.CharField(max_length=50, null=True, blank=True)
     CSE_502_GP = models.FloatField(max_length=10, null=True, blank=True)
@@ -302,7 +312,7 @@ class batch_result(models.Model):
         max_length=10, null=True, blank=True)
     Z6_Letter_Grade_Till_Sem_05 = models.CharField(
         max_length=10, null=True, blank=True)
-    #6TH SEMESTER
+    # 6TH SEMESTER
     CSE_601_GP = models.FloatField(max_length=10, null=True, blank=True)
     CSE_601_LG = models.CharField(max_length=50, null=True, blank=True)
     CSE_603_GP = models.FloatField(max_length=10, null=True, blank=True)
@@ -332,7 +342,7 @@ class batch_result(models.Model):
         max_length=10, null=True, blank=True)
     Z6_Letter_Grade_Till_Sem_06 = models.CharField(
         max_length=10, null=True, blank=True)
-    #7TH SEMESTER
+    # 7TH SEMESTER
     CSE_700_GP = models.FloatField(max_length=10, null=True, blank=True)
     CSE_700_LG = models.CharField(max_length=50, null=True, blank=True)
     CSE_701_GP = models.FloatField(max_length=10, null=True, blank=True)
@@ -370,7 +380,7 @@ class batch_result(models.Model):
         max_length=10, null=True, blank=True)
     Z6_Letter_Grade_Till_Sem_07 = models.CharField(
         max_length=10, null=True, blank=True)
-    #8TH SEMESTER
+    # 8TH SEMESTER
     CSE_800_GP = models.FloatField(max_length=10, null=True, blank=True)
     CSE_800_LG = models.CharField(max_length=50, null=True, blank=True)
     CSE_801_GP = models.FloatField(max_length=10, null=True, blank=True)
@@ -418,5 +428,3 @@ class batch_result(models.Model):
         max_length=10, null=True, blank=True)
     Z6_Letter_Grade_Till_Sem_08 = models.CharField(
         max_length=10, null=True, blank=True)
-    
-    
