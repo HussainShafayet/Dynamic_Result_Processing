@@ -152,4 +152,4 @@ EMAIL_HOST = "smtp.gmail.com"
 EMAIL_POST = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'hussainshafayet91@gmail.com'
-EMAIL_HOST_PASSWORD = 'dpvjcfttlbqgucip'
+EMAIL_HOST_PASSWORD = 'lbjudkanhgionoct'

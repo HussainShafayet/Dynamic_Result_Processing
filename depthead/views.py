@@ -8,7 +8,7 @@ from .models import (Course_list, Batch, Session,
                      Student_Sessions, batch_result, Dept, Syllabus, Course_Semester_List, Sessions, Result_Semester_List, Result_Table, Course_List_All)
 from teacher.models import (
     Course, Course_Result_Theory, Course_Result_Sessional, Teacher_name)
-from student.models import(Students)
+from student.models import(Student_data)
 from django.contrib import messages
 from .decorators import login_required, allowed_user
 from django.db.models import Q
@@ -132,11 +132,13 @@ def allow_user(request, id):
             reg = stud.reg_no
             batch = stud.batch
             get_sess = Sessions.objects.get(Batch=batch)
+            add_student = Student_data(session=get_sess, Reg_No=reg, Name=name)
+            add_student.save()
             semester_list = Result_Semester_List.objects.filter(
                 session=get_sess)
             for i in semester_list:
                 New_student = Result_Table(
-                    Reg=reg, Name=name, result_semester=i)
+                    Reg=reg, Name=name, result_semester=i, batch=get_sess)
                 New_student.save()
             return redirect('users')
     else:
@@ -270,22 +272,50 @@ def add_syllabus(request):
         form = AddSyllabus(request.POST)
         if form.is_valid():
             form.save()
+            syllabus = form.cleaned_data['Syllabus_Name']
+            get_syl = Syllabus.objects.get(Syllabus_Name=syllabus)
+            new_semester = Course_Semester_List(
+                syllabus=get_syl, Semester='1st')
+            new_semester.save()
+            new_semester = Course_Semester_List(
+                syllabus=get_syl, Semester='2nd')
+            new_semester.save()
+            new_semester = Course_Semester_List(
+                syllabus=get_syl, Semester='3rd')
+            new_semester.save()
+            new_semester = Course_Semester_List(
+                syllabus=get_syl, Semester='4th')
+            new_semester.save()
+            new_semester = Course_Semester_List(
+                syllabus=get_syl, Semester='5th')
+            new_semester.save()
+            new_semester = Course_Semester_List(
+                syllabus=get_syl, Semester='6th')
+            new_semester.save()
+            new_semester = Course_Semester_List(
+                syllabus=get_syl, Semester='7th')
+            new_semester.save()
+            new_semester = Course_Semester_List(
+                syllabus=get_syl, Semester='8th')
+            new_semester.save()
             messages.success(request, 'Add successfully!')
             return redirect('syllabus')
         else:
             messages.warning(request, 'Try again!')
-            val = 'add_syllabus'
+            val1 = 'add_syllabus'
             context = {
                 'form': form,
-                'val': val,
+                'val1': val1,
             }
         return render(request, 'syllabus.html', context)
     else:
         form = AddSyllabus()
-        val = 'add_syllabus'
+        val1 = 'add_syllabus'
+        val2 = 'syllabus_semester'
         context = {
             'form': form,
-            'val': val,
+            'val1': val1,
+            'val2': val2,
         }
         return render(request, 'syllabus.html', context)
 
@@ -306,16 +336,16 @@ def syllabus_semester(request, syllabus_id):
     syllabus = Syllabus.objects.get(Syllabus_Name=syllabus_id)
     semester = Course_Semester_List.objects.filter(syllabus=syllabus)
     syllabus_id = syllabus_id
-    val = 'syllabus_semester'
+    val2 = 'syllabus_semester'
     context = {
         'semester': semester,
-        'val': val,
+        'val2': val2,
         'syllabus_id': syllabus_id,
     }
     return render(request, 'syllabus.html', context)
 
 
-def add_semester(request, syllabus_id):
+""" def add_semester(request, syllabus_id):
     if request.method == 'POST':
         form = Add_Semester(request.POST, syllabus_id)
         if form.is_valid():
@@ -355,7 +385,7 @@ def add_semester(request, syllabus_id):
             'val': val,
             'syllabus_id': syllabus_id,
         }
-        return render(request, 'syllabus.html', context)
+        return render(request, 'syllabus.html', context) """
 
 
 def view_course_list_all(request, syllabus_id, semester):
@@ -482,7 +512,7 @@ def create_batch(request):
                 string_03 = string_02 + " " + string_01
                 string_Name = "Name"
                 add_data = Result_Table(
-                    result_semester=i, Reg=string_03, Name=string_Name)
+                    result_semester=i, Reg=string_03, Name=string_Name, batch=get_session)
                 add_data.save()
 
                 syllabus_semesters = syllabus.course_semester_list_set.all()
@@ -500,7 +530,9 @@ def create_batch(request):
 
                 for j in i.result_table_set.all():
                     fieldList1 = j._meta.get_fields()
-                    fieldList2 = fieldList1[4:]
+                    print(fieldList1)
+                    fieldList2 = fieldList1[5:]
+                    print(fieldList2)
                     Two_list = zip(fieldList2, courses_02)
                     for l, m in Two_list:
                         string_06 = l.name
@@ -569,44 +601,79 @@ def result_info(request, batch, semester):
     get_semester = Result_Semester_List.objects.get(
         session=get_batch, Semester=semester)
     result_info = get_semester.result_table_set.all()
-    list_of_list = []
+    list_of_list1 = []
     list1 = []
+    list_of_list2 = []
+    x = 0
     for i in result_info:
         field_list = i._meta.get_fields()
-        for j in field_list[2:]:
+        for j in field_list[3:]:
             val = getattr(i, j.name)
             if val == None:
                 break
+            elif val == 'Name':
+                x = 1
+                list1.append(val)
             else:
                 list1.append(val)
-        list_of_list.append(list1)
+        if x == 1:
+            list_of_list1.append(list1)
+        else:
+            list_of_list2.append(list1)
         list1 = []
-        val = 'result_info_table'
-        teahcer_list = Teacher_name.objects.all()
-        context = {
-            'result_info': list_of_list,
-            'val': val,
-            'course_list': course_list,
-            'teacher_list': teahcer_list,
-            'batch': batch,
-            'semester': semester
-        }
+        x = 2
+
+    import operator
+    sorted_list = sorted(list_of_list2, key=operator.itemgetter(0))
+    for i in sorted_list:
+        list_of_list1.append(i)
+    val = 'result_info_table'
+    teahcer_list = Teacher_name.objects.all()
+    context = {
+        'result_info': list_of_list1,
+        'val': val,
+        'course_list': course_list,
+        'teacher_list': teahcer_list,
+        'batch': batch,
+        'semester': semester
+    }
 
     if request.method == 'POST':
         course = request.POST.get('courses')
         teacher = request.POST.get('teacher')
-        teacher_obj = Teacher_name.objects.get(teacher=teacher)
-        get_course2 = course_list.get(course_code=course)
-        type2 = get_course2.course_type
-        assigned_course_list = Course.objects.filter(
-            Batch=get_batch, Course=course)
-        if assigned_course_list:
-            messages.warning(request, 'This course has been already assigned!')
-            return render(request, 'result_info.html', context)
-        else:
-            New_course = Course(teacher=teacher_obj, Course=course,
-                                Batch=get_batch, Course_type=type2)
-            New_course.save()
+        if course and teacher is not None:
+            teacher_obj = Teacher_name.objects.get(teacher=teacher)
+            get_course2 = course_list.get(course_code=course)
+            type2 = get_course2.course_type
+            assigned_course_list = Course.objects.filter(
+                Batch=get_batch, Course=course)
+            if assigned_course_list:
+                messages.warning(
+                    request, 'This course has been already assigned!')
+                return render(request, 'result_info.html', context)
+            else:
+                New_course = Course(teacher=teacher_obj, Course=course,
+                                    Batch=get_batch, Course_type=type2, semester=semester_string.Semester)
+                New_course.save()
+                if type2 == 'Theory':
+                    find_course = Course.objects.get(
+                        Course=course, Batch=get_batch)
+                    student_list = Student_data.objects.filter(
+                        session=get_batch)
+                    for i in student_list:
+                        theory_course = Course_Result_Theory(
+                            course=find_course, batch=get_batch, Reg_No=i.Reg_No, Name=i.Name)
+                        theory_course.save()
+
+                elif type2 == 'Sessional':
+                    find_course = Course.objects.get(
+                        Course=course, Batch=get_batch)
+                    student_list = Student_data.objects.filter(
+                        session=get_batch)
+                    for i in student_list:
+                        theory_course = Course_Result_Sessional(
+                            course=find_course, batch=get_batch, Reg_No=i.Reg_No, Name=i.Name)
+                        theory_course.save()
     return render(request, 'result_info.html', context)
 
 
@@ -736,7 +803,7 @@ def assign_teacher(string01, string02, string03):
                         Batch=Dy_id, teacher=teacher_03)
     new_course.save()
     find_course = Course.objects.get(Batch=Dy_id, Course=course_02)
-    for i in Students.objects.filter(session=Dy_id):
+    for i in Student_data.objects.filter(session=Dy_id):
         reg = i.Reg_No
         name = i.Name
         new_student = Course_Result_Theory(

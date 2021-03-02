@@ -7,15 +7,14 @@
         </div>
         {% endfor %} {% endif %}
     </div>
-
     <div style="margin-left: 10px; margin-bottom:10px;margin-top:10px">
-        <a class="btn btn-primary" href="">Assign Teacher</a>
-        <div style="border:2px solid red; height:100px; margin-top:10px">
+        <div style="border:2px solid rgb(199, 221, 199); height:100px; margin-top:10px">
             <form action="" method="POST">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-4">
                         <select name="courses" class="form-control">
+                            <option value="null" selected disabled >--Select course--</option>
                             {% for course in course_list%}
                             <option value="{{course}}">{{course}}</option>
                             {%endfor%}
@@ -23,14 +22,16 @@
                     </div>
                     <div class="col-4">
                         <select name="teacher" class="form-control">
+                            <option value="null" selected disabled>--Select teacher--</option>
                             {% for i in teacher_list %}
                             <option value="{{i}}">{{i}}</option>{% endfor %}
                         </select>
                     </div>
+                    <div class="col-4">
+                        <button class="btn btn-primary" type="submit" href="">Assign Teacher</button>
+                    </div>
                 </div>
-                <div class="col-2">
-                    <button class="btn btn-primary" type="submit" href="">Assign Teacher</button>
-                </div>
+
             </form>
         </div>
     </div>

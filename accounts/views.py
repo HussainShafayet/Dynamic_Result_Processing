@@ -4,7 +4,8 @@ from django.contrib import messages
 #User Reg,login and Logout
 from .forms import (DeptheadRegForm,TeacherRegForm, StudentRegForm,Profile_edit_Form,Depthead_profile_edit_form,Teacher_profile_edit_form,Student_profile_edit_form)
 from .models import (User, Teacher, Student, Depthead)
-from depthead.models import (Dept,Batch,Session)
+from depthead.models import (Dept, Batch, Session)
+from student.models import(Student_data)
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import (login, logout, authenticate,update_session_auth_hash)
 from django.contrib.auth.models import (auth, Group)
@@ -46,9 +47,7 @@ def depthead_registraion(request):
                 'token': account_activation_token.make_token(user),
             })
             to_email = form.cleaned_data.get('email')
-            email = EmailMessage(
-                mail_subject, message, to=[to_email]
-            )
+            email = EmailMessage(mail_subject, message, to=[to_email])
             email.send()
             val = 1
             context = {
@@ -115,7 +114,9 @@ def teacher_registration(request):
             'form': form,
             'val': val
     }
-    return render(request,'registration.html',context)
+    return render(request, 'registration.html', context)
+    
+
 def ajax(request):
     if request.is_ajax():
         term=request.GET.get('term')
@@ -149,25 +150,35 @@ def student_registration(request):
             user.save()
             group = Group.objects.get(name='None')
             user.groups.add(group)
-            current_site = get_current_site(request)
-            mail_subject = 'Activate your account.'
-            message = render_to_string('acc_active_email.html', {
-                'user': user,
-                'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': account_activation_token.make_token(user),
-            })
-            to_email = form.cleaned_data.get('email')
-            email = EmailMessage(
-                mail_subject, message, to=[to_email]
-            )
-            email.send()
-            val = 1
-            context = {
-                'val': val
-            }
-            return render(request, 'active_account.html', context)
+            reg_no = form.cleaned_data.get('reg_no')
+            reg_no_test = Student_data.objects.filter(Reg_No=reg_no)
+            if reg_no_test:
+                messages.warning(request, 'Registration Number already Exists!')
+                val = 'student_reg'
+                context = {
+                    'form': form,
+                    'val': val,
+                }
+                return render(request, 'registration.html', context)
+            else:
+                current_site = get_current_site(request)
+                mail_subject = 'Activate your account.'
+                message = render_to_string('acc_active_email.html', {
+                    'user': user,
+                    'domain': current_site.domain,
+                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                    'token': account_activation_token.make_token(user),
+                })
+                to_email = form.cleaned_data.get('email')
+                email = EmailMessage(mail_subject,message,to=[to_email])
+                email.send()
+                val = 1
+                context = {
+                    'val': val
+                }
+                return render(request, 'active_account.html', context)
         else:
+            messages.warning(request,'Try again!')
             val='student_reg'
             context = {
                 'form': form,

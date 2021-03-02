@@ -22,7 +22,7 @@
         {% endfor %} {% endif %}
     </div>
 
-    {% if val == 'add_syllabus' %}
+    {% if val1 == 'add_syllabus' %}
     <div class="row">
         <div class="col"></div>
         <div class="col-mid-auto">
@@ -61,11 +61,7 @@
     </div>
     {% else %}
     <p>No Syllabus has been created</p>
-    {% endif %} {% elif val == 'syllabus_semester' %}
-    <div style="margin-left: 10px; margin-bottom:10px;margin-top:10px">
-        <a class="btn btn-primary" href="{% url 'add_semester' syllabus_id %}">Add New Semester</a>
-    </div>
-    {% if semester %}
+    {% endif %} {% elif val2 == 'syllabus_semester' %} {% if semester %}
     <h1 class="text-center">All Semester will be displayed here</h1>
     <hr>
     <div class="row">
@@ -87,18 +83,6 @@
         </div>
         {% endfor %}
     </div>
-    {% else%} No semester has been added yet {% endif %} {% elif val == 'add_semester' %}
-    <div class="row">
-        <div class="col"></div>
-        <div class="col-mid-auto">
-            <form action="" method="post">
-                {% csrf_token %} {{form|crispy}}
-                <button class="btn btn-primary" type="submit">Create Semester</button>
-            </form>
-        </div>
-        <div class="col"></div>
-    </div>
-    {% else %}
-    <p>Show semester</p> {% endif %}
+    {% else%} No semester has been added yet {% endif %} {% endif %}
 </div>
 {% endblock %}

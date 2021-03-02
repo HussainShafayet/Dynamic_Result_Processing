@@ -10,7 +10,15 @@
     }
 </style>
 
-{% endblock %}{% block body %} {% if val == 'teacher_reg' %}
+{% endblock %}{% block body %}
+<div>
+    {% if messages %} {% for message in messages %}
+    <div class="alert alert-{{message.tags}} " role="alert" id=" ">
+        <button type="button" class="close" data-dismiss="alert">X</button> {{message}}
+    </div>
+    {% endfor %} {% endif %}
+</div>
+{% if val == 'teacher_reg' %}
 <div class="row">
     <div class="col"></div>
 

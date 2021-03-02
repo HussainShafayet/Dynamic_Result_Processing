@@ -1,13 +1,13 @@
 from django.db import models
-from depthead.models import Student_Sessions ,Dept
+from depthead.models import Sessions ,Dept
 # Create your models here.
 
 
-class Students(models.Model):
+class Student_data(models.Model):
     objects = models.Manager()
-    session = models.ForeignKey(Student_Sessions, on_delete=models.CASCADE)
+    session = models.ForeignKey(Sessions, on_delete=models.CASCADE)
     Reg_No = models.CharField(max_length=20, primary_key=True)
     Name = models.CharField(max_length=100)
-    Gender = models.CharField(max_length=10)
-    Dept = models.ForeignKey(Dept,on_delete=models.CASCADE)
-    Phone = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.Name +' '+str(self.session)

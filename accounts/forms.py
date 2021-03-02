@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import User,Teacher,Student,Depthead
 from django.db import transaction
 from depthead.models import Dept, Batch, Session
+from student.models import Student_data
 
 
 class DeptheadRegForm(UserCreationForm):
@@ -225,6 +226,7 @@ class StudentRegForm(UserCreationForm):
         elif self.instance.pk:
             self.fields['session'].queryset = Session.objects.all().filter(
                 pk=self.instance.session.pk)
+
     @transaction.atomic
     def save(self, *args, **kwargs):
         user = super().save(commit=False)

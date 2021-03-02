@@ -1,0 +1,184 @@
+{% extends 'base.html' %} {% block style %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    
+    #btn {
+        display: flex;
+        align-items: center;
+    }
+    
+    .select2-container .select2-selection--single {
+        height: 38px;
+    }
+    
+    .select2-container .select2-selection--single {
+        line-height: 38px;
+    }
+</style>
+{% endblock %} {% block body %}
+<div class="container">
+    <div style="height:60px;">
+        {% if messages %} {% for message in messages %}
+        <div class="alert alert-{{message.tags}} " role="alert" id=" ">
+            <button type="button" class="close" data-dismiss="alert">X</button> {{message}}
+        </div>
+        {% endfor %} {% endif %}
+        <div id="id" style="height:50px;"></div>
+        <div id="id2" style="height:50px;"></div>
+    </div>
+    <div style="margin-top: 10px;">
+        <form action="{% url 'course_result' batch course %}" method="POST">
+            {%csrf_token%}
+            <select name="reg_no" id="id_Reg_No" class="form-select" aria-label="Default select example" required style="width: 200px;">
+                    <option value="null" selected="selected">--Select Registration--</option>
+                    {%for i in drop_student %}
+                    <option value="{{i.Reg_No}}" >{{i.Reg_No}}</option>
+                    {%endfor%}
+                </select>
+            <button type="submit" class="btn btn-primary">Add Drop Student</button>
+        </form>
+    </div>
+    <div class="table-responsive" style="margin-top: 10px;">
+        <h3 class="text-center">{{course}} ({{course.Course_type}}) result</h3>
+        <hr>
+        <table class="table table-stripped table-hover">
+            <thead class="thead bg-info">
+                <th>Registration No</th>
+                <th>Name</th>
+                <th>Attendence</th>
+                <th>Lab Performance</th>
+                <th>Exam</th>
+                <th>Total Mark</th>
+                <th>Grade Point</th>
+                <th>Letter Grade</th>
+                <th>Delete</th>
+            </thead>
+            {% for i in student_list|dictsort:"Reg_No" %}
+            <tr>
+                <td>{{i.Reg_No}} </td>
+                <td>{{i.Name}} </td>
+                <td class="editable" data-id="{{i.id}}" data-type="Attendence">{{i.Attendence}}</td>
+                <td class="editable" data-id="{{i.id}}" data-type="Lab_performance">{{i.Lab_performance}}</td>
+                <td class="editable" data-id="{{i.id}}" data-type="Exam">{{i.Exam}}</td>
+                <td>{{i.Total_mark}} </td>
+                <td>{{i.Grade_point}} </td>
+                <td>{{i.Letter_grade}} </td>
+                <td>
+                    <a class="btn btn-info" href="{% url 'delete_student' batch course i.id %}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col"></div>
+        <div class="col-mid-auto">
+            <div id="btn">
+                <form action="{% url 'calculate_course_gpa' batch course %}" method="POST">
+                    {% csrf_token %}
+                    <div class="container">
+                        <button class="btn btn-success" type="submit" name="Calculate">Calculate GPA</button>
+                    </div>
+                </form>
+                <form action="{% url 'result_submit' batch course %}" method="POST">
+                    {% csrf_token %}
+                    <div class="container">
+                        <button class="btn btn-success" type="submit" name="Submit">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col"></div>
+    </div>
+</div>
+
+
+
+{% endblock %} {% block js_script %}
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+<script>
+    /*selec*/
+    $('#id_Reg_No').select2({
+
+    });
+
+    /*live search*/
+    $(document).ready(function() {
+        $(document).on("dblclick", ".editable", function() {
+            var value = $(this).text();
+            var data_type = $(this).data("type");
+            var input_type = "text";
+            if (data_type == "created_at") {
+                input_type = "datetime-local";
+            }
+            var input = "<input type='" + input_type + "' class='input-data' value='" + value + "' class='form-control'>";
+            $(this).html(input);
+            $(this).removeClass("editable");
+        });
+        $(document).on("blur", ".input-data", function() {
+            var value = $(this).val();
+            var td = $(this).parent("td");
+            $(this).remove();
+            td.html(value);
+            td.addClass("editable");
+            var type = td.data("type");
+            sendToServer(td.data("id"), value, type);
+        });
+        $(document).on("keypress", ".input-data", function(e) {
+            var key = e.which;
+            if (key == 13) {
+                var value = $(this).val();
+                var td = $(this).parent("td");
+                $(this).remove();
+                td.html(value);
+                td.addClass("editable");
+                var type = td.data("type");
+                sendToServer(td.data("id"), value, type);
+            }
+        });
+
+        function sendToServer(id, value, type) {
+            console.log(id);
+            console.log(value);
+            console.log(type);
+            $.ajax({
+                    url: "http://127.0.0.1:8000/saveresult_sessional",
+                    type: "POST",
+                    data: {
+                        id: id,
+                        type: type,
+                        value: value,
+                    },
+                    success: function() {
+                        $("#id").show();
+                        $("#id").addClass("alert alert-success").html("Updated successfully");
+                        setTimeout(function() {
+                            $("#id").fadeOut("slow", function() {
+                                $("#id").hide();
+                            });
+                        }, 2000);
+                    }
+                })
+                .fail(function() {
+                    $("#id2").show();
+                    $("#id2").addClass("alert alert-danger").html("Error!");
+                    setTimeout(function() {
+                        $("#id2").fadeOut("slow", function() {
+                            $("#id2").hide();
+                        });
+                    }, 2000);
+                });
+
+        }
+
+    });
+</script>
+{% endblock %}

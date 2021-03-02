@@ -20,7 +20,7 @@ urlpatterns = [
     path('depthead/add_syllabus', views.add_syllabus, name='add_syllabus'),
     path('depthead/syllabus', views.view_syllabus, name='syllabus'),
     path('depthead/syllabus/<str:syllabus_id>',views.syllabus_semester,name='syllabus_semester'),
-    path('depthead/syllabus/<str:syllabus_id>/add_semester',views.add_semester,                name='add_semester'),
+    #path('depthead/syllabus/<str:syllabus_id>/add_semester',views.add_semester,                name='add_semester'),
     path('depthead/syllabus/<str:syllabus_id>/<str:semester>/views_course_list',
           views.view_course_list_all, name='view_course_list'),
     path('depthead/syllabus/<str:syllabus_id>/<str:semester>/add_course',
