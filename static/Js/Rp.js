@@ -26,5 +26,11 @@ $(document).ready(function() {
         }
     });
 
+    $('.stud_del').on('click', function() {
+        return confirm("Are you sure!!!");
+    });
+    $('.submit').on('click', function() {
+        return confirm("Are you complete Calculate GPA ???");
+    });
 
 });

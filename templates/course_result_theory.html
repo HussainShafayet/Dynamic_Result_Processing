@@ -75,8 +75,8 @@
                 <td>{{i.Total_mark}} </td>
                 <td>{{i.Grade_point}} </td>
                 <td>{{i.Letter_grade}} </td>
-                <td>
-                    <a class="btn btn-info" href="{% url 'delete_student' batch course i.id %}">Delete</a>
+                <td class="stud_del">
+                    <a class="btn btn-danger" href="{% url 'delete_student' batch course i.id %}">Delete</a>
                 </td>
             </tr>
             {% endfor %}
@@ -95,7 +95,7 @@
                 </form>
                 <form action="{% url 'result_submit' batch course %}" method="POST">
                     {% csrf_token %}
-                    <div class="container">
+                    <div class="container submit">
                         <button class="btn btn-success" type="submit" name="Submit">Submit</button>
                     </div>
                 </form>

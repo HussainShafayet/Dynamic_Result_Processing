@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
-from .models import User,Teacher,Student,Depthead
+from .models import User, Teacher, Student, Depthead
 from django.db import transaction
 from depthead.models import Dept, Batch, Session
 from student.models import Student_data
@@ -68,9 +68,9 @@ class DeptheadRegForm(UserCreationForm):
     @transaction.atomic
     def save(self, *args, **kwargs):
         user = super().save(commit=False)
-        user.is_none=True
+        user.is_none = True
         user.save()
-        depthead=Depthead.objects.create(user=user)
+        depthead = Depthead.objects.create(user=user)
         depthead.dept = self.cleaned_data.get('dept')
         depthead.designation = self.cleaned_data.get('designation')
         depthead.image = self.cleaned_data.get('image')
@@ -79,28 +79,30 @@ class DeptheadRegForm(UserCreationForm):
 
 
 class TeacherRegForm(UserCreationForm):
-    contact = forms.CharField(max_length=15,required=True)
-    designation = forms.CharField(max_length=20,required=True)
-    Teaching_Field = forms.CharField(max_length=30,required=True)
+    contact = forms.CharField(max_length=15, required=True)
+    designation = forms.CharField(max_length=20, required=True)
+    Teaching_Field = forms.CharField(max_length=30, required=True)
     image = forms.ImageField(required=True)
+
     class Meta(UserCreationForm.Meta):
         model = User
         fields = [
-            'first_name','last_name','username','email','password1','password2'
+            'first_name', 'last_name', 'username', 'email', 'password1', 'password2'
         ]
         labels = {
-            'email':'Email*'
+            'email': 'Email*'
         }
+
     def __init__(self, *args, **kwargs):
         super(TeacherRegForm, self).__init__(*args, **kwargs)
         self.fields['first_name'].widget.attrs.update({
             'required': True,
             'autofocus': True,
-            'placeholder':'first name'
+            'placeholder': 'first name'
         })
         self.fields['last_name'].widget.attrs.update({
             'required': True,
-            'placeholder':'last name'
+            'placeholder': 'last name'
         })
         self.fields['username'].widget.attrs.update({
             'required': True,
@@ -123,40 +125,44 @@ class TeacherRegForm(UserCreationForm):
             'placeholder': 'designation'
         })
         self.fields['contact'].widget.attrs.update({
-            'placeholder':'01***-******'
+            'placeholder': '01***-******'
         })
         self.fields['Teaching_Field'].widget.attrs.update({
             'required': True,
             'placeholder': 'Teaching field'
         })
+
     @transaction.atomic
     def save(self, *args, **kwargs):
         user = super().save(commit=False)
-        #user.is_none=True
+        # user.is_none=True
         user.save()
         teacher = Teacher.objects.create(user=user)
         teacher.contact = self.cleaned_data.get('contact')
-        teacher.designation=self.cleaned_data.get('designation')
+        teacher.designation = self.cleaned_data.get('designation')
         teacher.teach_fields = self.cleaned_data.get('Teaching_Field')
         teacher.image = self.cleaned_data.get('image')
         teacher.save()
         return user
 
 
-
 class StudentRegForm(UserCreationForm):
     Gender = (
-        ('male','Male'),
-        ('female','Female'),
-        ('eunuch','Eunuch'),
+        ('male', 'Male'),
+        ('female', 'Female'),
     )
 
-    dept = forms.ModelChoiceField(queryset=Dept.objects.all(), label='Department', empty_label="Choose your Department")
-    batch = forms.ModelChoiceField(queryset=Batch.objects.all(),empty_label="Choose your Batch")
-    session = forms.ModelChoiceField(queryset=Session.objects.all(),empty_label="Choose your Session")
-    reg_no = forms.IntegerField(required=True,label='Registration No')
+    dept = forms.ModelChoiceField(queryset=Dept.objects.all(
+    ), label='Department', empty_label="Choose your Department")
+    batch = forms.ModelChoiceField(
+        queryset=Batch.objects.all(), empty_label="Choose your Batch")
+    session = forms.ModelChoiceField(
+        queryset=Session.objects.all(), empty_label="Choose your Session")
+    reg_no = forms.CharField(
+        max_length=20, required=True, label='Registration No')
     mobile = forms.CharField(max_length=15, required=True)
-    gender=forms.ChoiceField(widget=forms.RadioSelect(),choices=Gender,required=True)
+    gender = forms.ChoiceField(
+        widget=forms.RadioSelect(), choices=Gender, required=True)
     image = forms.ImageField(required=True)
 
     class Meta(UserCreationForm.Meta):
@@ -165,11 +171,13 @@ class StudentRegForm(UserCreationForm):
             'first_name', 'last_name', 'username', 'email', 'password1', 'password2'
         ]
         labels = {
-            'email':'Email*'
+            'email': 'Email*'
         }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['dept'].queryset=Dept.objects.none()
+        self.fields['dept'].queryset = Dept.objects.none()
+
     def __init__(self, *args, **kwargs):
         super(StudentRegForm, self).__init__(*args, **kwargs)
         self.fields['first_name'].widget.attrs.update({
@@ -197,8 +205,7 @@ class StudentRegForm(UserCreationForm):
             'required': True,
             'placeholder': '********'
         })
-        
-        
+
         self.fields['reg_no'].widget.attrs.update({
             'required': True,
             'placeholder': 'reg_no'
@@ -210,9 +217,9 @@ class StudentRegForm(UserCreationForm):
         if 'dept' in self.data:
             self.fields['dept'].queryset = Dept.objects.all()
         elif self.instance.pk:
-            self.fields['dept'].queryset = Dept.objects.all().filter(pk=self.instance.dept.pk)
+            self.fields['dept'].queryset = Dept.objects.all().filter(
+                pk=self.instance.dept.pk)
 
-        
         self.fields['batch'].queryset = Batch.objects.none()
         if 'batch' in self.data:
             self.fields['batch'].queryset = Batch.objects.all()
@@ -230,7 +237,7 @@ class StudentRegForm(UserCreationForm):
     @transaction.atomic
     def save(self, *args, **kwargs):
         user = super().save(commit=False)
-        user.is_none=True
+        user.is_none = True
         user.save()
         student = Student.objects.create(user=user)
         student.dept = self.cleaned_data.get('dept')
@@ -243,16 +250,19 @@ class StudentRegForm(UserCreationForm):
         student.save()
         return user
 
+
 class Profile_edit_Form(forms.ModelForm):
     class Meta:
         model = User
         fields = [
-            'first_name','last_name','username','email',
+            'first_name', 'last_name', 'username', 'email',
         ]
+
+
 class Depthead_profile_edit_form(forms.ModelForm):
     class Meta:
         model = Depthead
-        exclude = ['user','image']
+        exclude = ['user', 'image']
 
 
 class Teacher_profile_edit_form(forms.ModelForm):

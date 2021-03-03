@@ -1,4 +1,14 @@
-{% extends 'base.html' %}{% block body %}
+{% extends 'base.html' %} {% block style %}
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid darkgray;
+        border-collapse: collapse;
+    }
+</style>
+
+{%endblock%}{% block body %}
 <div class="container">
     <div>
         {% if messages %} {% for message in messages %}
@@ -28,7 +38,7 @@
                         </select>
                     </div>
                     <div class="col-4">
-                        <button class="btn btn-primary" type="submit" href="">Assign Teacher</button>
+                        <button class="btn btn-primary" name="assign_course" type="submit" href="">Assign Teacher</button>
                     </div>
                 </div>
 
@@ -37,14 +47,26 @@
     </div>
     <div class=" table-responsive">
         <table class="table table-striped table-hover">
-            {% for stu in result_info %}
+            {% for stu in result_info %} {% if forloop.counter == 1%}
+            <tr class="bg-info">
+                {% for i in stu %}
+                <td>{{i}}</td>
+                {% endfor %}
+            </tr>{% else %}
             <tr>
                 {% for i in stu %}
                 <td>{{i}}</td>
                 {% endfor %}
-            </tr>
-            {% endfor %}
+            </tr> {% endif %}{% endfor %}
         </table>
+    </div>
+
+    <br>
+    <div class="text-center" style="margin-top: 20px;">
+        <form action="" method="POST">
+            {%csrf_token%}
+            <button type="submit" name="calculate" class="btn btn-success">Calculate GPA</button>
+        </form>
     </div>
 
 </div>

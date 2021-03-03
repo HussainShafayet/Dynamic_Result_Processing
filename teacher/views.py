@@ -106,7 +106,7 @@ def course_result(request, batch, course):
                     add_drop.save()
                     messages.success(request, 'Added successfully!')
                     return redirect('course_result', batch, course)
-        return render(request, 'course_result.html', context)
+        return render(request, 'course_result_theory.html', context)
     elif course_type == 'Sessional':
         student_list = get_course.course_result_sessional_set.all()
         drop_student = Student_data.objects.all()
@@ -288,10 +288,14 @@ def result_submit(request, batch, course):
 
 
 def delete_student(request, batch, course, id):
-    #get_batch = Sessions.objects.get(Batch=batch)
-    #get_course = Course.objects.get(Course=course, Batch=get_batch)
-    del_std = Course_Result_Theory.objects.get(id=id).delete()
-    return redirect('course_result',batch,course)
+    get_batch = Sessions.objects.get(Batch=batch)
+    get_course = Course.objects.get(Course=course, Batch=get_batch)
+    course_type = get_course.Course_type
+    if course_type == 'Theory':
+        del_std = Course_Result_Theory.objects.get(id=id).delete()
+    elif course_type == 'Sessional':
+        del_std = Course_Result_Sessional.objects.get(id=id).delete()
+    return redirect('course_result', batch, course)
 
 
 """ @login_required

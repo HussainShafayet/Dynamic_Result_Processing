@@ -8,9 +8,11 @@
         </div>
         {% endfor %} {% endif %}
     </div>
+    {% if value == 'visible' %}
     <div style="margin-left: 10px; margin-bottom:10px;">
         <a class="btn btn-primary" href="{% url 'add_course' syllabus_id semester %}">Add New Course</a>
-    </div>{% if course_list %}
+    </div>
+    {%endif%} {% if course_list %}
     <div class="table-responsive">
         <h1 class="text-center">{{semester}} semester courses will be displayed here</h1>
         <hr>
@@ -46,12 +48,12 @@
 </div>
 
 <div class="row">
-    <div class="col"></div>
-    <div class="col-mid-auto">
+    <div class="col-3"></div>
+    <div class="col-6">
         <form action="" method="post">
             {% csrf_token %} {{form|crispy}}
             <button class="btn btn-primary" type="submit">Add Course</button>
         </form>
     </div>
-    <div class="col"></div>
+    <div class="col-3"></div>
 </div>{%endif%}{% endblock %}

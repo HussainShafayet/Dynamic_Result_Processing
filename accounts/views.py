@@ -206,6 +206,7 @@ def activate(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
+        messages.success(request,'Registration successful!')
         return render(request, 'active_account.html', {'val':2})
     else:
         return render(request, 'active_account.html')
@@ -228,13 +229,15 @@ def user_login(request):
                     return redirect('depthead_dashboard')
                 elif user.is_student:
                     auth.login(request, user)
+                    messages.success(request, 'You are logged in!')
                     return redirect('student_dashboard')
                 elif user.is_teacher:
                     auth.login(request, user)
+                    messages.success(request, 'You are logged in!')
                     return redirect('teacher_dashboard')
                 else:
                     auth.login(request, user)
-                    messages.error(request, 'Your are not authorised user')
+                    messages.warning(request, 'Your are not authorised user')
                     return redirect(home)
         else:
             conext = {

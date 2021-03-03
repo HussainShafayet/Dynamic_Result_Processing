@@ -40,7 +40,7 @@ class Student(models.Model):
     dept = models.ForeignKey(Dept,on_delete=models.CASCADE,default=1)
     batch = models.ForeignKey(Batch,on_delete=models.CASCADE,default=1)
     session = models.ForeignKey(Session,on_delete=models.CASCADE,default=1)
-    reg_no = models.IntegerField(default=0)
+    reg_no = models.CharField(max_length=20,default=0)
     mobile = models.CharField(max_length=15)
     gender = models.CharField(max_length=10, choices=Gender)
     image = models.ImageField(upload_to='images/profile', default='images/profile.png')

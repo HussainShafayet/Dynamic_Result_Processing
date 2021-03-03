@@ -22,7 +22,7 @@ from django.shortcuts import render_to_response
 def depthead_home(request):
     return render(request, 'user_Dashboard.html', {'val': 'user_dh', })
 
-#Users,Userdetails and Allowuser
+# Users,Userdetails and Allowuser
 
 
 @login_required
@@ -390,6 +390,11 @@ def syllabus_semester(request, syllabus_id):
 
 def view_course_list_all(request, syllabus_id, semester):
     syllabus = Syllabus.objects.get(Syllabus_Name=syllabus_id)
+    search_syllabus = Sessions.objects.filter(syllabus=syllabus)
+    if search_syllabus:
+        value = 'hide'
+    else:
+        value = 'visible'
     get_semester = Course_Semester_List.objects.get(
         syllabus=syllabus, Semester=semester)
     course_list = get_semester.course_list_all_set.all()
@@ -398,7 +403,8 @@ def view_course_list_all(request, syllabus_id, semester):
         'course_list': course_list,
         'val': val,
         'semester': semester,
-        'syllabus_id': syllabus_id
+        'syllabus_id': syllabus_id,
+        'value': value
     }
     return render(request, 'course_list.html', context)
 
@@ -527,12 +533,16 @@ def create_batch(request):
                 courses_02.append("Total Credit")
                 courses_02.append("Grade Point")
                 courses_02.append("Letter Grade")
+                credit = 'Credit Till '+string_01+' Semester'
+                courses_02.append(credit)
+                point = 'Point Till '+string_01+' Semester'
+                courses_02.append(point)
+                grade = 'Grade Till '+string_01+' Semester'
+                courses_02.append(grade)
 
                 for j in i.result_table_set.all():
                     fieldList1 = j._meta.get_fields()
-                    print(fieldList1)
                     fieldList2 = fieldList1[5:]
-                    print(fieldList2)
                     Two_list = zip(fieldList2, courses_02)
                     for l, m in Two_list:
                         string_06 = l.name
@@ -579,7 +589,7 @@ def find_batch(request):
 def batch_info(request, batch):
     batch2 = Sessions.objects.get(Batch=batch)
     semester_list = Result_Semester_List.objects.filter(session=batch2)
-    #result_semester_list = batch.result_semester_list_set.all()
+    # result_semester_list = batch.result_semester_list_set.all()
 
     context = {
         'result_semester_list': semester_list,
@@ -639,41 +649,120 @@ def result_info(request, batch, semester):
     }
 
     if request.method == 'POST':
-        course = request.POST.get('courses')
-        teacher = request.POST.get('teacher')
-        if course and teacher is not None:
-            teacher_obj = Teacher_name.objects.get(teacher=teacher)
-            get_course2 = course_list.get(course_code=course)
-            type2 = get_course2.course_type
-            assigned_course_list = Course.objects.filter(
-                Batch=get_batch, Course=course)
-            if assigned_course_list:
-                messages.warning(
-                    request, 'This course has been already assigned!')
-                return render(request, 'result_info.html', context)
-            else:
-                New_course = Course(teacher=teacher_obj, Course=course,
-                                    Batch=get_batch, Course_type=type2, semester=semester_string.Semester)
-                New_course.save()
-                if type2 == 'Theory':
-                    find_course = Course.objects.get(
-                        Course=course, Batch=get_batch)
-                    student_list = Student_data.objects.filter(
-                        session=get_batch)
-                    for i in student_list:
-                        theory_course = Course_Result_Theory(
-                            course=find_course, batch=get_batch, Reg_No=i.Reg_No, Name=i.Name)
-                        theory_course.save()
+        if 'assign_course' in request.POST:
+            course = request.POST.get('courses')
+            teacher = request.POST.get('teacher')
+            if course and teacher is not None:
+                teacher_obj = Teacher_name.objects.get(teacher=teacher)
+                get_course2 = course_list.get(course_code=course)
+                type2 = get_course2.course_type
+                assigned_course_list = Course.objects.filter(
+                    Batch=get_batch, Course=course)
+                if assigned_course_list:
+                    messages.warning(
+                        request, 'This course has been already assigned!')
+                    return redirect('result_info', batch, semester)
+                else:
+                    New_course = Course(teacher=teacher_obj, Course=course,
+                                        Batch=get_batch, Course_type=type2, semester=semester_string.Semester)
+                    New_course.save()
+                    if type2 == 'Theory':
+                        find_course = Course.objects.get(
+                            Course=course, Batch=get_batch)
+                        student_list = Student_data.objects.filter(
+                            session=get_batch)
+                        for i in student_list:
+                            theory_course = Course_Result_Theory(
+                                course=find_course, batch=get_batch, Reg_No=i.Reg_No, Name=i.Name)
+                            theory_course.save()
+                        messages.success(
+                            request, 'Course assign successfully!')
+                        return redirect('result_info', batch, semester)
 
-                elif type2 == 'Sessional':
-                    find_course = Course.objects.get(
-                        Course=course, Batch=get_batch)
-                    student_list = Student_data.objects.filter(
-                        session=get_batch)
-                    for i in student_list:
-                        theory_course = Course_Result_Sessional(
-                            course=find_course, batch=get_batch, Reg_No=i.Reg_No, Name=i.Name)
-                        theory_course.save()
+                    elif type2 == 'Sessional':
+                        find_course = Course.objects.get(
+                            Course=course, Batch=get_batch)
+                        student_list = Student_data.objects.filter(
+                            session=get_batch)
+                        for i in student_list:
+                            theory_course = Course_Result_Sessional(
+                                course=find_course, batch=get_batch, Reg_No=i.Reg_No, Name=i.Name)
+                            theory_course.save()
+                        messages.success(request,'Course assign successfully!')
+                        return redirect('result_info', batch, semester)
+
+        if 'calculate' in request.POST:
+            my_dict = {}
+            for i in course_list:
+                my_dict[i.course_code] = i.credit
+
+            search_string = get_batch.Batch + ' ' + semester_string.Semester
+            find_obj = Result_Table.objects.get(Reg=search_string)
+            column_list = find_obj.__dict__
+            for field, value in column_list.items():
+                if value == 'Total Credit':
+                    credit = field
+                if value == 'Grade Point':
+                    point = field
+                if value == 'Letter Grade':
+                    grade = field
+
+            student_list2 = get_semester.result_table_set.all().exclude(Reg=search_string)
+            for student in student_list2:
+                credit_count = 0
+                gpa_count = 0
+                fieldlist = student.__dict__
+                for field, value in fieldlist.items():
+                    if (value is None):
+                        continue
+                    course_name = getattr(find_obj, field)
+                    course_string = str(course_name)
+
+                    if 'GP' in course_string:
+                        course_gpa2 = value
+                        course_gpa = float(course_gpa2)
+                        course_code = course_string[:-3]
+                        find_credit = my_dict[course_code]
+                        print(course_code, course_gpa, find_credit)
+                        if(course_gpa < 2.00):
+                            continue
+                        if(course_gpa >= 2.00):
+                            gpa_count += course_gpa*find_credit
+                            credit_count += find_credit
+                if(credit_count == 0):
+                    continue
+                GPA_full = gpa_count/credit_count
+                GPA = round(GPA_full, 2)
+
+                if(GPA < 2.00):
+                    letter_grade = 'F'
+                if(GPA >= 2.00 and GPA < 2.25):
+                    letter_grade = 'C-'
+                if(GPA >= 2.25 and GPA < 2.50):
+                    letter_grade = 'C'
+                if(GPA >= 2.50 and GPA < 2.75):
+                    letter_grade = 'C+'
+                if(GPA >= 2.75 and GPA < 3.00):
+                    letter_grade = 'B-'
+                if(GPA >= 3.00 and GPA < 3.25):
+                    letter_grade = 'B'
+                if(GPA >= 3.25 and GPA < 3.50):
+                    letter_grade = 'B+'
+                if(GPA >= 3.50 and GPA < 3.75):
+                    letter_grade = 'A-'
+                if(GPA >= 3.75 and GPA < 4.00):
+                    letter_grade = 'A'
+                if(GPA == 4.00):
+                    letter_grade = 'A+'
+
+                setattr(student, credit, credit_count)
+                setattr(student, point, GPA)
+                setattr(student, grade, letter_grade)
+                student.save()
+                GPA = 0
+                letter_grade = ' '
+            return redirect('result_info', batch, semester)
+
     return render(request, 'result_info.html', context)
 
 
@@ -700,7 +789,9 @@ def batch_results(request, Dy_id):
     return render(request, 'semester_list.html', context)
 
 
-""" @login_required
+""" @ login_required
+
+
 @allowed_user(allowed_roles=['DeptHead']) """
 
 
@@ -787,7 +878,7 @@ def get_teachers():
     return teacher_list_zip
 
 
-""" @login_required
+""" @ login_required
 @allowed_user(allowed_roles=['DeptHead']) """
 
 
@@ -809,8 +900,9 @@ def assign_teacher(string01, string02, string03):
         new_student = Course_Result_Theory(
             course=find_course, Reg_No=reg, Name=name)
         new_student.save()
-    """ string04='Teachers '+Dy_id
-    teacher_entry_tuple = batch_result.objects.get_or_create(Reg_No=string04,Result_Session=sess)
+    """ string04 = 'Teachers '+Dy_id
+    teacher_entry_tuple = batch_result.objects.get_or_create(
+        Reg_No=string04, Result_Session=sess)
     teacher_entry = teacher_entry_tuple[0]
     course02 = course+"_LG"
     setattr(teacher_entry, course02, teacher_02)
