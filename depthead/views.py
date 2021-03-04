@@ -388,27 +388,6 @@ def syllabus_semester(request, syllabus_id):
         return render(request, 'syllabus.html', context) """
 
 
-def view_course_list_all(request, syllabus_id, semester):
-    syllabus = Syllabus.objects.get(Syllabus_Name=syllabus_id)
-    search_syllabus = Sessions.objects.filter(syllabus=syllabus)
-    if search_syllabus:
-        value = 'hide'
-    else:
-        value = 'visible'
-    get_semester = Course_Semester_List.objects.get(
-        syllabus=syllabus, Semester=semester)
-    course_list = get_semester.course_list_all_set.all()
-    val = 'course_list_by_semester'
-    context = {
-        'course_list': course_list,
-        'val': val,
-        'semester': semester,
-        'syllabus_id': syllabus_id,
-        'value': value
-    }
-    return render(request, 'course_list.html', context)
-
-
 def add_course(request, syllabus_id, semester):
     if request.method == 'POST':
         form = AddCourse(request.POST)
@@ -447,6 +426,33 @@ def add_course(request, syllabus_id, semester):
             'form': form,
         }
         return render(request, 'course_list.html', context)
+
+
+def view_course_list_all(request, syllabus_id, semester):
+    syllabus = Syllabus.objects.get(Syllabus_Name=syllabus_id)
+    search_syllabus = Sessions.objects.filter(syllabus=syllabus)
+    if search_syllabus:
+        value = 'hide'
+    else:
+        value = 'visible'
+    get_semester = Course_Semester_List.objects.get(
+        syllabus=syllabus, Semester=semester)
+    course_list = get_semester.course_list_all_set.all()
+    val = 'course_list_by_semester'
+    context = {
+        'course_list': course_list,
+        'val': val,
+        'semester': semester,
+        'syllabus_id': syllabus_id,
+        'value': value
+    }
+    return render(request, 'course_list.html', context)
+
+
+def delete_course(request, syllabus_id, semester, id):
+    del_course = Course_List_All.objects.get(pk=id).delete()
+    messages.success(request, 'This course is deleted succesfully!!!')
+    return redirect('view_course_list', syllabus_id, semester)
 
 
 # Course create and Show
@@ -688,7 +694,8 @@ def result_info(request, batch, semester):
                             theory_course = Course_Result_Sessional(
                                 course=find_course, batch=get_batch, Reg_No=i.Reg_No, Name=i.Name)
                             theory_course.save()
-                        messages.success(request,'Course assign successfully!')
+                        messages.success(
+                            request, 'Course assign successfully!')
                         return redirect('result_info', batch, semester)
 
         if 'calculate' in request.POST:
@@ -708,6 +715,7 @@ def result_info(request, batch, semester):
                     grade = field
 
             student_list2 = get_semester.result_table_set.all().exclude(Reg=search_string)
+            print(student_list2)
             for student in student_list2:
                 credit_count = 0
                 gpa_count = 0
@@ -717,13 +725,11 @@ def result_info(request, batch, semester):
                         continue
                     course_name = getattr(find_obj, field)
                     course_string = str(course_name)
-
                     if 'GP' in course_string:
                         course_gpa2 = value
                         course_gpa = float(course_gpa2)
                         course_code = course_string[:-3]
                         find_credit = my_dict[course_code]
-                        print(course_code, course_gpa, find_credit)
                         if(course_gpa < 2.00):
                             continue
                         if(course_gpa >= 2.00):

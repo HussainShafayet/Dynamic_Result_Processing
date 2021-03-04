@@ -1,7 +1,39 @@
-{% extends 'base.html' %}{% block body %}
+{% extends 'base.html' %}{% block style %}
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid darkgray;
+        border-collapse: collapse;
+    }
+</style>
+
+{%endblock%}{% block body %}
 
 <h1>Result</h1>
-<table>
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            {% for stu in result2 %}
+            <tr>
+                {% for i in stu %}
+                <th>{{i}}</th>
+                {% endfor %}
+            </tr>{% endfor %}
+        </thead>
+        <tbody>
+            {% for stu in results %}
+            <tr>
+                {% for i in stu %}
+                <td>{{i}}</td>
+                {% endfor %}
+            </tr> {% endfor %}
+        </tbody>
+
+    </table>
+</div>
+
+<!-- <table>
     <thead>
         <th>Registration No</th>
         <th>Name</th>
@@ -21,7 +53,7 @@
         <th>LG</th>
     </thead>
     <tr>
-        <td>{{results.Reg_No}} </td>
+        <td>{{results.Reg}} </td>
         <td>{{results.Name}} </td>
         <td>{{results.CSE_101_GP}}<br>{{results.CSE_101_LG}}</td>
         <td>{{results.CSE_102_GP}}<br>{{results.CSE_102_LG}} </td>
@@ -39,4 +71,4 @@
         <td>{{results.Sem_01_LG}} </td>
     </tr>
 
-</table> {% endblock %}
+</table> -->{% endblock %}

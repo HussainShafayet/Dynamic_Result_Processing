@@ -32,5 +32,8 @@ $(document).ready(function() {
     $('.submit').on('click', function() {
         return confirm("Are you complete Calculate GPA ???");
     });
+    $('#delete_course').on('click', function() {
+        return confirm("Are you sure???")
+    });
 
 });

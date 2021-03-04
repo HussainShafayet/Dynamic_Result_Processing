@@ -60,9 +60,25 @@
                     </li>
                     {% elif user.is_student %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'student_dashboard' %}">Home</a></li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'student_result' %}">Result</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Result</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{% url 'student_result' '1st'%}">1st semester</a>
+                            <a class="dropdown-item" href="{% url 'student_result' '2nd' %}">2nd semester</a>
+                            <a class="dropdown-item" href="{% url 'student_result' '3rd' %}">3rd semester</a>
+                            <a class="dropdown-item" href="{% url 'student_result' '4th' %}">4th semester</a>
+                            <a class="dropdown-item" href="{% url 'student_result' '5th' %}">5th semester</a>
+                            <a class="dropdown-item" href="{% url 'student_result' '6th' %}">6th semester</a>
+                            <a class="dropdown-item" href="{% url 'student_result' '7th' %}">7th semester</a>
+                            <a class="dropdown-item" href="{% url 'student_result' '8th' %}">8th semester</a>
+                            <!-- <a class="dropdown-item" href="#">Another action</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Something else here</a> -->
+                        </div>
                     </li>
+
+
+
                     {% elif user.is_student == False and user.is_teacher == False and user.is_depthead == False%}
                     <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="">contact</a></li>
@@ -182,8 +198,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/bf12ee2437.js " crossorigin="anonymous "></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js "></script>
-    <script src="{% static 'Js/Rp.js' %} "></script>
     {% block js_script %}{% endblock %}
+    <script src="{% static 'Js/Rp.js' %} "></script>
+
 
 </body>
 
