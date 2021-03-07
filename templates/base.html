@@ -37,10 +37,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'teacher_info'%}">Teacher Info</a>
                     </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'results' %}">Result</a>
-                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'find_batch' %}">Batch Info</a>
                     </li>
@@ -53,13 +49,16 @@
                         <a class="nav-link" href="{% url 'assign_course' %}">Courses</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="">Course Result</a>
+                        <a class="nav-link" href="{% url 'completed_courses' %}">Completed Courses</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">contact</a>
+                        <a class="nav-link" href="{% url 'exam_khata'%}">Exam Khata</a>
                     </li>
                     {% elif user.is_student %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'student_dashboard' %}">Home</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'active_courses' %}">Active Coureses</a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Result</a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">

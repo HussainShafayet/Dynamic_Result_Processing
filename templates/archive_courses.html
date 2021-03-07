@@ -1,0 +1,70 @@
+{% extends 'base.html' %}{% block body %}
+<div class="container">
+    {% if val == 'theory' %}
+    <div class="table-responsive" style="margin-top: 10px;">
+        <h3 class="text-center">{{course}} ({{course.Course_type}}) result</h3>
+        <hr>
+        <table class="table table-stripped  table-hover">
+            <thead class="thead bg-info">
+                <tr>
+                    <th>Registration No</th>
+                    <th>Name</th>
+                    <th>Attendence</th>
+                    <th>Term Test 01</th>
+                    <th>Term Test 02</th>
+                    <th>Term Test 03</th>
+                    <th>Term Test Total</th>
+                    <th>Pre Final Total</th>
+                </tr>
+            </thead>
+            {% for student in student_list|dictsort:"Reg_No" %}
+            <tr>
+                <td>{{student.Reg_No}} </td>
+                <td>{{student.Name}} </td>
+                <td>{{student.Attendence}}</td>
+                <td>{{student.Term_Test_01}} </td>
+                <td>{{student.Term_Test_02}} </td>
+                <td>{{student.Term_Test_03}} </td>
+                <td>{{student.Term_Test_Total}} </td>
+                <td>{{student.Pre_Final_Total}} </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>{% else %}
+
+    <div class="table-responsive" style="margin-top: 10px;">
+        <h3 class="text-center">{{course}} ({{course.Course_type}}) result</h3>
+        <hr>
+        <table class="table table-stripped table-hover">
+            <thead class="thead bg-info">
+                <th>Registration No</th>
+                <th>Name</th>
+                <th>Attendence</th>
+                <th>Lab Performance</th>
+                <th>Exam</th>
+                <th>Total Mark</th>
+                <th>Grade Point</th>
+                <th>Letter Grade</th>
+
+            </thead>
+            {% for i in student_list|dictsort:"Reg_No" %}
+            <tr>
+                <td>{{i.Reg_No}} </td>
+                <td>{{i.Name}} </td>
+                <td>{{i.Attendence}}</td>
+                <td>{{i.Lab_performance}}</td>
+                <td>{{i.Exam}}</td>
+                <td>{{i.Total_mark}} </td>
+                <td>{{i.Grade_point}} </td>
+                <td>{{i.Letter_grade}} </td>
+
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    {%endif%}
+
+</div>
+
+{% endblock %}

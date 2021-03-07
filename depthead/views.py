@@ -6,8 +6,8 @@ from django.contrib.auth import get_user_model
 from .forms import (AddCourse, Create_batch, AddSyllabus, Add_Semester)
 from .models import (Course_list, Batch, Session,
                      Student_Sessions, batch_result, Dept, Syllabus, Course_Semester_List, Sessions, Result_Semester_List, Result_Table, Course_List_All)
-from teacher.models import (
-    Course, Course_Result_Theory, Course_Result_Sessional, Teacher_name)
+from teacher.models import (Course,
+                            Course_Result_Sessional, Teacher_name, Course_Result_Theory, Course_Khata)
 from student.models import(Student_data)
 from django.contrib import messages
 from .decorators import login_required, allowed_user
@@ -16,8 +16,13 @@ import json
 from django.http import JsonResponse
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import render_to_response
-# Create your views here.
+# pdf
+from django.template.loader import get_template
+from django.http import HttpResponse
+import pdfkit
 
+
+# Create your views here.
 
 def depthead_home(request):
     return render(request, 'user_Dashboard.html', {'val': 'user_dh', })
@@ -264,9 +269,8 @@ def teacher_search(request):
         data = user_list.values()
         return JsonResponse(list(data), safe=False)
 
+
 # add Syllabus and view syllabus
-
-
 def add_syllabus(request):
     if request.method == 'POST':
         form = AddSyllabus(request.POST)
@@ -345,49 +349,6 @@ def syllabus_semester(request, syllabus_id):
     return render(request, 'syllabus.html', context)
 
 
-""" def add_semester(request, syllabus_id):
-    if request.method == 'POST':
-        form = Add_Semester(request.POST, syllabus_id)
-        if form.is_valid():
-            get_syllabus = Syllabus.objects.get(Syllabus_Name=syllabus_id)
-            semester = form.cleaned_data['Semester']
-            get_sem = Course_Semester_List.objects.filter(
-                syllabus=get_syllabus, Semester=semester)
-            if get_sem:
-                messages.warning(request, 'This semester already exists!')
-                val = 'add_semester'
-                context = {
-                    'form': form,
-                    'val': val,
-                    'syllabus_id': syllabus_id,
-                }
-                return render(request, 'syllabus.html', context)
-            else:
-                New_Course_Semester_List = Course_Semester_List(
-                    syllabus=get_syllabus, Semester=semester)
-                New_Course_Semester_List.save()
-                messages.success(request, 'Semester added successfully!')
-                return redirect('syllabus_semester', syllabus_id)
-        else:
-            messages.warning(request, 'Try again!')
-            val = 'add_semester'
-            context = {
-                'form': form,
-                'val': val,
-                'syllabus_id': syllabus_id,
-            }
-            return render(request, 'syllabus.html', context)
-    else:
-        form = Add_Semester()
-        val = 'add_semester'
-        context = {
-            'form': form,
-            'val': val,
-            'syllabus_id': syllabus_id,
-        }
-        return render(request, 'syllabus.html', context) """
-
-
 def add_course(request, syllabus_id, semester):
     if request.method == 'POST':
         form = AddCourse(request.POST)
@@ -455,41 +416,6 @@ def delete_course(request, syllabus_id, semester, id):
     return redirect('view_course_list', syllabus_id, semester)
 
 
-# Course create and Show
-""" @login_required
-@allowed_user(allowed_roles=['DeptHead'])
-def addcourse(request):
-    if request.method == 'POST':
-        form = AddCourse(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('course')
-        else:
-            context = {
-                'form': form,
-            }
-            return render(request, 'course.html', context)
-    else:
-        form = AddCourse()
-        context = {
-            'form': form
-        }
-        return render(request, 'course.html', context) """
-
-
-""" @login_required
-@allowed_user(allowed_roles=['DeptHead'])
-def show_course(request):
-    course_list = Course_list.objects.all().order_by('semester', 'course_code')
-    val = 'course_li'
-    context = {
-        'course_list': course_list,
-        'qs_json': json.dumps(list(course_list.values()), cls=DjangoJSONEncoder),
-        'val': val,
-    }
-    return render(request, 'course.html', context) """
-
-
 @login_required
 @allowed_user(allowed_roles=['DeptHead'])
 def create_batch(request):
@@ -536,15 +462,13 @@ def create_batch(request):
                     courses_02.append(string_04)
                     string_05 = k.course_code+" LG"
                     courses_02.append(string_05)
-                courses_02.append("Total Credit")
+                courses_02.append("Credit")
+                courses_02.append("Total Grade Point")
                 courses_02.append("Grade Point")
-                courses_02.append("Letter Grade")
-                credit = 'Credit Till '+string_01+' Semester'
-                courses_02.append(credit)
-                point = 'Point Till '+string_01+' Semester'
-                courses_02.append(point)
-                grade = 'Grade Till '+string_01+' Semester'
-                courses_02.append(grade)
+                courses_02.append("Grade")
+                courses_02.append('Total Credit')
+                courses_02.append('Cumulative Grade Point')
+                courses_02.append('Cumulative Grade')
 
                 for j in i.result_table_set.all():
                     fieldList1 = j._meta.get_fields()
@@ -556,11 +480,6 @@ def create_batch(request):
                         setattr(j, string_06, string_07)
                         j.save()
 
-            """ form.save()
-            add_batch = Batch(batch=batch)
-            add_batch.save()
-            add_session = Session(session=session)
-            add_session.save() """
             return redirect('find_batch')
         else:
             messages.warning(request, 'Try again!')
@@ -606,6 +525,177 @@ def batch_info(request, batch):
     return render(request, 'batch_info.html', context)
 
 
+def calculate_GPA(batch, semester):
+    get_batch = Sessions.objects.get(Batch=batch)
+    get_syllabus = get_batch.syllabus
+    semester_string = Course_Semester_List.objects.get(
+        syllabus=get_syllabus, Semester=semester)
+    get_x = Course_Semester_List.objects.get(
+        syllabus=get_syllabus, Semester=semester_string)
+    course_list = get_x.course_list_all_set.all()
+    get_semester = Result_Semester_List.objects.get(
+        session=get_batch, Semester=semester)
+
+    my_dict = {}
+    for i in course_list:
+        my_dict[i.course_code] = i.credit
+
+    search_string = get_batch.Batch + ' ' + semester_string.Semester
+    find_obj = Result_Table.objects.get(Reg=search_string)
+    column_list = find_obj.__dict__
+    for field, value in column_list.items():
+        if value == 'Credit':
+            credit = field
+        if value == 'Total Grade Point':
+            total_point = field
+        if value == 'Grade Point':
+            point = field
+        if value == 'Grade':
+            grade = field
+        if value == 'Total Credit':
+            CGPA_credit = field
+        if value == 'Cumulative Grade Point':
+            CGPA = field
+        if value == 'Cumulative Grade':
+            CGPA_grade = field
+
+    student_list2 = get_semester.result_table_set.all().exclude(Reg=search_string)
+    for student in student_list2:
+        credit_count = 0
+        gpa_count = 0
+        fieldlist = student.__dict__
+        for field, value in fieldlist.items():
+            if (value is None):
+                continue
+            course_name = getattr(find_obj, field)
+            course_string = str(course_name)
+
+            if 'GP' in course_string:
+                course_gpa2 = value
+                course_gpa = float(course_gpa2)
+                course_code = course_string[:-3]
+                find_credit = my_dict[course_code]
+                if(course_gpa < 2.00):
+                    continue
+                if(course_gpa >= 2.00):
+                    gpa_count += course_gpa*find_credit
+                    credit_count += find_credit
+
+        if (credit_count == 0):
+            GPA_full = 0.00
+        else:
+            GPA_full = gpa_count / credit_count
+
+        GPA = round(GPA_full, 2)
+
+        if(GPA < 2.00):
+            letter_grade = 'F'
+        if(GPA >= 2.00 and GPA < 2.25):
+            letter_grade = 'C-'
+        if(GPA >= 2.25 and GPA < 2.50):
+            letter_grade = 'C'
+        if(GPA >= 2.50 and GPA < 2.75):
+            letter_grade = 'C+'
+        if(GPA >= 2.75 and GPA < 3.00):
+            letter_grade = 'B-'
+        if(GPA >= 3.00 and GPA < 3.25):
+            letter_grade = 'B'
+        if(GPA >= 3.25 and GPA < 3.50):
+            letter_grade = 'B+'
+        if(GPA >= 3.50 and GPA < 3.75):
+            letter_grade = 'A-'
+        if(GPA >= 3.75 and GPA < 4.00):
+            letter_grade = 'A'
+        if(GPA == 4.00):
+            letter_grade = 'A+'
+
+        setattr(student, credit, credit_count)
+        setattr(student, total_point, gpa_count)
+        setattr(student, point, GPA)
+        setattr(student, grade, letter_grade)
+        student.save()
+        GPA = 0
+        letter_grade = ' '
+
+    # Calculate CGPA
+    result_semesters = []
+    result_semesters_2 = get_batch.result_semester_list_set.all().order_by('Semester')
+    for i in result_semesters_2:
+        result_semesters.append(i)
+        if i.Semester == get_semester.Semester:
+            break
+
+    credit_dict = {}
+    gpa_dict = {}
+    all_students = Student_data.objects.filter(session=get_batch)
+    for student in all_students:
+        credit_dict[student.Reg_No] = 0.00
+        gpa_dict[student.Reg_No] = 0.00
+
+    for j in result_semesters:
+        student_list_3 = j.result_table_set.all().order_by('-Reg')
+        x = student_list_3[0]
+        fieldlist = x.__dict__
+        for field, value in fieldlist.items():
+            if value == 'Credit':
+                credit = field
+            if value == 'Total Grade Point':
+                total_point = field
+
+        student_list_4 = j.result_table_set.all().exclude(Name='Name').order_by('Reg')
+        for student in student_list_4:
+            get_reg = getattr(student, 'Reg')
+            get_credit = getattr(student, credit)
+            get_total_point = getattr(student, total_point)
+
+            previous_credit = credit_dict[get_reg]
+            after_credit = previous_credit+float(get_credit)
+            credit_dict[get_reg] = after_credit
+
+            previous_points = gpa_dict[get_reg]
+            after_points = previous_points+float(get_total_point)
+            gpa_dict[get_reg] = after_points
+
+    student_list_5 = get_semester.result_table_set.all().exclude(
+        Name='Name').order_by('Reg')
+    for stu in student_list_5:
+        find_reg = stu.Reg
+        find_credit = credit_dict[find_reg]
+        find_points = gpa_dict[find_reg]
+
+        if find_credit == 0:
+            continue
+
+        calculate_cgpa = find_points/find_credit
+        GPA = round(calculate_cgpa, 2)
+
+        if(GPA < 2.00):
+            letter_grade = 'F'
+        if(GPA >= 2.00 and GPA < 2.25):
+            letter_grade = 'C-'
+        if(GPA >= 2.25 and GPA < 2.50):
+            letter_grade = 'C'
+        if(GPA >= 2.50 and GPA < 2.75):
+            letter_grade = 'C+'
+        if(GPA >= 2.75 and GPA < 3.00):
+            letter_grade = 'B-'
+        if(GPA >= 3.00 and GPA < 3.25):
+            letter_grade = 'B'
+        if(GPA >= 3.25 and GPA < 3.50):
+            letter_grade = 'B+'
+        if(GPA >= 3.50 and GPA < 3.75):
+            letter_grade = 'A-'
+        if(GPA >= 3.75 and GPA < 4.00):
+            letter_grade = 'A'
+        if(GPA == 4.00):
+            letter_grade = 'A+'
+
+        setattr(stu, CGPA_credit, find_credit)
+        setattr(stu, CGPA, GPA)
+        setattr(stu, CGPA_grade, letter_grade)
+        stu.save()
+
+
 def result_info(request, batch, semester):
     get_batch = Sessions.objects.get(Batch=batch)
     get_syllabus = get_batch.syllabus
@@ -616,42 +706,62 @@ def result_info(request, batch, semester):
     course_list = get_x.course_list_all_set.all()
     get_semester = Result_Semester_List.objects.get(
         session=get_batch, Semester=semester)
-    result_info = get_semester.result_table_set.all()
-    list_of_list1 = []
-    list1 = []
-    list_of_list2 = []
-    x = 0
-    for i in result_info:
+
+    get_courses = Course.objects.filter(
+        Batch=get_batch, semester=str(semester_string), Course_type='Theory')
+    result_info = get_semester.result_table_set.all().order_by('-Reg')
+    first_line = result_info[0]
+    column_list = first_line.__dict__
+    for field, value in column_list.items():
+        if value == 'Total Grade Point':
+            skip_field = field
+        if value is None:
+            stop_field = field
+            break
+
+    my_list = []
+    list_of_list = []
+    fieldlist = first_line._meta.get_fields()
+    for field in fieldlist[3:]:
+        if(field.name == skip_field):
+            continue
+        if(field.name == stop_field):
+            break
+        val = getattr(first_line, field.name)
+        my_list.append(val)
+
+    list_of_list.append(my_list)
+    my_list = []
+
+    result_info_2 = get_semester.result_table_set.all().exclude(
+        Name='Name').order_by('Reg')
+    for i in result_info_2:
         field_list = i._meta.get_fields()
         for j in field_list[3:]:
+            if(j.name == skip_field):
+                continue
+            if(j.name == stop_field):
+                break
             val = getattr(i, j.name)
             if val == None:
-                break
-            elif val == 'Name':
-                x = 1
-                list1.append(val)
+                my_list.append(' ')
             else:
-                list1.append(val)
-        if x == 1:
-            list_of_list1.append(list1)
-        else:
-            list_of_list2.append(list1)
-        list1 = []
-        x = 2
+                my_list.append(val)
 
-    import operator
-    sorted_list = sorted(list_of_list2, key=operator.itemgetter(0))
-    for i in sorted_list:
-        list_of_list1.append(i)
+        list_of_list.append(my_list)
+        my_list = []
+
     val = 'result_info_table'
     teahcer_list = Teacher_name.objects.all()
+
     context = {
-        'result_info': list_of_list1,
+        'result_info': list_of_list,
         'val': val,
         'course_list': course_list,
         'teacher_list': teahcer_list,
         'batch': batch,
-        'semester': semester
+        'semester': semester,
+        'courses': get_courses
     }
 
     if request.method == 'POST':
@@ -667,10 +777,10 @@ def result_info(request, batch, semester):
                 if assigned_course_list:
                     messages.warning(
                         request, 'This course has been already assigned!')
-                    return redirect('result_info', batch, semester)
+                    return render(request, 'result_info.html', context)
                 else:
-                    New_course = Course(teacher=teacher_obj, Course=course,
-                                        Batch=get_batch, Course_type=type2, semester=semester_string.Semester)
+                    New_course = Course(teacher=teacher_obj, Course=course, Batch=get_batch,
+                                        Course_type=type2, semester=semester_string.Semester)
                     New_course.save()
                     if type2 == 'Theory':
                         find_course = Course.objects.get(
@@ -681,9 +791,9 @@ def result_info(request, batch, semester):
                             theory_course = Course_Result_Theory(
                                 course=find_course, batch=get_batch, Reg_No=i.Reg_No, Name=i.Name)
                             theory_course.save()
-                        messages.success(
-                            request, 'Course assign successfully!')
-                        return redirect('result_info', batch, semester)
+                            theory_course_new = Course_Result_Theory(
+                                course=find_course, batch=get_batch, Reg_No=i.Reg_No, Name=i.Name)
+                            theory_course_new.save()
 
                     elif type2 == 'Sessional':
                         find_course = Course.objects.get(
@@ -694,86 +804,172 @@ def result_info(request, batch, semester):
                             theory_course = Course_Result_Sessional(
                                 course=find_course, batch=get_batch, Reg_No=i.Reg_No, Name=i.Name)
                             theory_course.save()
-                        messages.success(
-                            request, 'Course assign successfully!')
-                        return redirect('result_info', batch, semester)
+
+            return render(request, 'result_info.html', context)
 
         if 'calculate' in request.POST:
-            my_dict = {}
-            for i in course_list:
-                my_dict[i.course_code] = i.credit
+            result_semesters = []
+            result_semesters_2 = get_batch.result_semester_list_set.all().order_by('Semester')
+            for i in result_semesters_2:
+                result_semesters.append(i.Semester)
+                if i.Semester == get_semester.Semester:
+                    break
 
-            search_string = get_batch.Batch + ' ' + semester_string.Semester
-            find_obj = Result_Table.objects.get(Reg=search_string)
-            column_list = find_obj.__dict__
-            for field, value in column_list.items():
-                if value == 'Total Credit':
-                    credit = field
-                if value == 'Grade Point':
-                    point = field
-                if value == 'Letter Grade':
-                    grade = field
+            for j in result_semesters:
+                calculate_GPA(batch, j)
+            return redirect('result_info', batch, semester)
 
-            student_list2 = get_semester.result_table_set.all().exclude(Reg=search_string)
-            print(student_list2)
-            for student in student_list2:
-                credit_count = 0
-                gpa_count = 0
-                fieldlist = student.__dict__
-                for field, value in fieldlist.items():
-                    if (value is None):
-                        continue
-                    course_name = getattr(find_obj, field)
-                    course_string = str(course_name)
-                    if 'GP' in course_string:
-                        course_gpa2 = value
-                        course_gpa = float(course_gpa2)
-                        course_code = course_string[:-3]
-                        find_credit = my_dict[course_code]
-                        if(course_gpa < 2.00):
-                            continue
-                        if(course_gpa >= 2.00):
-                            gpa_count += course_gpa*find_credit
-                            credit_count += find_credit
-                if(credit_count == 0):
-                    continue
-                GPA_full = gpa_count/credit_count
-                GPA = round(GPA_full, 2)
+        if 'create_pdf' in request.POST:
+            template = get_template('pdf.html')
+            html = template.render(context)
+            options = {
+                'page-size': 'A2',
+                'margin-top': '0.75in',
+                'margin-right': '0.75in',
+                'margin-bottom': '0.75in',
+                'margin-left': '0.75in',
+                'encoding': "UTF-8",
+                'custom-header': [
+                    ('Accept-Encoding', 'gzip')
+                ],
+                'cookie': [
+                    ('cookie-name1', 'cookie-value1'),
+                    ('cookie-name2', 'cookie-value2'),
+                ],
+                'no-outline': None
+            }
+            path_wkhtmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+            config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+            pdf = pdfkit.from_string(
+                html, False, options=options, configuration=config)
+            response = HttpResponse(pdf, content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment'
+            filename = "pperson_list_pdf.pdf"
+            return response
 
-                if(GPA < 2.00):
-                    letter_grade = 'F'
-                if(GPA >= 2.00 and GPA < 2.25):
-                    letter_grade = 'C-'
-                if(GPA >= 2.25 and GPA < 2.50):
-                    letter_grade = 'C'
-                if(GPA >= 2.50 and GPA < 2.75):
-                    letter_grade = 'C+'
-                if(GPA >= 2.75 and GPA < 3.00):
-                    letter_grade = 'B-'
-                if(GPA >= 3.00 and GPA < 3.25):
-                    letter_grade = 'B'
-                if(GPA >= 3.25 and GPA < 3.50):
-                    letter_grade = 'B+'
-                if(GPA >= 3.50 and GPA < 3.75):
-                    letter_grade = 'A-'
-                if(GPA >= 3.75 and GPA < 4.00):
-                    letter_grade = 'A'
-                if(GPA == 4.00):
-                    letter_grade = 'A+'
+    return render(request, 'result_info.html', context)
 
-                setattr(student, credit, credit_count)
-                setattr(student, point, GPA)
-                setattr(student, grade, letter_grade)
-                student.save()
-                GPA = 0
-                letter_grade = ' '
+
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
+def course_result_details(request, batch, semester, course):
+    get_batch = Sessions.objects.get(Batch=batch)
+    get_course = Course.objects.get(Batch=get_batch, Course=course)
+    student_list = get_course.course_result_theory_set.all()
+    teahcer_list = Teacher_name.objects.all()
+    val = 'course_result_details'
+    context = {
+        'student_list': student_list,
+        'teacher_list': teahcer_list,
+        'val': val,
+    }
+    if request.method == 'POST':
+        if('assign_khata' in request.POST):
+            part_A_teacher = request.POST.get('part_a')
+            part_B_teacher = request.POST.get('part_b')
+            if part_A_teacher == part_B_teacher:
+                messages.warning(
+                    request, 'Both part can not be assigned to the same teacher!!!')
+                return redirect('course_result_details', batch, semester, course)
+            else:
+                get_teacher_A = Teacher_name.objects.get(
+                    teacher=part_A_teacher)
+                get_teacher_B = Teacher_name.objects.get(
+                    teacher=part_B_teacher)
+                New_Course = Course_Khata(teacher=get_teacher_A, batch=get_batch,
+                                          semester=semester, Course_Code=course, Exam_Part='Part A')
+                New_Course.save()
+                New_Course = Course_Khata(teacher=get_teacher_B, batch=get_batch,
+                                          semester=semester, Course_Code=course, Exam_Part='Part B')
+                New_Course.save()
+                return redirect('course_result_details', batch, semester, course)
+
+        if ('calculate' in request.POST):
+            gpa = 0.00
+            grade = ''
+            for i in student_list:
+                total_marks = i.Pre_Final_Total + i.Exam_Part_A + i.Exam_Part_B
+                if (total_marks < 40):
+                    gpa = 0.00
+                    grade = 'F'
+                if (total_marks >= 40 and total_marks < 45):
+                    gpa = 2.00
+                    grade = 'C-'
+                if (total_marks >= 45 and total_marks < 50):
+                    gpa = 2.25
+                    grade = 'C'
+                if (total_marks >= 50 and total_marks < 55):
+                    gpa = 2.50
+                    grade = 'C+'
+                if (total_marks >= 55 and total_marks < 60):
+                    gpa = 2.75
+                    grade = 'B-'
+                if (total_marks >= 60 and total_marks < 65):
+                    gpa = 3.00
+                    grade = 'B'
+                if (total_marks >= 65 and total_marks < 70):
+                    gpa = 3.25
+                    grade = 'B+'
+                if (total_marks >= 70 and total_marks < 75):
+                    gpa = 3.50
+                    grade = 'A-'
+                if (total_marks >= 75 and total_marks < 80):
+                    gpa = 3.75
+                    grade = 'A'
+                if (total_marks >= 80):
+                    gpa = 4.00
+                    grade = 'A+'
+
+                i.Total_mark = total_marks
+                i.Grade_point = gpa
+                i.Letter_grade = grade
+                i.save()
+            return redirect('course_result_details', batch, semester, course)
+
+        if('submit' in request.POST):
+            get_batch = Sessions.objects.get(Batch=batch)
+            get_course = Course.objects.get(Course=course, Batch=get_batch)
+            course_semester = get_course.semester
+            course_name = get_course.Course+' LG'
+            string = get_batch.Batch+' '+course_semester
+            get_list = Result_Table.objects.get(Reg=string)
+            fieldlist = get_list.__dict__
+            for field, value in fieldlist.items():
+                LG_field = field
+                if (course_name == value):
+                    break
+                GP_field = LG_field
+
+            student_list = get_course.course_result_theory_set.all()
+            for i in student_list:
+                Reg = i.Reg_No
+                gp = i.Grade_point
+                lg = i.Letter_grade
+                sess = i.batch
+                result_semester = Result_Semester_List.objects.get(
+                    Semester=course_semester, session=sess)
+                find_student = Result_Table.objects.get(
+                    Reg=Reg, result_semester=result_semester)
+                setattr(find_student, GP_field, gp)
+                setattr(find_student, LG_field, lg)
+                find_student.save()
             return redirect('result_info', batch, semester)
 
     return render(request, 'result_info.html', context)
 
 
+
+
+
+
+
+
+
+
+
+
 # previous
-@login_required
+""" @login_required
 @allowed_user(allowed_roles=['DeptHead'])
 def results(request):
     batch_list = Student_Sessions.objects.all()
@@ -782,17 +978,17 @@ def results(request):
         'batch_list': batch_list,
         'group': group
     }
-    return render(request, 'results.html', context)
+    return render(request, 'results.html', context) """
 
 
-@login_required
+""" @login_required
 @allowed_user(allowed_roles=['DeptHead'])
 def batch_results(request, Dy_id):
     string = Dy_id
     context = {
         'string': string,
     }
-    return render(request, 'semester_list.html', context)
+    return render(request, 'semester_list.html', context) """
 
 
 """ @ login_required
@@ -801,7 +997,7 @@ def batch_results(request, Dy_id):
 @allowed_user(allowed_roles=['DeptHead']) """
 
 
-def calculate(batch, start, end, credit, point, grade):
+""" def calculate(batch, start, end, credit, point, grade):
     for i in batch.batch_result_set.all():
         credit_count = 0
         sem_1_total_gpa = 0
@@ -881,14 +1077,14 @@ def get_teachers():
         teacher_list_03.append(string04)
 
     teacher_list_zip = zip(teacher_list_02, teacher_list_03)
-    return teacher_list_zip
+    return teacher_list_zip """
 
 
 """ @ login_required
 @allowed_user(allowed_roles=['DeptHead']) """
 
 
-def assign_teacher(string01, string02, string03):
+""" def assign_teacher(string01, string02, string03):
     course = string01
     teacher = string02
     Dy_id = string03
@@ -906,7 +1102,7 @@ def assign_teacher(string01, string02, string03):
         new_student = Course_Result_Theory(
             course=find_course, Reg_No=reg, Name=name)
         new_student.save()
-    """ string04 = 'Teachers '+Dy_id
+    string04 = 'Teachers '+Dy_id
     teacher_entry_tuple = batch_result.objects.get_or_create(
         Reg_No=string04, Result_Session=sess)
     teacher_entry = teacher_entry_tuple[0]
@@ -915,7 +1111,7 @@ def assign_teacher(string01, string02, string03):
     teacher_entry.save() """
 
 
-@login_required
+""" @login_required
 @allowed_user(allowed_roles=['DeptHead'])
 def semester_01(request, Dy_id):
     Batch = Student_Sessions.objects.get(pk=Dy_id)
@@ -1278,3 +1474,4 @@ def semester_08(request, Dy_id):
     batch4 = sorted(batch3, key=lambda batch_result: batch_result.Reg_No)
     group = Group.objects.get(name='DeptHead')
     return render(request, 'semester_08.html', {'result_list': batch4, 'course_list': course_list, 'teacher_list': teacher_list, 'group': group})
+ """

@@ -6,6 +6,8 @@
     td {
         border: 1px solid black;
         border-collapse: collapse;
+        white-space: nowrap;
+        text-align: center;
     }
     
     #btn {
@@ -43,7 +45,7 @@
                     <option value="{{i.Reg_No}}" >{{i.Reg_No}}</option>
                     {%endfor%}
                 </select>
-            <button type="submit" class="btn btn-primary">Add Drop Student</button>
+            <button type="submit" name="drop_student" class="btn btn-primary">Add Drop Student</button>
         </form>
     </div>
     <div class="table-responsive" style="margin-top: 10px;">
@@ -55,53 +57,51 @@
                     <th>Registration No</th>
                     <th>Name</th>
                     <th>Attendence</th>
-                    <th>Term test</th>
-                    <th>Part A</th>
-                    <th>Part B</th>
-                    <th>Total Mark</th>
-                    <th>Grade Point</th>
-                    <th>Letter Grade</th>
+                    <th>Term Test 01</th>
+                    <th>Term Test 02</th>
+                    <th>Term Test 03</th>
+                    <th>Term Test Total</th>
+                    <th>Pre Final Total</th>
                     <th>Delete</th>
                 </tr>
             </thead>
-            {% for i in student_list|dictsort:"Reg_No" %}
+            {% for student in student_list|dictsort:"Reg_No" %}
             <tr>
-                <td>{{i.Reg_No}} </td>
-                <td>{{i.Name}} </td>
-                <td class="editable" data-id="{{i.id}}" data-type="Attendence">{{i.Attendence}}</td>
-                <td class="editable" data-id="{{i.id}}" data-type="Term_test">{{i.Term_test}} </td>
-                <td class="editable" data-id="{{i.id}}" data-type="Exam_Part_A">{{i.Exam_Part_A}}</td>
-                <td class="editable" data-id="{{i.id}}" data-type="Exam_Part_B">{{i.Exam_Part_B}}</td>
-                <td>{{i.Total_mark}} </td>
-                <td>{{i.Grade_point}} </td>
-                <td>{{i.Letter_grade}} </td>
+                <td>{{student.Reg_No}} </td>
+                <td>{{student.Name}} </td>
+                <td class="editable" data-id="{{student.id}}" data-type="Attendence">{{student.Attendence}}</td>
+                <td class="editable" data-id="{{student.id}}" data-type="Term_Test_01">{{student.Term_Test_01}} </td>
+                <td class="editable" data-id="{{student.id}}" data-type="Term_Test_02">{{student.Term_Test_02}} </td>
+                <td class="editable" data-id="{{student.id}}" data-type="Term_Test_03">{{student.Term_Test_03}} </td>
+                <td>{{student.Term_Test_Total}} </td>
+                <td>{{student.Pre_Final_Total}} </td>
                 <td class="stud_del">
-                    <a class="btn btn-danger" href="{% url 'delete_student' batch course i.id %}">Delete</a>
+                    <a class="btn btn-danger" href="{% url 'delete_student' batch course student.id %}">Delete</a>
                 </td>
             </tr>
             {% endfor %}
         </table>
     </div>
     <br>
-    <div class="row">
-        <div class="col"></div>
-        <div class="col-mid-auto">
-            <div id="btn">
-                <form action="{% url 'calculate_course_gpa' batch course %}" method="POST">
-                    {% csrf_token %}
-                    <div class="container">
-                        <button class="btn btn-success" type="submit" name="Calculate">Calculate GPA</button>
-                    </div>
-                </form>
-                <form action="{% url 'result_submit' batch course %}" method="POST">
-                    {% csrf_token %}
-                    <div class="container submit">
-                        <button class="btn btn-success" type="submit" name="Submit">Submit</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="col"></div>
+    <div>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <input type="radio" id="1st" name="count_TT" value=1 required>
+            <label for="1st">Best One</label><br>
+            <input type="radio" id="2nd" name="count_TT" value=2>
+            <label for="2nd">Best Two</label><br>
+            <input type="radio" id="3rd" name="count_TT" value=3>
+            <label for="3rd">Avagare of 3</label>
+            <br>
+            <br>
+            <input type="submit" name="calculate" value="Calculate">
+        </form>
+    </div>
+    <div>
+        <form action="" method="POST">
+            {%csrf_token%}
+            <button type="submit" class="btn btn-success" name="change_state">Submit</button>
+        </form>
     </div>
 </div>
 
@@ -153,33 +153,41 @@
             console.log(id);
             console.log(value);
             console.log(type);
-            $.ajax({
-                    url: "http://127.0.0.1:8000/saveresult_theory",
-                    type: "POST",
-                    data: {
-                        id: id,
-                        type: type,
-                        value: value,
-                    },
-                    success: function() {
-                        $("#id").show();
-                        $("#id").addClass("alert alert-success").html("Updated successfully");
+            if ((type == 'Attendence' & value <= 10) | ((type == 'Term_Test_01' | type == 'Term_Test_02' | type == 'Term_Test_03') & value <= 20)) {
+                $.ajax({
+                        url: "http://127.0.0.1:8000/saveresult_theory",
+                        type: "POST",
+                        data: {
+                            id: id,
+                            type: type,
+                            value: value,
+                        },
+                        success: function() {
+                            $("#id").show();
+                            $("#id").addClass("alert alert-success").html("Updated successfully");
+                            setTimeout(function() {
+                                $("#id").fadeOut("slow", function() {
+                                    $("#id").hide();
+                                });
+                            }, 2000);
+                        }
+                    })
+                    .fail(function() {
+                        $("#id2").show();
+                        $("#id2").addClass("alert alert-danger").html("Error!");
                         setTimeout(function() {
-                            $("#id").fadeOut("slow", function() {
-                                $("#id").hide();
+                            $("#id2").fadeOut("slow", function() {
+                                $("#id2").hide();
                             });
                         }, 2000);
-                    }
-                })
-                .fail(function() {
-                    $("#id2").show();
-                    $("#id2").addClass("alert alert-danger").html("Error!");
-                    setTimeout(function() {
-                        $("#id2").fadeOut("slow", function() {
-                            $("#id2").hide();
-                        });
-                    }, 2000);
-                });
+                    });
+            } else {
+                if (type == 'Attendence') {
+                    alert('Please Give Attendence marks less than or equal 10 !!!');
+                } else {
+                    alert('Please Give Term Test marks less than or equal 20 !!!');
+                }
+            }
 
         }
 

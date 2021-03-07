@@ -6,6 +6,8 @@
     td {
         border: 1px solid black;
         border-collapse: collapse;
+        white-space: nowrap;
+        text-align: center;
     }
     
     #btn {
@@ -41,7 +43,7 @@
                     <option value="{{i.Reg_No}}" >{{i.Reg_No}}</option>
                     {%endfor%}
                 </select>
-            <button type="submit" class="btn btn-primary">Add Drop Student</button>
+            <button type="submit" name="drop_student_sessional" class="btn btn-primary">Add Drop Student</button>
         </form>
     </div>
     <div class="table-responsive" style="margin-top: 10px;">
@@ -81,16 +83,16 @@
         <div class="col"></div>
         <div class="col-mid-auto">
             <div id="btn">
-                <form action="{% url 'calculate_course_gpa' batch course %}" method="POST">
+                <form action="" method="POST">
                     {% csrf_token %}
                     <div class="container">
-                        <button class="btn btn-success" type="submit" name="Calculate">Calculate GPA</button>
+                        <button class="btn btn-success" name="calculate_sessional" type="submit" name="Calculate">Calculate GPA</button>
                     </div>
                 </form>
-                <form action="{% url 'result_submit' batch course %}" method="POST">
+                <form action="" method="POST">
                     {% csrf_token %}
                     <div class="container submit">
-                        <button class="btn btn-success" type="submit" name="Submit">Submit</button>
+                        <button class="btn btn-success" name="submit_sessional" type="submit" name="Submit">Submit</button>
                     </div>
                 </form>
             </div>

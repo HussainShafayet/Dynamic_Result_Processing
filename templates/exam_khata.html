@@ -1,0 +1,176 @@
+{% extends 'base.html' %} {% block style %}
+<style>
+    .card:hover {
+        background-color: rgb(113, 223, 204);
+        transition: .5s;
+        transform: scale(1.03);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);
+    }
+    
+    a:hover {
+        color: black;
+    }
+</style>
+
+{% endblock %} {% block body %}
+<div class="container">
+    {% if val == 'exam_khata' %} {% if courses %}
+    <div class="row">
+        {% for course_detail in courses %}
+        <div class="col">
+            <div class="container py-4">
+                <div class="card-deck-wrapper">
+                    <div class="card-deck ">
+                        <div class="card p-2">
+                            <a class="card-block stretched-link text-decoration-none" href="{% url 'assigned_khatas' course_detail.batch course_detail.Course_Code %}">
+                                <h4 class="card-title" style="text-align: center;">{{course_detail.Exam_Part}} ({{course_detail.Course_Code}})</h4>
+                                <hr>
+                                <p class="card-text" style="text-align: center;">Batch: {{course_detail.batch}}</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>{% endfor %}
+    </div>
+    {%else%}
+    <p>No paper has been assigned yet.</p>{%endif%} {%else%}
+
+    <div style="height: 50px;margin-bottom:10px;">
+        {% if messages %} {% for message in messages %}
+        <div class="alert alert-{{message.tags}}" role="alert" id="">
+            <button type="button" class="close" data-dismiss="alert">X</button> {{message}}
+        </div>
+        {% endfor %} {% endif %}
+        <div id="id"></div>
+        <div id="id2"></div>
+    </div>
+    {% if part == 'Part A' %}
+    <div class="table-responsive">
+        <h3 class="text-center">{{course}} (Part A) marks</h3>
+        <hr>
+        <table class="table table-striped table-hover">
+            <thead class="thead bg-info">
+                <tr class="text-center">
+                    <th>Khata Code</th>
+                    <th>Khata Mark</th>
+                </tr>
+            </thead>
+            <tbody class="tbody">
+                {% for student in student_list%}
+                <tr class="text-center">
+                    <td>{{student.Exam_Part_A_Code}} </td>
+                    <td class="editable" data-id="{{student.id}}" data-type="Exam_Part_A">{{student.Exam_Part_A}} </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {%else%}
+    <div class="table-responsive">
+        <h3 class="text-center">{{course}} (Part B) marks</h3>
+        <hr>
+        <table class="table table-hover">
+            <thead class="thead bg-info">
+                <tr class="text-center">
+                    <th>Khata Code</th>
+                    <th>Khata Mark</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in student_list %}
+                <tr class="text-center">
+                    <td>{{student.Exam_Part_B_Code}} </td>
+                    <td class="editable" data-id="{{student.id}}" data-type="Exam_Part_B">{{student.Exam_Part_B}} </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {%endif%}
+    <div>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <input type="submit" name="assign_khata" value="Submit Result">
+        </form>
+    </div><br> {%endif%}
+</div>
+{% endblock %}{% block js_script %}
+<script>
+    /*live editable*/
+    $(document).ready(function() {
+        $(document).on("dblclick", ".editable", function() {
+            var value = $(this).text();
+            var data_type = $(this).data("type");
+            var input_type = "text";
+            if (data_type == "created_at") {
+                input_type = "datetime-local";
+            }
+            var input = "<input type='" + input_type + "' class='input-data' value='" + value + "' class='form-control'>";
+            $(this).html(input);
+            $(this).removeClass("editable");
+        });
+        $(document).on("blur", ".input-data", function() {
+            var value = $(this).val();
+            var td = $(this).parent("td");
+            $(this).remove();
+            td.html(value);
+            td.addClass("editable");
+            var type = td.data("type");
+            sendToServer(td.data("id"), value, type);
+        });
+        $(document).on("keypress", ".input-data", function(e) {
+            var key = e.which;
+            if (key == 13) {
+                var value = $(this).val();
+                var td = $(this).parent("td");
+                $(this).remove();
+                td.html(value);
+                td.addClass("editable");
+                var type = td.data("type");
+                sendToServer(td.data("id"), value, type);
+            }
+        });
+
+        function sendToServer(id, value, type) {
+            console.log(id);
+            console.log(value);
+            console.log(type);
+            if (type == 'Exam_Part_B', type == 'Exam_Part_A' &
+                value <= 35) {
+                $.ajax({
+                        url: "http://127.0.0.1:8000/saveresult_exam_part",
+                        type: "POST",
+                        data: {
+                            id: id,
+                            type: type,
+                            value: value,
+                        },
+                        success: function() {
+                            $("#id").show();
+                            $("#id").addClass("alert alert-success").html("Updated successfully");
+                            setTimeout(function() {
+                                $("#id").fadeOut("slow", function() {
+                                    $("#id").hide();
+                                });
+                            }, 2000);
+                        }
+                    })
+                    .fail(function() {
+                        $("#id2").show();
+                        $("#id2").addClass("alert alert-danger").html("Error!");
+                        setTimeout(function() {
+                            $("#id2").fadeOut("slow", function() {
+                                $("#id2").hide();
+                            });
+                        }, 2000);
+                    });
+            } else {
+                alert("Please Give mark equal or less than 35 !!!");
+            }
+
+        }
+
+    });
+</script>
+{% endblock %}

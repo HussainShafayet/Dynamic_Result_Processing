@@ -5,6 +5,23 @@
     td {
         border: 1px solid darkgray;
         border-collapse: collapse;
+        white-space: nowrap;
+        text-align: center;
+    }
+    
+    .card:hover {
+        background-color: rgb(113, 223, 204);
+        transition: .5s;
+        transform: scale(1.03);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);
+    }
+    
+    a:hover {
+        color: black;
+    }
+    
+    .card-deck {
+        width: 250px;
     }
 </style>
 
@@ -16,6 +33,17 @@
             <button type="button" class="close" data-dismiss="alert">X</button> {{message}}
         </div>
         {% endfor %} {% endif %}
+        <div id="id"></div>
+        <div id="id2"></div>
+    </div>
+    {% if val == 'result_info_table' %}
+    <div>
+        <form action="" method="POST">
+            {%csrf_token%}
+
+            <button type="submit" class="btn btn-info" name="create_pdf">Create PDF</button>
+        </form>
+
     </div>
     <div style="margin-left: 10px; margin-bottom:10px;margin-top:10px">
         <div style="border:2px solid rgb(199, 221, 199); height:100px; margin-top:10px">
@@ -65,11 +93,194 @@
     <div class="text-center" style="margin-top: 20px;">
         <form action="" method="POST">
             {%csrf_token%}
-            <button type="submit" name="calculate" class="btn btn-success">Calculate GPA</button>
+            <button type="submit" name="calculate" class="btn btn-success">Calculate Result</button>
         </form>
     </div>
+    <div class="row">
+        {% for course in courses %}
+        <div class="col">
+            <div class="container py-4">
+                <div class="card-deck-wrapper">
+                    <div class="card-deck">
+                        <div class="card p-2">
+                            <a class="card-block stretched-link text-decoration-none" href="{% url 'course_result_details' batch semester course.Course %}">
+                                <h4 class="card-title">{{course.Course}} Details.</h4>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% elif val == 'course_result_details' %}
+    <div style="margin-left: 10px; margin-bottom:10px;margin-top:10px">
+        <div style="border:2px solid rgb(199, 221, 199); height:100px; margin-top:10px;align-items:center;">
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-4">
+                        <label for="part_a">Part A: </label>
+                        <select name="part_a" class="form-control" required>
+                        <option value="null" selected disabled>--Select teacher--</option>
+                        {% for i in teacher_list %}
+                        <option value="{{i}}">{{i}}</option>
+                        {% endfor %}
+                    </select>
+                    </div>
+                    <div class="col-4">
+                        <label for="part_b">Part B: </label>
+                        <select name="part_b" class="form-control" required>
+                            <option value="null" selected disabled>--Select teacher--</option>
+                            {% for i in teacher_list %}
+                            <option value="{{i}}">{{i}}</option>{% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <input style="margin-top: 32px;" class="btn btn-success" type="submit" name="assign_khata" value="Assaign Khata">
+                    </div>
+                </div>
 
+            </form>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <h3 class="text-center">Course details</h3>
+        <hr>
+        <table class="table table-stripped table-hover">
+            <thead class="thead bg-info">
+                <tr>
+                    <th>Registration No</th>
+                    <th>Name</th>
+                    <th>Pre Final Total</th>
+                    <th>Part A Code</th>
+                    <th>Part A</th>
+                    <th>Part B Code</th>
+                    <th>Exam Part B</th>
+                    <th>Total Marks</th>
+                    <th>Grade Points</th>
+                    <th>Letter Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in student_list|dictsort:"Reg_No"%}
+                <tr>
+                    <td>{{student.Reg_No}} </td>
+                    <td>{{student.Name}} </td>
+                    <td>{{student.Pre_Final_Total}} </td>
+                    <td class="editable" data-id="{{student.id}}" data-type="Exam_Part_A_Code">{{student.Exam_Part_A_Code}}</td>
+                    <td>{{student.Exam_Part_A}} </td>
+                    <td class="editable" data-id="{{student.id}}" data-type="Exam_Part_B_Code">{{student.Exam_Part_B_Code}}</td>
+                    <td>{{student.Exam_Part_B}} </td>
+                    <td>{{student.Total_mark}} </td>
+                    <td>{{student.Grade_point}} </td>
+                    <td>{{student.Letter_grade}} </td>
+                </tr>
+                {% endfor %}</tbody>
+        </table>
+
+    </div>
+    <br>
+    <div>
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-mid-auto">
+                <div style="display: flex; flex-direction:row;">
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <div class="container">
+                            <button class="btn btn-primary" type="submit" name="calculate">Calculate</button>
+                        </div>
+                    </form>
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <div class="container">
+                            <button class="btn btn-success" type="submit" name="submit">Submit Result</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+
+
+    {%endif%}
 </div>
 
 
-{% endblock %}
+{% endblock %} {% block js_script %}
+
+
+<script>
+    /*live editable*/
+    $(document).ready(function() {
+        $(document).on("dblclick", ".editable", function() {
+            var value = $(this).text();
+            var data_type = $(this).data("type");
+            var input_type = "text";
+            if (data_type == "created_at") {
+                input_type = "datetime-local";
+            }
+            var input = "<input type='" + input_type + "' class='input-data' value='" + value + "' class='form-control'>";
+            $(this).html(input);
+            $(this).removeClass("editable");
+        });
+        $(document).on("blur", ".input-data", function() {
+            var value = $(this).val();
+            var td = $(this).parent("td");
+            $(this).remove();
+            td.html(value);
+            td.addClass("editable");
+            var type = td.data("type");
+            sendToServer(td.data("id"), value, type);
+        });
+        $(document).on("keypress", ".input-data", function(e) {
+            var key = e.which;
+            if (key == 13) {
+                var value = $(this).val();
+                var td = $(this).parent("td");
+                $(this).remove();
+                td.html(value);
+                td.addClass("editable");
+                var type = td.data("type");
+                sendToServer(td.data("id"), value, type);
+            }
+        });
+
+        function sendToServer(id, value, type) {
+            console.log(id);
+            console.log(value);
+            console.log(type);
+            $.ajax({
+                url: "http://127.0.0.1:8000/save_paper_code",
+                type: "POST",
+                data: {
+                    id: id,
+                    type: type,
+                    value: value,
+                },
+                success: function() {
+                    $("#id").show();
+                    $("#id").addClass("alert alert-success").html("Updated successfully");
+                    setTimeout(function() {
+                        $("#id").fadeOut("slow", function() {
+                            $("#id").hide();
+                        });
+                    }, 2000);
+                }
+            }).fail(function() {
+                $("#id2").show();
+                $("#id2").addClass("alert alert-danger").html("Error!");
+                setTimeout(function() {
+                    $("#id2").fadeOut("slow", function() {
+                        $("#id2").hide();
+                    });
+                }, 2000);
+            });
+        }
+    });
+</script>
+
+{%endblock%}

@@ -25,19 +25,38 @@ class Course(models.Model):
         return self.Course
 
 
+class Course_Khata(models.Model):
+    objects = models.Manager()
+    teacher = models.ForeignKey(Teacher_name, on_delete=models.CASCADE)
+    batch = models.ForeignKey(Sessions, on_delete=models.CASCADE)
+    semester = models.CharField(max_length=20)
+    Course_Code = models.CharField(max_length=20)
+    Exam_Part = models.CharField(max_length=20)
+    Active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.Course_Code+' '+str(self.batch)
+
+
 class Course_Result_Theory(models.Model):
     objects = models.Manager()
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    batch = models.ForeignKey(Sessions, on_delete=models.CASCADE)
     Reg_No = models.CharField(max_length=20)
     Name = models.CharField(max_length=100)
-    Term_test = models.IntegerField(default=0)
     Attendence = models.IntegerField(default=0)
+    Term_Test_01 = models.IntegerField(default=0)
+    Term_Test_02 = models.IntegerField(default=0)
+    Term_Test_03 = models.IntegerField(default=0)
+    Term_Test_Total = models.IntegerField(default=0)
+    Pre_Final_Total = models.IntegerField(default=0)
+    Exam_Part_A_Code = models.CharField(max_length=20, null=True, blank=True)
     Exam_Part_A = models.IntegerField(default=0)
+    Exam_Part_B_Code = models.CharField(max_length=20, null=True, blank=True)
     Exam_Part_B = models.IntegerField(default=0)
     Total_mark = models.IntegerField(default=0)
     Grade_point = models.FloatField(default=0)
-    Letter_grade = models.CharField(max_length=10)
-    batch = models.ForeignKey(Sessions, on_delete=models.CASCADE)
+    Letter_grade = models.CharField(max_length=10, null=True, blank=True)
 
     def __str__(self):
         return self.Reg_No
@@ -53,7 +72,7 @@ class Course_Result_Sessional(models.Model):
     Exam = models.IntegerField(default=0)
     Total_mark = models.IntegerField(default=0)
     Grade_point = models.FloatField(default=0)
-    Letter_grade = models.CharField(max_length=10)
+    Letter_grade = models.CharField(max_length=10,default=None,blank=True)
     batch = models.ForeignKey(Sessions, on_delete=models.CASCADE)
 
     def __str__(self):
