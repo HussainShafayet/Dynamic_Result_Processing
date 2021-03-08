@@ -51,7 +51,7 @@
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-4">
-                        <select name="courses" class="form-control">
+                        <select name="courses" class="form-control" required>
                             <option value="null" selected disabled >--Select course--</option>
                             {% for course in course_list%}
                             <option value="{{course}}">{{course}}</option>
@@ -59,7 +59,7 @@
                         </select>
                     </div>
                     <div class="col-4">
-                        <select name="teacher" class="form-control">
+                        <select name="teacher" class="form-control" required>
                             <option value="null" selected disabled>--Select teacher--</option>
                             {% for i in teacher_list %}
                             <option value="{{i}}">{{i}}</option>{% endfor %}
@@ -195,7 +195,7 @@
                     </form>
                     <form action="" method="POST">
                         {% csrf_token %}
-                        <div class="container">
+                        <div class="container" id="submit_result">
                             <button class="btn btn-success" type="submit" name="submit">Submit Result</button>
                         </div>
                     </form>

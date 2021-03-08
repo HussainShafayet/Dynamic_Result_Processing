@@ -35,5 +35,8 @@ $(document).ready(function() {
     $('#delete_course').on('click', function() {
         return confirm("Are you sure???")
     });
+    $('#submit_result').on('click', function() {
+        return confirm("Please Calculate result first.")
+    });
 
 });

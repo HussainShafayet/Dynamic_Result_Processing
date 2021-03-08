@@ -958,16 +958,6 @@ def course_result_details(request, batch, semester, course):
     return render(request, 'result_info.html', context)
 
 
-
-
-
-
-
-
-
-
-
-
 # previous
 """ @login_required
 @allowed_user(allowed_roles=['DeptHead'])

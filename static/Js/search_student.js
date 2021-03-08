@@ -29,15 +29,14 @@ searchField.addEventListener('keyup', (e) => {
                 } else {
                     data.forEach((item) => {
                         tbody.innerHTML += `
-<tr>
-<td>${item.first_name}</td>
-<td>${item.last_name}</td>
-<td>${item.username}</td>
-<td>${item.email}</td>
- <td>${item.date_joined}</td>
-  <td><a class="btn btn-primary" href="user_details/${item.id}">Details</a>
-</td>
- </tr> `
+                                    <tr>
+                                    <td>${item.first_name}</td>
+                                    <td>${item.last_name}</td>
+                                    <td>${item.username}</td>
+                                    <td>${item.email}</td>
+                                    <td><a class="btn btn-primary" href="user_details/${item.id}">Details</a>
+                                    </td>
+                                    </tr> `
                     });
                 }
             });

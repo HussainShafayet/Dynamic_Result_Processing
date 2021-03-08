@@ -24,14 +24,14 @@
 
     {% if val1 == 'add_syllabus' %}
     <div class="row">
-        <div class="col"></div>
-        <div class="col-mid-auto">
+        <div class="col-3"></div>
+        <div class="col-5">
             <form action="" method="post">
                 {% csrf_token %} {{form|crispy}}
                 <button class="btn btn-primary" type="submit">Create Syllabus</button>
             </form>
         </div>
-        <div class="col"></div>
+        <div class="col-4"></div>
     </div>
     {% elif val == 'view_syllabus' %}
     <div style="margin-left: 10px; margin-bottom:10px;margin-top:10px">

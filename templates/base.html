@@ -89,11 +89,21 @@
                 </ul>
                 <div id="prof">
                     <ul>
-                        {% if user.is_authenticated %}{% if user.is_depthead %}
+                        {% if user.is_authenticated %}
+                        <li class="nav-item dropdown" style=" right:0px;">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% if user.is_depthead %}<img src="{{user.depthead.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer;">{% elif user.is_teacher %}<img src="{{user.teacher.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer">{%elif user.is_student%}<img  src="{{user.student.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer">{%else%}<img  src="media/images/profile/profile.png" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer">{%endif%}</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
+                                <a class="dropdown-item" href="">Setting</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                            </div>
+                        </li>
 
-                        <li class="pro"><img id="icon" src="{{user.depthead.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer"></li>{% elif user.is_teacher %}
+
+                        <!--{% if user.is_depthead %} <li class="pro"><img id="icon" src="{{user.depthead.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer"></li>{% elif user.is_teacher %}
                         <li class="pro"><img id="icon" src="{{user.teacher.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer"></li>{% elif user.is_student %}
-                        <li class="pro"><img id="icon" src="{{user.student.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer"></li>
+                        <li class="pro"><img id="icon" src="{{user.student.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer"></li> -->
                         {% else %}
                         <li>
                             <a href="{% url 'logout' %}">logout</a>
