@@ -32,6 +32,8 @@ def save_result_sessional(request):
         course.Attendence = value
     if type == "Lab_performance":
         course.Lab_performance = value
+    if type == "Project_mark":
+        course.Project_mark = value
     if type == "Exam":
         course.Exam = value
     course.save()

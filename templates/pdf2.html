@@ -1,0 +1,28 @@
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        text-align: center;
+    }
+</style>
+
+<table>
+    {% for i in result_info %} {% if forloop.counter == 1%}
+    <tr>
+        {% for j in i%}
+        <th style="padding:4px;">{{j}}</th>
+        {%endfor%}
+    </tr>
+
+    {%else%}
+    <tr>
+        {% for j in i%} {% if forloop.counter == 2 %}
+        <td style="white-space: nowrap;padding:4px;">{{j}}</td>{% else %}
+        <td style="padding: 4px;">{{j}}</td>
+        {%endif%} {%endfor%}
+    </tr>
+
+    {%endif%}{%endfor%}
+</table>

@@ -4,30 +4,64 @@
     td {
         border: 1px solid black;
         border-collapse: collapse;
-        white-space: nowrap;
         text-align: center;
     }
 </style>
 
 <div class="container">
+    <h2 style="text-align: center;margin-top:40px;">SHAHJALAL UNIVERSITY OF SCIENCE & TECHNOLOGY, SYLHET</h2>
+    <h3 style="text-align: center;">NAME OF INSTITUTE: SYLHET ENGINEERING COLLEGE, SYLHET</h3>
+    <h4 style="text-align:center;font-size:25px;">TABULATION SHEET</h4>
+    <p style="text-align: center;">{{exam}}</p>
+    <p style="float: right;">Session: {{session}}</p>
+    <p style="float: left;">Name of the Department: {{dept}}</p>
+
     <div>
         <table>
             {% for i in result_info %} {% if forloop.counter == 1%}
             <tr>
                 {% for j in i%}
-                <th>{{j}}</th>
+                <th style="padding:4px;">{{j}}</th>
                 {%endfor%}
             </tr>
 
             {%else%}
             <tr>
-                {% for j in i%}
-                <td>{{j}}</td>
-                {%endfor%}
+                {% for j in i%} {% if forloop.counter == 2 %}
+                <td style="white-space: nowrap;padding:4px;">{{j}}</td>{% else %}
+                <td style="padding: 4px;">{{j}}</td>
+                {%endif%} {%endfor%}
             </tr>
 
             {%endif%}{%endfor%}
         </table>
+    </div>
+    <div>
+        <div style="height:10px; margin-bottom:10px;">
+            <p style="font-size: larger;font-weight:bold;">Name, Signature & Date:</p>
+        </div>
+        <div style="height:40px;">
+            <div class="row">
+                <div class="col">
+                    <p style="float: left;">Chairman of the Exam. Committee: ..........................................</p>
+                </div>
+                <div class="col">
+                    <p style="float: right;">Controller of Examinations: ..........................................</p>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="row">
+                <div class="col">
+                    <p>Member of the Exam. Committee: 01) ..................................................... 02).......................................... 03) ..................................................... 04) .....................................................</p>
+                </div>
+                <div class="col">
+                    <p>Tabulators: 01) ..................................................... 02).......................................... 03) ..................................................... 04) .....................................................</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
 </div>

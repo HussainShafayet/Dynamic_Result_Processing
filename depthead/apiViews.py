@@ -33,5 +33,9 @@ def save_paper_code(request):
         course.Exam_Part_A_Code = value
     if type == "Exam_Part_B_Code":
         course.Exam_Part_B_Code = value
+    if type == "Exam_Part_A":
+        course.Exam_Part_A = value
+    if type == "Exam_Part_B":
+        course.Exam_Part_B = value
     course.save()
     return JsonResponse({"success": "updated"})

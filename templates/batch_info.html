@@ -1,4 +1,9 @@
-{% extends 'base.html' %} {% block style %}
+{% extends 'base.html' %}
+
+
+
+<!-- Style Part  -->
+{% block style %}
 <style>
     .card:hover {
         background-color: rgb(113, 223, 204);
@@ -12,8 +17,20 @@
     }
 </style>
 
-{% endblock %}{% block body %}{% if val == 'batch_info' %}
+{% endblock %}{% block body %}
 
+
+
+
+
+
+
+
+
+
+
+<!-- Batch Info  -->
+{% if val == 'batch_info' %}
 <div style="margin-left: 10px; margin-bottom:10px;">
     <a class="btn btn-primary" href="{% url 'create_batch' %}">Add New Batch</a>
 </div>
@@ -38,7 +55,17 @@
         </div>
     </div>
     {% endfor %}
-</div>{% else %}No batches created yet {% endif %} {% elif val == 'result_semester_list_info' %}
+</div>{% else %}No batches created yet {% endif %}
+
+
+
+
+
+
+
+
+<!-- Result Semester Info -->
+{% elif val == 'result_semester_list_info' %}
 
 <h1 class="text-center">All Semester Information are here</h1>
 <hr>
@@ -47,7 +74,7 @@
     <div class="col">
         <div class="container py-4">
             <div class="card-deck-wrapper">
-                <div class="card-deck">
+                <div class="card-deck" style="text-align: center;">
                     <div class="card p-2">
                         <a class="card-block stretched-link text-decoration-none" href="{% url 'result_info' batch_val batch.Semester %}">
                             <h4 class="card-title">{{batch.Semester}}</h4>
@@ -61,6 +88,12 @@
     </div>
     {% endfor %}
 </div>
+
+
+
+
+
+
 
 {% else %}
 <h1>Batch Name : {{student_list.Batch}}</h1>

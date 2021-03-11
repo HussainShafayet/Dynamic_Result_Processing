@@ -104,6 +104,7 @@ def course_result(request, batch, course):
         if request.method == 'POST':
             if 'drop_student' in request.POST:
                 reg_no = request.POST.get('reg_no')
+                drop_semester = request.POST.get('select_semester')
                 if reg_no == 'null':
                     messages.warning(
                         request, 'Please select a registration no!')
@@ -112,17 +113,17 @@ def course_result(request, batch, course):
                     drop_student = Student_data.objects.get(Reg_No=reg_no)
                     drop_session = drop_student.session
                     get_name = drop_student.Name
-                    check_reg_no = Course_Result_Theory.objects.filter(
-                        Reg_No=reg_no, batch=drop_session)
-                    if check_reg_no:
-                        messages.warning(
-                            request, 'This Registraion-No already exists!')
-                        return redirect('course_result', batch, course)
-                    else:
+                    check_reg_no = get_course.course_result_theory_set.filter(
+                        Reg_No=reg_no)
+                    if not check_reg_no:
                         add_drop = Course_Result_Theory(
-                            course=get_course, batch=drop_session, Reg_No=reg_no, Name=get_name)
+                            course=get_course, batch=drop_session, Reg_No=reg_no, Name=get_name, semester=drop_semester)
                         add_drop.save()
                         messages.success(request, 'Added successfully!')
+                        return redirect('course_result', batch, course)
+                    else:
+                        messages.warning(
+                            request, 'This Registraion. No. already exists!')
                         return redirect('course_result', batch, course)
             if 'calculate' in request.POST:
 
@@ -168,6 +169,7 @@ def course_result(request, batch, course):
         if request.method == 'POST':
             if 'drop_student_sessional' in request.POST:
                 reg_no = request.POST.get('reg_no')
+                drop_semester_sessional = request.POST.get('select_semester')
                 if reg_no == 'null':
                     messages.warning(
                         request, 'Please select a registration no!')
@@ -176,17 +178,18 @@ def course_result(request, batch, course):
                     drop_student = Student_data.objects.get(Reg_No=reg_no)
                     drop_session = drop_student.session
                     get_name = drop_student.Name
-                    check_reg_no = Course_Result_Sessional.objects.filter(
-                        Reg_No=reg_no, batch=drop_session)
-                    if check_reg_no:
-                        messages.warning(
-                            request, 'This Registraion-No already exists!')
-                        return redirect('course_result', batch, course)
-                    else:
+                    check_reg_no = get_course.course_result_sessional_set.filter(
+                        Reg_No=reg_no)
+                    print(check_reg_no)
+                    if not check_reg_no:
                         add_drop = Course_Result_Sessional(
-                            course=get_course, batch=drop_session, Reg_No=reg_no, Name=get_name)
+                            course=get_course, batch=drop_session, Reg_No=reg_no, Name=get_name, semester=drop_semester_sessional)
                         add_drop.save()
                         messages.success(request, 'Added successfully!')
+                        return redirect('course_result', batch, course)
+                    else:
+                        messages.warning(
+                            request, 'This Registraion. No. already exists!')
                         return redirect('course_result', batch, course)
             if 'calculate_sessional' in request.POST:
                 studentList = get_course.course_result_sessional_set.all().order_by('Reg_No')
@@ -242,7 +245,10 @@ def course_result(request, batch, course):
                     if (course_name == value):
                         break
                     GP_field = LG_field
-                student_list = get_course.course_result_sessional_set.all()
+
+                student_list = get_course.course_result_sessional_set.filter(
+                    semester=course_semester)
+
                 for i in student_list:
                     Reg = i.Reg_No
                     gp = i.Grade_point
@@ -255,6 +261,36 @@ def course_result(request, batch, course):
                     setattr(find_student, GP_field, gp)
                     setattr(find_student, LG_field, lg)
                     find_student.save()
+
+                drop_student_list = get_course.course_result_sessional_set.all().exclude(
+                    semester=course_semester)
+                for i in drop_student_list:
+                    session_obj = i.batch
+                    semester = i.semester
+                    gp = i.Grade_point
+                    lg = i.Letter_grade
+                    registration = i.Reg_No
+                    find_semester = Result_Semester_List.objects.get(
+                        session=session_obj, Semester=semester)
+                    get_course = Course.objects.get(
+                        Course=course, Batch=get_batch)
+                    course_name = get_course.Course+' LG'
+
+                    all_students = find_semester.result_table_set.filter(Name='Name')
+                    first_line = all_students[0]
+                    fieldlist = first_line.__dict__
+                    for field, value in fieldlist.items():
+                        LG_field = field
+                        if (course_name == value):
+                            break
+                        GP_field = LG_field
+
+                    find_student = Result_Table.objects.get(
+                        Reg=registration, result_semester=find_semester)
+                    setattr(find_student, GP_field, gp)
+                    setattr(find_student, LG_field, lg)
+                    find_student.save()
+
                 get_course.Active = False
                 get_course.save()
                 return redirect('assign_course')
@@ -319,11 +355,12 @@ def assaigned_khatas(request, batch, course):
     get_khata_object = Course_Khata.objects.get(
         batch=get_batch, Course_Code=course, teacher=teacher_obj)
     part = get_khata_object.Exam_Part
-    if part == '':
+    if part == 'Part A':
         student_list = get_course_object.course_result_theory_set.all().order_by(
             'Exam_Part_A_Code')
     else:
-        student_list = get_course_object.course_result_theory_set.all().order_by('Exam_Part_B_Code')
+        student_list = get_course_object.course_result_theory_set.all().order_by(
+            'Exam_Part_B_Code')
     val = 'exam_khata_detail'
     context = {
         'student_list': student_list,
@@ -336,6 +373,7 @@ def assaigned_khatas(request, batch, course):
         get_khata_object.save()
         return redirect('exam_khata')
     return render(request, 'exam_khata.html', context)
+
 
 def result_submit(request, batch, course):
     get_batch = Sessions.objects.get(Batch=batch)
@@ -403,5 +441,6 @@ def delete_student(request, batch, course, id):
     elif course_type == 'Sessional':
         del_std = Course_Result_Sessional.objects.get(id=id).delete()
     return redirect('course_result', batch, course)
+
 
 

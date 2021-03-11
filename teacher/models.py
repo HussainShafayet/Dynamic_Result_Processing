@@ -18,7 +18,7 @@ class Course(models.Model):
     Course = models.CharField(max_length=20)
     Active = models.BooleanField(default=True)
     Batch = models.ForeignKey(Sessions, on_delete=models.CASCADE)
-    semester=models.CharField(max_length=20)
+    semester = models.CharField(max_length=20)
     Course_type = models.CharField(max_length=20)
 
     def __str__(self):
@@ -57,6 +57,8 @@ class Course_Result_Theory(models.Model):
     Total_mark = models.IntegerField(default=0)
     Grade_point = models.FloatField(default=0)
     Letter_grade = models.CharField(max_length=10, null=True, blank=True)
+    semester = models.CharField(
+        max_length=20, null=True, blank=True, default=' ')
 
     def __str__(self):
         return self.Reg_No
@@ -69,11 +71,14 @@ class Course_Result_Sessional(models.Model):
     Name = models.CharField(max_length=100)
     Attendence = models.IntegerField(default=0)
     Lab_performance = models.IntegerField(default=0)
+    Project_mark = models.IntegerField(default=0)
     Exam = models.IntegerField(default=0)
     Total_mark = models.IntegerField(default=0)
     Grade_point = models.FloatField(default=0)
-    Letter_grade = models.CharField(max_length=10,default=None,blank=True)
+    Letter_grade = models.CharField(max_length=10, null=True, blank=True)
     batch = models.ForeignKey(Sessions, on_delete=models.CASCADE)
+    semester = models.CharField(
+        max_length=20, null=True, blank=True, default=' ')
 
     def __str__(self):
         return self.Reg_No

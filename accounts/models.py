@@ -22,6 +22,7 @@ class Depthead(models.Model):
         return self.user.username
 class Teacher(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    dept=models.ForeignKey(Dept,on_delete=models.CASCADE,default=1)
     contact = models.CharField(max_length=15)
     designation = models.CharField(max_length=20)
     teach_fields = models.CharField(max_length=50)

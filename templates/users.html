@@ -1,4 +1,11 @@
-{% extends 'base.html' %}{% load static%} {% block title %} {% if val == 'user_val' %}Users{% elif val == 'std_info' %}Student Info{% elif val == 'teach_info' %}Teacher Info{% elif val == 'userdetails' %}{{user_det.first_name}}'s details{% endif %}{%endblock%}
+{% extends 'base.html' %}{% load static%}
+
+
+<!-- title part  -->
+{% block title %} {% if val == 'user_val' %}Users{% elif val == 'std_info' %}Student Info{% elif val == 'teach_info' %}Teacher Info{% elif val == 'userdetails' %}{{user_det.first_name}}'s details{% endif %}{%endblock%}
+
+
+<!-- style part -->
 {%block style %} {% if val == 'userdetails' %}
 <style>
     .card1 {
@@ -52,6 +59,12 @@
 
 {%endif%}{%endblock%} {%block body%}
 
+
+
+
+
+
+
 <!-- Users info -->
 {% if val == 'user_val' %} {% load static%}
 <h3 class="text-center">Unauthorised Users</h3>
@@ -77,7 +90,7 @@
                     <th>Last Name</th>
                     <th>Username</th>
                     <th>Email</th>
-                    <th>Date Joined</th>
+
                     <th>View as</th>
                 </tr>
             </thead>
@@ -88,7 +101,7 @@
                     <td>{{i.last_name}}</td>
                     <td>{{i.username}}</td>
                     <td>{{i.email}}</td>
-                    <td>{{i.date_joined}}</td>
+
                     <td><a class="btn btn-primary" href="{% url 'userdetails' i.id %}">Details</a>
                     </td>
                 </tr>{% endif %}{% endfor %}
@@ -105,7 +118,7 @@
                     <th>Last Name</th>
                     <th>Username</th>
                     <th>Email</th>
-                    <th>Date Joined</th>
+
                     <th>View as</th>
                 </tr>
             </thead>
@@ -133,6 +146,11 @@
             <input class="form-control me-2" type="search" name="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-success" type="submit">Search</button>
         </form> -->
+
+
+
+
+
 
 
 
@@ -326,6 +344,18 @@
     <div class="col-2"></div>
 </div>
  -->
+
+
+
+
+
+
+
+
+
+
+
+
 <!--Student Info-->
 {% elif val == 'std_info' %}
 <h3 class="text-center">Students</h3>
@@ -387,6 +417,20 @@
 <p style="color: rgb(243, 9, 9); padding:3px;font-size:large">No Student registration yet.</p>
 {% endif %}
 <script type="text/javascript" src="{% static 'Js/search_student.js' %}"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!--Teacher Info-->
 {% elif val == 'teach_info' %}
 <h3 class="text-center">Teacher</h3>

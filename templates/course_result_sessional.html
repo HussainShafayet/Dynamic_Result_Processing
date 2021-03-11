@@ -38,11 +38,20 @@
         <form action="{% url 'course_result' batch course %}" method="POST">
             {%csrf_token%}
             <select name="reg_no" id="id_Reg_No" class="form-select" aria-label="Default select example" required style="width: 200px;">
-                    <option value="null" selected="selected">--Select Registration--</option>
+                    <option value="null" selected="selected">Select Registration</option>
                     {%for i in drop_student %}
                     <option value="{{i.Reg_No}}" >{{i.Reg_No}}</option>
                     {%endfor%}
                 </select>
+            <select name="select_semester" class="form-control" required>
+                            <option value="null" selected disabled>Select Semester</option>
+                            <option value="3rd">3rd</option>
+                            <option value="4th">4th</option>
+                            <option value="5th">5th</option>
+                            <option value="6th">6th</option>
+                            <option value="7th">7th</option>
+                            <option value="8th">8th</option>
+                        </select>
             <button type="submit" name="drop_student_sessional" class="btn btn-primary">Add Drop Student</button>
         </form>
     </div>
@@ -55,6 +64,7 @@
                 <th>Name</th>
                 <th>Attendence</th>
                 <th>Lab Performance</th>
+                <th>Project Mark</th>
                 <th>Exam</th>
                 <th>Total Mark</th>
                 <th>Grade Point</th>
@@ -67,6 +77,7 @@
                 <td>{{i.Name}} </td>
                 <td class="editable" data-id="{{i.id}}" data-type="Attendence">{{i.Attendence}}</td>
                 <td class="editable" data-id="{{i.id}}" data-type="Lab_performance">{{i.Lab_performance}}</td>
+                <td class="editable" data-id="{{i.id}}" data-type="Project_mark">{{i.Project_mark}}</td>
                 <td class="editable" data-id="{{i.id}}" data-type="Exam">{{i.Exam}}</td>
                 <td>{{i.Total_mark}} </td>
                 <td>{{i.Grade_point}} </td>

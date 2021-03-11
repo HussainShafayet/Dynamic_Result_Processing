@@ -15,6 +15,9 @@
         <h1>Dynamic Result Processing</h1>
         <p>This is a Django web based software!</p>
     </div>
+
+
+
     <div style="position:sticky;top:0;z-index:1">
         <nav class="navbar navbar-expand-lg navbar-light  " style="background-color: #3f72af; ">
             <a class="navbar-brand" href="#">Result Processing</a>
@@ -42,6 +45,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'syllabus' %}">Syllabus</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 're-add' %}">Re-Addmission</a>
                     </li>
                     {% elif user.is_teacher %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'teacher_dashboard' %}">Home</a></li>

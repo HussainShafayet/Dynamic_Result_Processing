@@ -30,6 +30,7 @@ urlpatterns = [
     path('depthead/batch_info/<str:batch>/<str:semester>/result_info',views.result_info, name='result_info'),
     path('depthead/batch_info/<str:batch>/<str:semester>/result_info/<str:course>',views.course_result_details, name='course_result_details'),
     path('save_paper_code', apiViews.save_paper_code, name='save_paper_code'),
+    path('re-add/', views.re_admission, name='re-add'),
     #path('results/<str:Dy_id>',views.batch_results, name='batch_results'),
     #path('results/<str:Dy_id>/semester_01',views.semester_01, name='semester_01'),
     #path('results/<str:Dy_id>/semester_02',views.semester_02, name='semester_02'),

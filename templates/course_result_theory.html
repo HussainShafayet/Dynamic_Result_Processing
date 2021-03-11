@@ -22,6 +22,10 @@
     .select2-container .select2-selection--single {
         line-height: 38px;
     }
+    
+    #id_semester {
+        line-height: 38px;
+    }
 </style>
 
 {% endblock %} {% block body %}
@@ -39,12 +43,21 @@
     <div style="margin-top: 10px;">
         <form action="{% url 'course_result' batch course %}" method="POST">
             {%csrf_token%}
-            <select name="reg_no" id="id_Reg_No" class="form-select" aria-label="Default select example" required style="width: 200px;">
-                    <option value="null" selected="selected">--Select Registration--</option>
+            <select name="reg_no" id="id_Reg_No" class="form-select" aria-label="Default select example" required style="width: 200px;" required>
+                    <option value="null" selected="selected">Select Registration</option>
                     {%for i in drop_student %}
                     <option value="{{i.Reg_No}}" >{{i.Reg_No}}</option>
                     {%endfor%}
                 </select>
+            <select name="select_semester" class="form-control" required>
+                            <option value="null" selected disabled>Select Semester</option>
+                            <option value="3rd">3rd</option>
+                            <option value="4th">4th</option>
+                            <option value="5th">5th</option>
+                            <option value="6th">6th</option>
+                            <option value="7th">7th</option>
+                            <option value="8th">8th</option>
+                        </select>
             <button type="submit" name="drop_student" class="btn btn-primary">Add Drop Student</button>
         </form>
     </div>
@@ -83,26 +96,30 @@
         </table>
     </div>
     <br>
-    <div>
-        <form action="" method="POST">
-            {% csrf_token %}
-            <input type="radio" id="1st" name="count_TT" value=1 required>
-            <label for="1st">Best One</label><br>
-            <input type="radio" id="2nd" name="count_TT" value=2>
-            <label for="2nd">Best Two</label><br>
-            <input type="radio" id="3rd" name="count_TT" value=3>
-            <label for="3rd">Avagare of 3</label>
-            <br>
-            <br>
-            <input type="submit" name="calculate" value="Calculate">
-        </form>
+    <div class="row" style="display: flex; align-items:center">
+        <div class="col-8" style="display:flex;align-items:flex-end; border:1px solid green;">
+            <form action="" method="POST">
+                {% csrf_token %}
+                <input type="radio" class="radio" id="1st" name="count_TT" value=1 required>
+                <label for="1st">Best One</label><br>
+                <input type="radio" id="2nd" name="count_TT" value=2>
+                <label for="2nd">Best Two</label><br>
+                <input type="radio" id="3rd" name="count_TT" value=3>
+                <label for="3rd">Avagare of 3</label>
+                <br>
+                <br>
+                <input type="submit" name="calculate" value="Calculate">
+            </form>
+        </div>
+        <div class="col-4" style="border:1px solid red;">
+            <form action="" method="POST">
+                {%csrf_token%}
+                <button type="submit" class="btn btn-success" name="change_state">Submit</button>
+            </form>
+        </div>
     </div>
-    <div>
-        <form action="" method="POST">
-            {%csrf_token%}
-            <button type="submit" class="btn btn-success" name="change_state">Submit</button>
-        </form>
-    </div>
+
+
 </div>
 
 {% endblock %} {% block js_script %}

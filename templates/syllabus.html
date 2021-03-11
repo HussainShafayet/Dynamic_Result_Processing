@@ -1,4 +1,9 @@
-{% extends 'base.html' %}{% load crispy_forms_tags %} {% block style %}
+{% extends 'base.html' %}{% load crispy_forms_tags %}
+
+
+
+<!-- Style Part -->
+{% block style %}
 <style>
     .card:hover {
         background-color: rgb(113, 223, 204);
@@ -22,6 +27,18 @@
         {% endfor %} {% endif %}
     </div>
 
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Add Syllabus Part -->
     {% if val1 == 'add_syllabus' %}
     <div class="row">
         <div class="col-3"></div>
@@ -33,6 +50,15 @@
         </div>
         <div class="col-4"></div>
     </div>
+
+
+
+
+
+
+
+
+    <!-- View Syllabus -->
     {% elif val == 'view_syllabus' %}
     <div style="margin-left: 10px; margin-bottom:10px;margin-top:10px">
         <a class="btn btn-primary" href="{% url 'add_syllabus' %}">Add New Syllabus</a>
@@ -61,7 +87,16 @@
     </div>
     {% else %}
     <p>No Syllabus has been created</p>
-    {% endif %} {% elif val2 == 'syllabus_semester' %} {% if semester %}
+    {% endif %}
+
+
+
+
+
+
+
+    <!-- Syllabus Semester Part -->
+    {% elif val2 == 'syllabus_semester' %} {% if semester %}
     <h1 class="text-center">All Semester will be displayed here</h1>
     <hr>
     <div class="row">

@@ -136,7 +136,7 @@
             console.log(id);
             console.log(value);
             console.log(type);
-            if (type == 'Exam_Part_B', type == 'Exam_Part_A' &
+            if ((type == 'Exam_Part_B' | type == 'Exam_Part_A') &
                 value <= 35) {
                 $.ajax({
                         url: "http://127.0.0.1:8000/saveresult_exam_part",

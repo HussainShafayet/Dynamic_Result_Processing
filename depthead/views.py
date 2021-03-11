@@ -55,8 +55,24 @@ def users(request):
                 }
                 return render(request, 'users.html', context)
         else:
-            User = get_user_model()
-            user_list = User.objects.filter(groups__name='None')
+            current_user = request.user
+            dept_head = Depthead.objects.get(user=current_user)
+            dept = dept_head.dept
+            teacher_list = Teacher.objects.filter(dept=dept)
+            student_list = Student.objects.filter(dept=dept)
+
+            user_list2 = []
+            for i in teacher_list:
+                user_obj = i.user
+                user_list2.append(user_obj)
+
+            for i in student_list:
+                user_obj = i.user
+                user_list2.append(user_obj)
+            user_list = []
+            for i in user_list2:
+                if i.is_student is False and i.is_teacher is False:
+                    user_list.append(i)
             val = 'user_val'
             context = {
                 'user_list': user_list,
@@ -65,8 +81,25 @@ def users(request):
             return render(request, 'users.html', context)
 
     else:
-        User = get_user_model()
-        user_list = User.objects.filter(groups__name='None')
+        current_user = request.user
+        dept_head = Depthead.objects.get(user=current_user)
+        dept = dept_head.dept
+        teacher_list = Teacher.objects.filter(dept=dept)
+        student_list = Student.objects.filter(dept=dept)
+
+        user_list2 = []
+        for i in teacher_list:
+            user_obj = i.user
+            user_list2.append(user_obj)
+
+        for i in student_list:
+            user_obj = i.user
+            user_list2.append(user_obj)
+        user_list = []
+        for i in user_list2:
+            if i.is_student is False and i.is_teacher is False:
+                user_list.append(i)
+
         val = 'user_val'
         context = {
             'user_list': user_list,
@@ -168,14 +201,27 @@ def student_info(request):
     if 'search' in request.GET:
         q = request.GET.get('search')
         if q:
-            group = Group.objects.get(name='Student')
+            current_user = request.user
+            dept_head = Depthead.objects.get(user=current_user)
+            dept = dept_head.dept
+            student_list = Student.objects.filter(dept=dept)
+            stud_info = []
+            for i in student_list:
+                user_obj = i.user
+                if user_obj.is_student == True:
+                    stud_info.append(user_obj)
+            query = Q()
+            for item in stud_info:
+                query |= (Q(username=item.username))
+            
             User = get_user_model()
-            stud_info = User.objects.filter(groups=group).filter(
-                Q(first_name__icontains=str(q)) | Q(last_name__icontains=str(q)) | Q(username__icontains=q) | Q(email__icontains=str(q)))
-            if stud_info:
+            stud_info2 = User.objects.filter(query).filter(
+                Q(first_name__icontains=str(q)) | Q(last_name__icontains=str(q)) | Q(username__icontains=str(q)) | Q(email__icontains=str(q)))
+
+            if stud_info2:
                 val = 'std_info'
                 context = {
-                    'stud_info': stud_info,
+                    'stud_info': stud_info2,
                     'val': val,
                 }
                 return render(request, 'users.html', context)
@@ -187,8 +233,15 @@ def student_info(request):
                 }
                 return render(request, 'users.html', context)
         else:
-            User = get_user_model()
-            stud_info = User.objects.filter(groups__name='Student')
+            current_user = request.user
+            dept_head = Depthead.objects.get(user=current_user)
+            dept = dept_head.dept
+            student_list = Student.objects.filter(dept=dept)
+            stud_info = []
+            for i in student_list:
+                user_obj = i.user
+                if user_obj.is_student == True:
+                    stud_info.append(user_obj)
             val = 'std_info'
             context = {
                 'stud_info': stud_info,
@@ -196,8 +249,15 @@ def student_info(request):
             }
             return render(request, 'users.html', context)
     else:
-        User = get_user_model()
-        stud_info = User.objects.filter(groups__name='Student')
+        current_user = request.user
+        dept_head = Depthead.objects.get(user=current_user)
+        dept = dept_head.dept
+        student_list = Student.objects.filter(dept=dept)
+        stud_info = []
+        for i in student_list:
+            user_obj = i.user
+            if user_obj.is_student == True:
+                stud_info.append(user_obj)
         val = 'std_info'
         context = {
             'stud_info': stud_info,
@@ -209,10 +269,23 @@ def student_info(request):
 def student_search(request):
     if request.method == "POST":
         search_str = json.loads(request.body).get("searchText")
+        current_user = request.user
+        dept_head = Depthead.objects.get(user=current_user)
+        dept = dept_head.dept
+        student_list = Student.objects.filter(dept=dept)
+        stud_info = []
+        for i in student_list:
+            user_obj = i.user
+            if user_obj.is_student == True:
+                stud_info.append(user_obj)
+        query = Q()
+        for item in stud_info:
+            query |= (Q(username=item.username))
+        
         User = get_user_model()
-        user_list = User.objects.filter(groups__name='Student').filter(
-            Q(first_name__icontains=search_str) | Q(last_name__icontains=str(search_str)) | Q(username__icontains=str(search_str)) | Q(email__icontains=str(search_str)))
-        data = user_list.values()
+        stud_info2 = User.objects.filter(query).filter(
+                Q(first_name__icontains=str(search_str)) | Q(last_name__icontains=str(search_str)) | Q(username__icontains=str(search_str)) | Q(email__icontains=str(search_str)))
+        data = stud_info2.values()
         return JsonResponse(list(data), safe=False)
 
 
@@ -222,10 +295,21 @@ def teacher_info(request):
     if 'search' in request.GET:
         q = request.GET.get('search')
         if q:
-            group = Group.objects.get(name='Teacher')
+            current_user = request.user
+            dept_head = Depthead.objects.get(user=current_user)
+            dept = dept_head.dept
+            teacher_list = Teacher.objects.filter(dept=dept)
+            teach_info = []
+            for i in teacher_list:
+                user_obj = i.user
+                if user_obj.is_teacher == True:
+                    teach_info.append(user_obj)
+            query = Q()
+            for item in teach_info:
+                query |= (Q(username=item.username))
+            
             User = get_user_model()
-            teacher_info = User.objects.filter(groups=group).filter(
-                Q(first_name__icontains=str(q)) | Q(last_name__icontains=str(q)) | Q(username__icontains=str(q)) | Q(email__icontains=str(q)))
+            teacher_info = User.objects.filter(query).filter(Q(first_name__icontains=str(q)) | Q(last_name__icontains=str(q)) | Q(username__icontains=str(q)) | Q(email__icontains=str(q)))
             if teacher_info:
                 val = 'teach_info'
                 context = {
@@ -241,8 +325,15 @@ def teacher_info(request):
                 }
                 return render(request, 'users.html', context)
         else:
-            User = get_user_model()
-            teacher_info = User.objects.filter(groups__name='Teacher')
+            current_user = request.user
+            dept_head = Depthead.objects.get(user=current_user)
+            dept = dept_head.dept
+            teacher_list = Teacher.objects.filter(dept=dept)
+            teacher_info = []
+            for i in teacher_list:
+                user_obj = i.user
+                if user_obj.is_teacher == True:
+                    teacher_info.append(user_obj)
             val = 'teach_info'
             context = {
                 'teacher_info': teacher_info,
@@ -250,8 +341,15 @@ def teacher_info(request):
             }
             return render(request, 'users.html', context)
     else:
-        User = get_user_model()
-        teacher_info = User.objects.filter(groups__name='Teacher')
+        current_user = request.user
+        dept_head = Depthead.objects.get(user=current_user)
+        dept = dept_head.dept
+        teacher_list = Teacher.objects.filter(dept=dept)
+        teacher_info = []
+        for i in teacher_list:
+            user_obj = i.user
+            if user_obj.is_teacher == True:
+                teacher_info.append(user_obj)
         val = 'teach_info'
         context = {
             'teacher_info': teacher_info,
@@ -263,10 +361,23 @@ def teacher_info(request):
 def teacher_search(request):
     if request.method == "POST":
         search_str = json.loads(request.body).get("searchText")
+        current_user = request.user
+        dept_head = Depthead.objects.get(user=current_user)
+        dept = dept_head.dept
+        teacher_list = Teacher.objects.filter(dept=dept)
+        teach_info = []
+        for i in teacher_list:
+            user_obj = i.user
+            if user_obj.is_teacher == True:
+                teach_info.append(user_obj)
+        query = Q()
+        for item in teach_info:
+            query |= (Q(username=item.username))
+
         User = get_user_model()
-        user_list = User.objects.filter(groups__name='Teacher').filter(
-            Q(first_name__icontains=search_str) | Q(last_name__icontains=str(search_str)) | Q(username__icontains=str(search_str)) | Q(email__icontains=str(search_str)))
-        data = user_list.values()
+        teacher_info = User.objects.filter(query).filter(
+            Q(first_name__icontains=str(search_str)) | Q(last_name__icontains=str(search_str)) | Q(username__icontains=str(search_str)) | Q(email__icontains=str(search_str)))
+        data = teacher_info.values()
         return JsonResponse(list(data), safe=False)
 
 
@@ -532,12 +643,18 @@ def calculate_GPA(batch, semester):
         syllabus=get_syllabus, Semester=semester)
     get_x = Course_Semester_List.objects.get(
         syllabus=get_syllabus, Semester=semester_string)
-    course_list = get_x.course_list_all_set.all()
+    #course_list = get_x.course_list_all_set.all()
     get_semester = Result_Semester_List.objects.get(
         session=get_batch, Semester=semester)
 
+    drop_courses_list = []
+    course_semesters = get_syllabus.course_semester_list_set.all()
+    for i in course_semesters:
+        for j in i.course_list_all_set.all():
+            drop_courses_list.append(j)
+
     my_dict = {}
-    for i in course_list:
+    for i in drop_courses_list:
         my_dict[i.course_code] = i.credit
 
     search_string = get_batch.Batch + ' ' + semester_string.Semester
@@ -633,7 +750,7 @@ def calculate_GPA(batch, semester):
         gpa_dict[student.Reg_No] = 0.00
 
     for j in result_semesters:
-        student_list_3 = j.result_table_set.all().order_by('-Reg')
+        student_list_3 = j.result_table_set.filter(Name='Name')
         x = student_list_3[0]
         fieldlist = x.__dict__
         for field, value in fieldlist.items():
@@ -698,6 +815,8 @@ def calculate_GPA(batch, semester):
 
 def result_info(request, batch, semester):
     get_batch = Sessions.objects.get(Batch=batch)
+    get_session = get_batch.Session
+    get_dept = get_batch.dept
     get_syllabus = get_batch.syllabus
     semester_string = Course_Semester_List.objects.get(
         syllabus=get_syllabus, Semester=semester)
@@ -706,58 +825,196 @@ def result_info(request, batch, semester):
     course_list = get_x.course_list_all_set.all()
     get_semester = Result_Semester_List.objects.get(
         session=get_batch, Semester=semester)
-
     get_courses = Course.objects.filter(
         Batch=get_batch, semester=str(semester_string), Course_type='Theory')
-    result_info = get_semester.result_table_set.all().order_by('-Reg')
+
+    drop_courses_list = []
+
+    if semester == '3rd':
+        get_sem = Course_Semester_List.objects.get(
+            syllabus=get_syllabus, Semester='1st')
+        drop_courses = get_sem.course_list_all_set.all()
+        for i in drop_courses:
+            drop_courses_list.append(i)
+
+    if semester == '4th':
+        get_sem = Course_Semester_List.objects.get(
+            syllabus=get_syllabus, Semester='2nd')
+        drop_courses = get_sem.course_list_all_set.all()
+        for i in drop_courses:
+            drop_courses_list.append(i)
+
+    if semester == '5th':
+        get_sem = Course_Semester_List.objects.get(
+            syllabus=get_syllabus, Semester='1st')
+        drop_courses = get_sem.course_list_all_set.all()
+        for i in drop_courses:
+            drop_courses_list.append(i)
+        drop_courses_list.append('----')
+        get_sem = Course_Semester_List.objects.get(
+            syllabus=get_syllabus, Semester='3rd')
+        drop_courses = get_sem.course_list_all_set.all()
+        for i in drop_courses:
+            drop_courses_list.append(i)
+
+    if semester == '6th':
+        get_sem = Course_Semester_List.objects.get(
+            syllabus=get_syllabus, Semester='2nd')
+        drop_courses = get_sem.course_list_all_set.all()
+        for i in drop_courses:
+            drop_courses_list.append(i)
+        drop_courses_list.append('----')
+        get_sem = Course_Semester_List.objects.get(
+            syllabus=get_syllabus, Semester='4th')
+        drop_courses = get_sem.course_list_all_set.all()
+        for i in drop_courses:
+            drop_courses_list.append(i)
+
+    if semester == '7th':
+        get_sem = Course_Semester_List.objects.get(
+            syllabus=get_syllabus, Semester='1st')
+        drop_courses = get_sem.course_list_all_set.all()
+        for i in drop_courses:
+            drop_courses_list.append(i)
+        drop_courses_list.append('----')
+        get_sem = Course_Semester_List.objects.get(
+            syllabus=get_syllabus, Semester='3rd')
+        drop_courses = get_sem.course_list_all_set.all()
+        for i in drop_courses:
+            drop_courses_list.append(i)
+        drop_courses_list.append('----')
+        get_sem = Course_Semester_List.objects.get(
+            syllabus=get_syllabus, Semester='5th')
+        drop_courses = get_sem.course_list_all_set.all()
+        for i in drop_courses:
+            drop_courses_list.append(i)
+
+    if semester == '8th':
+        get_sem = Course_Semester_List.objects.get(
+            syllabus=get_syllabus, Semester='2nd')
+        drop_courses = get_sem.course_list_all_set.all()
+        for i in drop_courses:
+            drop_courses_list.append(i)
+        drop_courses_list.append('----')
+        get_sem = Course_Semester_List.objects.get(
+            syllabus=get_syllabus, Semester='4th')
+        drop_courses = get_sem.course_list_all_set.all()
+        for i in drop_courses:
+            drop_courses_list.append(i)
+        drop_courses_list.append('----')
+        get_sem = Course_Semester_List.objects.get(
+            syllabus=get_syllabus, Semester='6th')
+        drop_courses = get_sem.course_list_all_set.all()
+        for i in drop_courses:
+            drop_courses_list.append(i)
+
+            # Phase 1 - First Line
+
+    result_info = get_semester.result_table_set.filter(Name='Name')
     first_line = result_info[0]
     column_list = first_line.__dict__
+    phase_1_start = ''
+    X = 0
     for field, value in column_list.items():
         if value == 'Total Grade Point':
             skip_field = field
-        if value is None:
-            stop_field = field
+        if X == 1:
+            phase_1_start = field
             break
+        if value == 'Cumulative Grade':
+            X = 1
+
+    for field, value in column_list.items():
+        temp = field
+        if value is None:
+            break
+        phase_1_stop = temp
 
     my_list = []
     list_of_list = []
-    fieldlist = first_line._meta.get_fields()
-    for field in fieldlist[3:]:
-        if(field.name == skip_field):
-            continue
-        if(field.name == stop_field):
+    start = 0
+    my_list.append(first_line.Reg)
+    my_list.append(first_line.Name)
+
+    for field, value in column_list.items():
+        if field == phase_1_start:
+            start = 1
+        if start == 1:
+            my_list.append(value)
+        if field == phase_1_stop:
             break
-        val = getattr(first_line, field.name)
-        my_list.append(val)
+
+    # Phase 2 - First Line
+    phase_2_start = ''
+    Y = 0
+    for field, value in column_list.items():
+        if Y == 1:
+            phase_2_start = field
+            break
+        if value == 'Name':
+            Y = 1
+
+    for field, value in column_list.items():
+        if value == 'Cumulative Grade':
+            break
+        phase_2_stop = field
+
+    start = 0
+    for field, value in column_list.items():
+        if field == skip_field:
+            continue
+        if field == phase_2_start:
+            start = 1
+        if start == 1:
+            my_list.append(value)
+        if field == phase_2_stop:
+            break
 
     list_of_list.append(my_list)
     my_list = []
 
+    # Phase 1 - Students
     result_info_2 = get_semester.result_table_set.all().exclude(
         Name='Name').order_by('Reg')
     for i in result_info_2:
-        field_list = i._meta.get_fields()
-        for j in field_list[3:]:
-            if(j.name == skip_field):
-                continue
-            if(j.name == stop_field):
+        my_list.append(i.Reg)
+        my_list.append(i.Name)
+        column_list = i.__dict__
+        start = 0
+        for field, value in column_list.items():
+            if field == phase_1_start:
+                start = 1
+            if start == 1:
+                if value is None:
+                    value = ' '
+                my_list.append(value)
+            if field == phase_1_stop:
                 break
-            val = getattr(i, j.name)
-            if val == None:
-                my_list.append(' ')
-            else:
-                my_list.append(val)
+
+        # Phase 2 - Students
+        start = 0
+        for field, value in column_list.items():
+            if field == skip_field:
+                continue
+            if field == phase_2_start:
+                start = 1
+            if start == 1:
+                if value is None:
+                    value = ' '
+                my_list.append(value)
+            if field == phase_2_stop:
+                break
 
         list_of_list.append(my_list)
         my_list = []
 
     val = 'result_info_table'
     teahcer_list = Teacher_name.objects.all()
-
     context = {
         'result_info': list_of_list,
         'val': val,
         'course_list': course_list,
+        'drop_course_list': drop_courses_list,
         'teacher_list': teahcer_list,
         'batch': batch,
         'semester': semester,
@@ -789,11 +1046,8 @@ def result_info(request, batch, semester):
                             session=get_batch)
                         for i in student_list:
                             theory_course = Course_Result_Theory(
-                                course=find_course, batch=get_batch, Reg_No=i.Reg_No, Name=i.Name)
+                                course=find_course, batch=get_batch, Reg_No=i.Reg_No, Name=i.Name, semester=find_course.semester)
                             theory_course.save()
-                            theory_course_new = Course_Result_Theory(
-                                course=find_course, batch=get_batch, Reg_No=i.Reg_No, Name=i.Name)
-                            theory_course_new.save()
 
                     elif type2 == 'Sessional':
                         find_course = Course.objects.get(
@@ -802,27 +1056,68 @@ def result_info(request, batch, semester):
                             session=get_batch)
                         for i in student_list:
                             theory_course = Course_Result_Sessional(
-                                course=find_course, batch=get_batch, Reg_No=i.Reg_No, Name=i.Name)
+                                course=find_course, batch=get_batch, Reg_No=i.Reg_No, Name=i.Name, semester=find_course.semester)
                             theory_course.save()
 
             return render(request, 'result_info.html', context)
+        if 'add_drop_courses' in request.POST:
+            get_drop_course = request.POST.get('drop_courses')
+            if get_drop_course == '----':
+                messages.warning(request, 'Please select a valid course!!!')
+                return redirect('result_info', batch, semester)
+
+            else:
+                drop_course_GP = get_drop_course+' GP'
+                drop_course_LG = get_drop_course+' LG'
+                get_collumns = first_line.__dict__
+                null_count = 0
+                for field, value in get_collumns.items():
+                    if value is None:
+                        find_LG_field = field
+                        null_count += 1
+                        if null_count == 2:
+                            break
+                        else:
+                            find_GP_field = find_LG_field
+
+                setattr(first_line, find_GP_field, drop_course_GP)
+                setattr(first_line, find_LG_field, drop_course_LG)
+                first_line.save()
+                return redirect('result_info', batch, semester)
 
         if 'calculate' in request.POST:
-            result_semesters = []
-            result_semesters_2 = get_batch.result_semester_list_set.all().order_by('Semester')
-            for i in result_semesters_2:
-                result_semesters.append(i.Semester)
-                if i.Semester == get_semester.Semester:
-                    break
-
-            for j in result_semesters:
-                calculate_GPA(batch, j)
+            calculate_GPA(batch, semester)
             return redirect('result_info', batch, semester)
 
         if 'create_pdf' in request.POST:
+            if semester == '1st':
+                exam = '1st Year 1st Semester Final Examination '
+            if semester == '2nd':
+                exam = '1st Year 2nd Semester Final Examination '
+            if semester == '3rd':
+                exam = '2nd Year 1st Semester Final Examination '
+            if semester == '4th':
+                exam = '2nd Year 2nd Semester Final Examination '
+            if semester == '5th':
+                exam = '3rd Year 1st Semester Final Examination '
+            if semester == '6th':
+                exam = '3rd Year 2nd Semester Final Examination '
+            if semester == '7th':
+                exam = '4th Year 1st Semester Final Examination '
+            if semester == '8th':
+                exam = '4th Year 2nd Semester Final Examination '
+
+            context = {
+                'result_info': list_of_list,
+                'session': get_session,
+                'dept': get_dept,
+                'exam': exam,
+
+            }
             template = get_template('pdf.html')
             html = template.render(context)
             options = {
+
                 'page-size': 'A2',
                 'margin-top': '0.75in',
                 'margin-right': '0.75in',
@@ -838,6 +1133,7 @@ def result_info(request, batch, semester):
                 ],
                 'no-outline': None
             }
+
             path_wkhtmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
             config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
             pdf = pdfkit.from_string(
@@ -856,6 +1152,7 @@ def course_result_details(request, batch, semester, course):
     get_batch = Sessions.objects.get(Batch=batch)
     get_course = Course.objects.get(Batch=get_batch, Course=course)
     student_list = get_course.course_result_theory_set.all()
+
     teahcer_list = Teacher_name.objects.all()
     val = 'course_result_details'
     context = {
@@ -882,6 +1179,8 @@ def course_result_details(request, batch, semester, course):
                 New_Course = Course_Khata(teacher=get_teacher_B, batch=get_batch,
                                           semester=semester, Course_Code=course, Exam_Part='Part B')
                 New_Course.save()
+                messages.success(
+                    request, 'Part A and Part B has been assigned successfully.')
                 return redirect('course_result_details', batch, semester, course)
 
         if ('calculate' in request.POST):
@@ -940,7 +1239,8 @@ def course_result_details(request, batch, semester, course):
                     break
                 GP_field = LG_field
 
-            student_list = get_course.course_result_theory_set.all()
+            student_list = get_course.course_result_theory_set.all().filter(
+                semester=course_semester)
             for i in student_list:
                 Reg = i.Reg_No
                 gp = i.Grade_point
@@ -953,9 +1253,73 @@ def course_result_details(request, batch, semester, course):
                 setattr(find_student, GP_field, gp)
                 setattr(find_student, LG_field, lg)
                 find_student.save()
+
+            drop_student_list = get_course.course_result_theory_set.all().exclude(
+                semester=course_semester)
+
+            for i in drop_student_list:
+                session_obj = i.batch
+                semester2 = i.semester
+                gp = i.Grade_point
+                lg = i.Letter_grade
+                registration = i.Reg_No
+                find_semester = Result_Semester_List.objects.get(
+                    session=session_obj, Semester=semester2)
+                get_course = Course.objects.get(Course=course, Batch=get_batch)
+                course_name = get_course.Course+' LG'
+
+                all_students = find_semester.result_table_set.filter(
+                    Name='Name')
+                first_line = all_students[0]
+                fieldlist = first_line.__dict__
+                for field, value in fieldlist.items():
+                    LG_field = field
+                    if (course_name == value):
+                        break
+                    GP_field = LG_field
+
+                find_student = Result_Table.objects.get(
+                    Reg=registration, result_semester=find_semester)
+                setattr(find_student, GP_field, gp)
+                setattr(find_student, LG_field, lg)
+                find_student.save()
+
             return redirect('result_info', batch, semester)
 
     return render(request, 'result_info.html', context)
+
+
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
+def re_admission(request):
+    reg_list = Student_data.objects.all().order_by('Reg_No')
+    sessions = Sessions.objects.all().order_by('Session')
+
+    context = {
+        'reg_list': reg_list,
+        'sessions': sessions,
+    }
+    if request.method == 'POST':
+        get_reg = request.POST.get('registration_no')
+        get_batch = request.POST.get('batch')
+        print(get_reg, get_batch)
+        get_session = Sessions.objects.get(Batch=get_batch)
+        Result_Table.objects.filter(Reg=get_reg).delete()
+        student_data_obj = Student_data.objects.get(Reg_No=get_reg)
+        student_name = student_data_obj.Name
+        student_data_obj.session = get_session
+        student_data_obj.save()
+
+        semester_list = Result_Semester_List.objects.filter(
+            session=get_session)
+        for i in semester_list:
+            New_student = Result_Table(
+                Reg=get_reg, Name=student_name, result_semester=i, batch=get_session)
+            New_student.save()
+
+        return redirect('re-add')
+
+    return render(request, 're-add.html', context)
 
 
 # previous

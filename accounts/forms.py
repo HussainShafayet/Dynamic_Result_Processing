@@ -79,6 +79,8 @@ class DeptheadRegForm(UserCreationForm):
 
 
 class TeacherRegForm(UserCreationForm):
+    dept = forms.ModelChoiceField(queryset=Dept.objects.all(
+    ), label='Department', empty_label="Choose your Department")
     contact = forms.CharField(max_length=15, required=True)
     designation = forms.CharField(max_length=20, required=True)
     Teaching_Field = forms.CharField(max_length=30, required=True)
@@ -92,6 +94,10 @@ class TeacherRegForm(UserCreationForm):
         labels = {
             'email': 'Email*'
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['dept'].queryset = Dept.objects.none()
 
     def __init__(self, *args, **kwargs):
         super(TeacherRegForm, self).__init__(*args, **kwargs)
@@ -131,6 +137,13 @@ class TeacherRegForm(UserCreationForm):
             'required': True,
             'placeholder': 'Teaching field'
         })
+        
+        self.fields['dept'].queryset = Dept.objects.none()
+        if 'dept' in self.data:
+            self.fields['dept'].queryset = Dept.objects.all()
+        elif self.instance.pk:
+            self.fields['dept'].queryset = Dept.objects.all().filter(
+                pk=self.instance.dept.pk)
 
     @transaction.atomic
     def save(self, *args, **kwargs):
@@ -138,6 +151,7 @@ class TeacherRegForm(UserCreationForm):
         # user.is_none=True
         user.save()
         teacher = Teacher.objects.create(user=user)
+        teacher.dept=self.cleaned_data.get('dept')
         teacher.contact = self.cleaned_data.get('contact')
         teacher.designation = self.cleaned_data.get('designation')
         teacher.teach_fields = self.cleaned_data.get('Teaching_Field')

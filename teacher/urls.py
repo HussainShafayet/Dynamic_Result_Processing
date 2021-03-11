@@ -15,4 +15,5 @@ urlpatterns = [
     path('saveresult_exam_part', apiViews.save_result_Exam_Part, name='exam_part'),
     path('assign_course/<str:batch>/<str:course>/course_result/result_submit', views.result_submit, name='result_submit'),
     path('assign_course/<str:batch>/<str:course>/course_result/delete_student/<int:id>', views.delete_student, name='delete_student'),
+    
 ]
