@@ -20,6 +20,9 @@ from django.shortcuts import render_to_response
 from django.template.loader import get_template
 from django.http import HttpResponse
 import pdfkit
+import os
+import shutil
+from PyPDF2 import PdfFileMerger
 
 
 # Create your views here.
@@ -213,7 +216,7 @@ def student_info(request):
             query = Q()
             for item in stud_info:
                 query |= (Q(username=item.username))
-            
+
             User = get_user_model()
             stud_info2 = User.objects.filter(query).filter(
                 Q(first_name__icontains=str(q)) | Q(last_name__icontains=str(q)) | Q(username__icontains=str(q)) | Q(email__icontains=str(q)))
@@ -281,11 +284,35 @@ def student_search(request):
         query = Q()
         for item in stud_info:
             query |= (Q(username=item.username))
-        
+        """ query2 = Q()
+        for j in student_list:
+            query2 |= (Q(user=j.user))
+        test = Student.objects.filter(query2).filter(
+            reg_no__icontains=search_str)
+        print(test)
+        print(type(test)) """
         User = get_user_model()
         stud_info2 = User.objects.filter(query).filter(
-                Q(first_name__icontains=str(search_str)) | Q(last_name__icontains=str(search_str)) | Q(username__icontains=str(search_str)) | Q(email__icontains=str(search_str)))
+            Q(first_name__icontains=str(search_str)) | Q(last_name__icontains=str(search_str)) | Q(username__icontains=str(search_str)) | Q(email__icontains=str(search_str)))
+        # print(type(stud_info2))
+        #from itertools import chain
+        #stud_info3 = chain(test, stud_info2)
+        #print(stud_info3)
         data = stud_info2.values()
+
+        for i in data:
+            foreign_key = i['id']
+            use_obj = User.objects.get(pk=int(foreign_key))
+            stu_obj = Student.objects.get(user=use_obj)
+            mydict = {}
+            column_list = stu_obj._meta.get_fields()
+            for column in column_list[1:7]:
+                value = getattr(stu_obj, column.name)
+                #print(column.name, value)
+                mydict[column.name] = str(value)
+            #print(mydict)
+            i['related_values'] = mydict
+        # print(data)
         return JsonResponse(list(data), safe=False)
 
 
@@ -307,9 +334,10 @@ def teacher_info(request):
             query = Q()
             for item in teach_info:
                 query |= (Q(username=item.username))
-            
+
             User = get_user_model()
-            teacher_info = User.objects.filter(query).filter(Q(first_name__icontains=str(q)) | Q(last_name__icontains=str(q)) | Q(username__icontains=str(q)) | Q(email__icontains=str(q)))
+            teacher_info = User.objects.filter(query).filter(Q(first_name__icontains=str(q)) | Q(
+                last_name__icontains=str(q)) | Q(username__icontains=str(q)) | Q(email__icontains=str(q)))
             if teacher_info:
                 val = 'teach_info'
                 context = {
@@ -1107,40 +1135,84 @@ def result_info(request, batch, semester):
             if semester == '8th':
                 exam = '4th Year 2nd Semester Final Examination '
 
-            context = {
-                'result_info': list_of_list,
-                'session': get_session,
-                'dept': get_dept,
-                'exam': exam,
+            list_of_list2 = list_of_list
 
-            }
-            template = get_template('pdf.html')
-            html = template.render(context)
-            options = {
+            size = len(list_of_list2)
+            length = size-1
+            list_of_list_03 = []
+            index = 0
+            list_collections = []
+            list_of_list_03.append(list_of_list2[0])
 
-                'page-size': 'A2',
-                'margin-top': '0.75in',
-                'margin-right': '0.75in',
-                'margin-bottom': '0.75in',
-                'margin-left': '0.75in',
-                'encoding': "UTF-8",
-                'custom-header': [
-                    ('Accept-Encoding', 'gzip')
-                ],
-                'cookie': [
-                    ('cookie-name1', 'cookie-value1'),
-                    ('cookie-name2', 'cookie-value2'),
-                ],
-                'no-outline': None
-            }
+            for i in list_of_list2:
+                if(length == index):
+                    list_of_list_03.append(i)
+                    list_collections.append(list_of_list_03)
+                if index == 0:
+                    index += 1
+                    continue
+                list_of_list_03.append(i)
+                if (index % 17 == 0):
+                    list_collections.append(list_of_list_03)
+                    list_of_list_03 = []
+                    list_of_list_03.append(list_of_list2[0])
+                index += 1
 
-            path_wkhtmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
-            config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
-            pdf = pdfkit.from_string(
-                html, False, options=options, configuration=config)
-            response = HttpResponse(pdf, content_type='application/pdf')
-            response['Content-Disposition'] = 'attachment'
-            filename = "pperson_list_pdf.pdf"
+            desktop_path = os.environ['USERPROFILE'] + '\Desktop\\'
+            if not os.path.exists(desktop_path+'Expeliarms'):
+                os.makedirs(desktop_path+'Expeliarms')
+
+            number = 1
+            for i in list_collections:
+                context2 = {
+                    'result_info': i,
+                    'session': get_session,
+                    'dept': get_dept,
+                    'exam': exam,
+                }
+                template = get_template('pdf.html')
+                html = template.render(context2)
+                string_1 = 'Results 0'+str(number)
+                string_2 = '.pdf'
+                download_path = desktop_path+'\Expeliarms\\'+string_1+string_2
+                number += 1
+
+                options = {
+                    'page-size': 'LETTER',
+                    'orientation': 'Landscape',
+                    'margin-top': '0.75in',
+                    'margin-right': '0.75in',
+                    'margin-bottom': '0.75in',
+                    'margin-left': '0.75in',
+                    'encoding': "UTF-8",
+                    'custom-header': [
+                        ('Accept-Encoding', 'gzip')
+                    ],
+                    'cookie': [
+                        ('cookie-name1', 'cookie-value1'),
+                        ('cookie-name2', 'cookie-value2'),
+                    ],
+                    'no-outline': None,
+                }
+
+                path_wkhtmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+                config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+                pdfkit.from_string(html, download_path,
+                                   options=options, configuration=config)
+
+            merger = PdfFileMerger()
+            for file in os.listdir(desktop_path+'\Expeliarms\\'):
+                if file.endswith(".pdf"):
+                    merger.append(desktop_path+'\Expeliarms\\'+file)
+
+            response = HttpResponse(content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="Result.pdf"'
+            merger.write(response)
+            merger.close()
+
+            if os.path.exists(desktop_path+'Expeliarms'):
+                shutil.rmtree(desktop_path+'Expeliarms')
+
             return response
 
     return render(request, 'result_info.html', context)

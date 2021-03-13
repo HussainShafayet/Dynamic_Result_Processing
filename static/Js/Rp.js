@@ -38,5 +38,17 @@ $(document).ready(function() {
     $('#submit_result').on('click', function() {
         return confirm("Please Calculate result first.")
     });
+    x = 1
+    $('#recheck').on('click', function() {
+        x = x + 1;
+        if (x % 2 == 0) {
+            $('#re-check1').css('display', 'block');
+            $('#re-check2').css('display', 'none');
+        } else {
+            $('#re-check1').css('display', 'none');
+            $('#re-check2').css('display', 'block');
+        }
+
+    });
 
 });

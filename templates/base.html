@@ -11,16 +11,16 @@
 </head>
 
 <body>
-    <div class="jumbotron text-center" style="margin-bottom:0;background-color:darkgray">
+    <div class="jumbotron text-center" style="margin-bottom:0;background-color:darkgray;max-height:175px;margin: 0 auto">
         <h1>Dynamic Result Processing</h1>
-        <p>This is a Django web based software!</p>
+        <h4>of Sylhet Engineering College</h4>
     </div>
 
 
 
     <div style="position:sticky;top:0;z-index:1">
         <nav class="navbar navbar-expand-lg navbar-light  " style="background-color: #3f72af; ">
-            <a class="navbar-brand" href="#">Result Processing</a>
+            <a class="navbar-brand" href="{% url 'home'%}">Result Processing</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
         </button>
@@ -41,11 +41,12 @@
                         <a class="nav-link" href="{% url 'teacher_info'%}">Teacher Info</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'find_batch' %}">Batch Info</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'syllabus' %}">Syllabus</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'find_batch' %}">Result</a>
+                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 're-add' %}">Re-Addmission</a>
                     </li>
@@ -154,7 +155,7 @@
     <!-- Body -->
     <div style="margin-top:30px">
         <div class="row ">
-            <div class="col-sm-2" style="border: 1px solid darkgray; height:300px;">
+            <!-- <div class="col-sm-2" style="border: 1px solid darkgray; height:300px;">
                 <h3>Some Links</h3>
                 <p></p>
                 <ul class="nav nav-pills flex-column">
@@ -171,8 +172,8 @@
                         <a class="nav-link disabled" href="#"></a>
                     </li>
                 </ul>
-            </div>
-            <div class="col-sm-10" style=" min-height:800px">
+            </div> -->
+            <div class="col-sm" style=" min-height:800px">
 
                 {% block body %}{% endblock %}
 

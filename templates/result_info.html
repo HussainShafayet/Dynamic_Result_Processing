@@ -213,9 +213,9 @@
             </form>
         </div>
     </div>
-
-    <div class="table-responsive">
-        <h3 class="text-center">Course details</h3>
+    <div><button id="recheck" class="btn btn-info">Re-check</button></div>
+    <div class="table-responsive" id="re-check1" style="display: none;">
+        <h3 class="text-center"> Re-Check Course details</h3>
         <hr>
         <table class="table table-stripped table-hover">
             <thead class="thead bg-info">
@@ -248,29 +248,65 @@
                 </tr>
                 {% endfor %}</tbody>
         </table>
+    </div>
+    <div class="table-responsive" id="re-check2" style="display:block;">
+        <h3 class="text-center">Course details</h3>
+        <hr>
+        <table class="table table-stripped table-hover">
+            <thead class="thead bg-info">
+                <tr>
+                    <th>Registration No</th>
+                    <th>Name</th>
+                    <th>Pre Final Total</th>
+                    <th>Part A Code</th>
+                    <th>Part A</th>
+                    <th>Part B Code</th>
+                    <th>Exam Part B</th>
+                    <th>Total Marks</th>
+                    <th>Grade Points</th>
+                    <th>Letter Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in student_list|dictsort:"Reg_No"%}
+                <tr>
+                    <td>{{student.Reg_No}} </td>
+                    <td>{{student.Name}} </td>
+                    <td>{{student.Pre_Final_Total}} </td>
+                    <td class="editable" data-id="{{student.id}}" data-type="Exam_Part_A_Code">{{student.Exam_Part_A_Code}}</td>
+                    <td>{{student.Exam_Part_A}} </td>
+                    <td class="editable " data-id="{{student.id}} " data-type="Exam_Part_B_Code ">{{student.Exam_Part_B_Code}}</td>
+                    <td>{{student.Exam_Part_B}} </td>
+                    <td>{{student.Total_mark}} </td>
+                    <td>{{student.Grade_point}} </td>
+                    <td>{{student.Letter_grade}} </td>
+                </tr>
+                {% endfor %}</tbody>
+        </table>
 
     </div>
+
     <br>
     <div>
-        <div class="row">
-            <div class="col"></div>
-            <div class="col-mid-auto">
-                <div style="display: flex; flex-direction:row;">
-                    <form action="" method="POST">
+        <div class="row ">
+            <div class="col "></div>
+            <div class="col-mid-auto ">
+                <div style="display: flex; flex-direction:row; ">
+                    <form action=" " method="POST ">
                         {% csrf_token %}
-                        <div class="container">
-                            <button class="btn btn-primary" type="submit" name="calculate">Calculate</button>
+                        <div class="container ">
+                            <button class="btn btn-primary " type="submit " name="calculate ">Calculate</button>
                         </div>
                     </form>
-                    <form action="" method="POST">
+                    <form action=" " method="POST ">
                         {% csrf_token %}
-                        <div class="container" id="submit_result">
-                            <button class="btn btn-success" type="submit" name="submit">Submit Result</button>
+                        <div class="container " id="submit_result ">
+                            <button class="btn btn-success " type="submit " name="submit ">Submit Result</button>
                         </div>
                     </form>
                 </div>
             </div>
-            <div class="col"></div>
+            <div class="col "></div>
         </div>
     </div>
 
@@ -291,12 +327,12 @@
 <script>
     /*live editable*/
     $(document).ready(function() {
-        $(document).on("dblclick", ".editable", function() {
+        $(document).on("dblclick ", ".editable ", function() {
             var value = $(this).text();
-            var data_type = $(this).data("type");
-            var input_type = "text";
-            if (data_type == "created_at") {
-                input_type = "datetime-local";
+            var data_type = $(this).data("type ");
+            var input_type = "text ";
+            if (data_type == "created_at ") {
+                input_type = "datetime-local ";
             }
             var input = "<input type='" + input_type + "' class='input-data' value='" + value + "' class='form-control'>";
             $(this).html(input);
@@ -308,7 +344,8 @@
             $(this).remove();
             td.html(value);
             td.addClass("editable");
-            var type = td.data("type");
+            var
+                type = td.data("type");
             sendToServer(td.data("id"), value, type);
         });
         $(document).on("keypress", ".input-data", function(e) {

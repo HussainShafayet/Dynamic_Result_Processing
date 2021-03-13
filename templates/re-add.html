@@ -42,40 +42,42 @@
         <div id="id2"></div>
     </div>
 
+    <div style="border: 2px solid red; min-height:400px;min-width:400px; display:flex;align-items:center">
 
-
-    <!-- Re-add Part  -->
-    <div class="row">
-        <div class="col-lg">
-            <form action="" method="POST">
-                {% csrf_token %}
-                <div class="row" style="margin: 10px;">
-                    <div class="col-lg">
-                        <select name="registration_no" class="form-control select_option" required>
+        <!-- Re-add Part  -->
+        <div class="row" style="">
+            <div class="col-sm">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div class="row" style="margin: 10px;">
+                        <div class="col-sm">
+                            <select name="registration_no" class="form-control select_option" required>
                             <option value="null" selected disabled >Select Registration</option>
                             {% for reg_no in reg_list%}
                             <option value="{{reg_no}}">{{reg_no}}</option>
                             {%endfor%}
                         </select>
-                    </div>
-                    <div class="col-lg">
-                        <select name="batch" class="form-control select_option" required>
+                        </div>
+                        <div class="col-sm">
+                            <select name="batch" class="form-control select_option" required>
                             <option value="null" selected disabled>Select Batch</option>
                             {% for i in sessions %}
                             <option value="{{i}}">{{i}}</option>{% endfor %}
                         </select>
+                        </div>
+
                     </div>
+                    <div style="float:right; padding:8px">
+                        <button class="btn btn-primary" name="re-addmission" type="submit" href="">Add</button>
+                    </div>
+                </form>
 
-                </div>
-                <div style="float:right; padding:8px">
-                    <button class="btn btn-primary" name="re-addmission" type="submit" href="">Add</button>
-                </div>
-            </form>
-
+            </div>
+            <div class="col-sm"></div>
         </div>
-        <div class="col-sm"></div>
-        <div class="col"></div>
     </div>
+
+
 </div>
 
 

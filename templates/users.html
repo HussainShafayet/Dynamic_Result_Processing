@@ -358,12 +358,12 @@
 
 <!--Student Info-->
 {% elif val == 'std_info' %}
-<h3 class="text-center">Students</h3>
+<h3 class="text-center">Students Info</h3>
 <hr>
 <div class="container">
     <div class="row" style="margin-bottom: 15px;">
-        <div class="col-mid-8"></div>
-        <div class="col-mid-4">
+
+        <div class="col-10">
             <form class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search here..." aria-label="Search" id="searchField" name="search">
                 <button type="submit" class="btn btn-primary">
@@ -371,26 +371,27 @@
                 </button>
             </form>
         </div>
+        <div class="col-2"></div>
     </div>
     {% if stud_info %}
     <div class="app-table table-responsive">
         <table class="table table-striped table-hover">
             <thead class="thead bg-info">
                 <tr>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Username</th>
-                    <th>Email</th>
+                    <th>Registration No</th>
+                    <th>Name</th>
+                    <th>Batch</th>
+                    <th>Session</th>
                     <th>View as</th>
                 </tr>
             </thead>
             <tbody>
                 {% for j in stud_info %}
                 <tr>
-                    <td>{{j.first_name}} </td>
-                    <td>{{j.last_name}}</td>
-                    <td>{{j.username}}</td>
-                    <td>{{j.email}}</td>
+                    <td>{{j.student.reg_no}}</td>
+                    <td>{{j.first_name}} {{j.last_name}}</td>
+                    <td>{{j.student.batch}}</td>
+                    <td>{{j.student.session}}</td>
                     <td><a class="btn btn-primary" href="{% url 'userdetails' j.id %}">Details</a></td>
                 </tr>
                 {% endfor %}
@@ -400,11 +401,10 @@
     <div class="table-output table-responsive">
         <table class="table table-striped table-hover">
             <thead class="thead bg-info">
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Username</th>
-                <th>Email</th>
-
+                <th>Registration No</th>
+                <th>Name</th>
+                <th>Batch</th>
+                <th>Session</th>
                 <th>View as</th>
             </thead>
             <tbody class="table-body">
@@ -433,12 +433,12 @@
 
 <!--Teacher Info-->
 {% elif val == 'teach_info' %}
-<h3 class="text-center">Teacher</h3>
+<h3 class="text-center">Teacher Info</h3>
 <hr>
 <div class=" container">
     <div class="row" style="margin-bottom: 15px;">
-        <div class="col-mid-8"></div>
-        <div class="col-mid-4">
+
+        <div class="col-10">
             <form class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search here..." aria-label="Search" id="searchField" name="search">
                 <button type="submit" class="btn btn-primary">
@@ -446,6 +446,7 @@
                 </button>
             </form>
         </div>
+        <div class="col-2"></div>
     </div>
     {% if teacher_info %}
     <div class="app-table table-responsive">
