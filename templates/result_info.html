@@ -50,28 +50,19 @@
 
     <!-- Result Info Table -->
     {% if val == 'result_info_table' %}
-    <div>
-        <form action="" method="POST">
-            {%csrf_token%}
-
-            <button type="submit" class="btn btn-info" name="create_pdf">Create PDF</button>
-        </form>
-
-    </div>
-
-
-
 
 
     <!-- Assign Teacher -->
-    <div class="container">
-        <div class="row">
-            <div class="col-sm">
-                <div style="border:2px solid rgb(199, 221, 199); min-height:140px; margin:10px;">
+
+    <div class="row">
+        <div class="col-sm">
+            <div style="border:2px solid rgb(199, 221, 199); min-height:100px; margin:10px;">
+                <div class="container">
                     <form action="" method="POST">
                         {% csrf_token %}
-                        <div class="row" style="margin: 10px;">
-                            <div class="col-sm">
+                        <div class="row">
+                            <div class="col-sm" style="margin-bottom: 10px;">
+                                <label for="courses">Course: </label>
                                 <select name="courses" class="form-control" required>
                             <option value="null" selected disabled >Select Course</option>
                             {% for course in course_list%}
@@ -80,51 +71,56 @@
                         </select>
                             </div>
                             <div class="col-sm">
+                                <label for="teacher">Teacher: </label>
                                 <select name="teacher" class="form-control" required>
                             <option value="null" selected disabled>Select Teacher</option>
                             {% for i in teacher_list %}
                             <option value="{{i}}">{{i}}</option>{% endfor %}
                         </select>
                             </div>
+                            <div class="col-sm" style="margin-bottom: 10px;"><button style="margin-top: 32px;" class="btn btn-info" name="assign_course" type="submit" href="">Assign Teacher</button></div>
+                        </div>
 
-                        </div>
-                        <div style="float:right; padding:8px">
-                            <button class="btn btn-primary" name="assign_course" type="submit" href="">Assign Teacher</button>
-                        </div>
                     </form>
                 </div>
             </div>
+        </div>
 
 
 
-            <!-- Drop Courses -->
-            {% if semester == '1st' or semester == '2nd' %} {% else %}
-            <div class="col-sm">
-                <div style="border:2px solid rgb(199, 221, 199); min-height:140px; margin:10px;">
+        <!-- Drop Courses -->
+        {% if semester == '1st' or semester == '2nd' %} {% else %}
+        <div class="col-sm">
+            <div style="border:2px solid rgb(199, 221, 199); min-height:100px; margin:10px;">
+                <div class="container">
                     <form action="" method="POST">
                         {% csrf_token %}
-                        <div class="row" style="margin: 10px;">
+                        <div class="row">
 
                             <div class="col-sm">
+                                <label for="drop_courses">Add Drop Course: </label>
                                 <select name="drop_courses" class="form-control" required>
                             <option value="null" selected disabled>Select Drop Course</option>
                             {% for i in drop_course_list %}
                             <option value="{{i}}">{{i}}</option>{% endfor %}
                         </select>
                             </div>
+                            <div class="col-sm" style=" margin-bottom:10px;">
+                                <button style="margin-top: 32px;" class="btn btn-info" name="add_drop_courses" type="submit">Add Drop Course</button>
+                            </div>
+                        </div>
 
-                        </div>
-                        <div style="float:right;padding:8px;">
-                            <button class="btn btn-primary" name="add_drop_courses" type="submit">Add Drop Course</button>
-                        </div>
                     </form>
                 </div>
-            </div>{%endif%}
-        </div>
-
+            </div>
+        </div>{%endif%}
     </div>
+
+
     <div class=" table-responsive">
-        <h3 class="text-center">{{batch}} {{semester}} semester Result Sheet</h3>
+        <h3 style="margin-top: 10px;" class="text-center">{{batch}} {{semester}} semester Result Sheet
+            <hr>
+        </h3>
         <table class="table table-striped table-hover">
             {% for stu in result_info %} {% if forloop.counter == 1%}
             <tr class="bg-info">
@@ -141,10 +137,18 @@
     </div>
 
     <br>
-    <div class="text-center" style="margin-top: 20px;">
-        <form action="" method="POST">
+    <div style="margin-top: 20px; min-height:50px;">
+
+        <form style="float: left;" action="" method="POST">
             {%csrf_token%}
-            <button type="submit" name="calculate" class="btn btn-success">Calculate Result</button>
+
+            <button type="submit" class="btn btn-info" name="create_pdf">Create PDF</button>
+        </form>
+
+
+        <form style="float: right;" action="" method="POST">
+            {%csrf_token%}
+            <button type="submit" name="calculate" class="btn btn-info">Calculate Result</button>
         </form>
     </div>
 
@@ -156,7 +160,11 @@
 
 
     <!-- Assign Courses Part -->
-    <div class="row">
+    {%if courses %}
+    <h2 class="text-center">Assign Courses
+        <hr>
+    </h2>
+    <div class="row" style="background-color:rgb(211, 207, 160) ; box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);">
         {% for course in courses %}
         <div class="col">
             <div class="container py-4">
@@ -174,7 +182,7 @@
         {% endfor %}
     </div>
 
-
+    {%endif%}
 
 
 
@@ -183,34 +191,36 @@
 
     <!-- Course Result Details Part -->
     {% elif val == 'course_result_details' %}
-    <div style="margin-left: 10px; margin-bottom:10px;margin-top:10px">
-        <div style="border:2px solid rgb(199, 221, 199); height:100px; margin-top:10px;align-items:center;">
-            <form action="" method="POST">
-                {% csrf_token %}
-                <div class="row">
-                    <div class="col-4">
-                        <label for="part_a">Part A: </label>
-                        <select name="part_a" class="form-control" required>
+    <div style=" margin-bottom:10px;margin-top:10px">
+        <div style="border:2px solid rgb(199, 221, 199); min-height:100px; margin-top:10px;align-items:center; ">
+            <div class="container">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-sm">
+                            <label for="part_a">Part A: </label>
+                            <select name="part_a" class="form-control" required>
                         <option value="null" selected disabled>Select teacher</option>
                         {% for i in teacher_list %}
                         <option value="{{i}}">{{i}}</option>
                         {% endfor %}
                     </select>
-                    </div>
-                    <div class="col-4">
-                        <label for="part_b">Part B: </label>
-                        <select name="part_b" class="form-control" required>
+                        </div>
+                        <div class="col-sm">
+                            <label for="part_b">Part B: </label>
+                            <select name="part_b" class="form-control" required>
                             <option value="null" selected disabled>Select teacher</option>
                             {% for i in teacher_list %}
                             <option value="{{i}}">{{i}}</option>{% endfor %}
                         </select>
+                        </div>
+                        <div class="col-sm" style="margin-bottom: 10px;">
+                            <input style="margin-top: 32px;" class="btn btn-info" type="submit" name="assign_khata" value="Assign Khata">
+                        </div>
                     </div>
-                    <div class="col-4">
-                        <input style="margin-top: 32px;" class="btn btn-success" type="submit" name="assign_khata" value="Assaign Khata">
-                    </div>
-                </div>
 
-            </form>
+                </form>
+            </div>
         </div>
     </div>
     <div><button id="recheck" class="btn btn-info">Re-check</button></div>
@@ -313,7 +323,6 @@
 
     {%endif%}
 </div>
-
 
 {% endblock %}
 
