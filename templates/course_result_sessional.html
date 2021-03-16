@@ -4,7 +4,7 @@
     table,
     th,
     td {
-        border: 1px solid black;
+        border: 1px solid darkgray;
         border-collapse: collapse;
         white-space: nowrap;
         text-align: center;
@@ -34,32 +34,43 @@
         <div id="id" style="height:50px;"></div>
         <div id="id2" style="height:50px;"></div>
     </div>
-    <div style="margin-top: 10px;">
-        <form action="{% url 'course_result' batch course %}" method="POST">
-            {%csrf_token%}
-            <select name="reg_no" id="id_Reg_No" class="form-select" aria-label="Default select example" required style="width: 200px;">
-                    <option value="null" selected="selected">Select Registration</option>
+    <div style="margin-top: 10px;border:1px solid rgb(199, 221, 199);min-height:100px;margin-bottom:20px;">
+        <div class="container">
+            <form action="{% url 'course_result' batch course %}" method="POST">
+                {%csrf_token%}
+                <div class="row">
+                    <div class="col-sm">
+                        <label for="reg_no">Registration No: </label>
+                        <select name="reg_no" id="id_Reg_No" class="form-control" required>
+                    <option value="null " selected disabled>Select Registration</option>
                     {%for i in drop_student %}
-                    <option value="{{i.Reg_No}}" >{{i.Reg_No}}</option>
+                    <option value="{{i.Reg_No}}">{{i.Reg_No}}</option>
                     {%endfor%}
                 </select>
-            <select name="select_semester" class="form-control" required>
-                            <option value="null" selected disabled>Select Semester</option>
+                    </div>
+                    <div class="col-sm">
+                        <label for="select_semester">Semester: </label>
+                        <select name="select_semester" class="form-control" required>
+                            <option value="null " selected disabled>Select Semester</option>
                             <option value="3rd">3rd</option>
                             <option value="4th">4th</option>
                             <option value="5th">5th</option>
                             <option value="6th">6th</option>
                             <option value="7th">7th</option>
                             <option value="8th">8th</option>
-                        </select>
-            <button type="submit" name="drop_student_sessional" class="btn btn-primary">Add Drop Student</button>
-        </form>
+                        </select></div>
+                    <div class="col-sm">
+                        <button style="margin-top: 32px;height:38px;margin-bottom:10px;" type="submit " name="drop_student_sessional " class="btn btn-info ">Add Drop Student</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
-    <div class="table-responsive" style="margin-top: 10px;">
-        <h3 class="text-center">{{course}} ({{course.Course_type}}) result</h3>
+    <div class="table-responsive " style="margin-top: 10px; ">
+        <h3 class="text-center ">{{course}} ({{course.Course_type}}) result</h3>
         <hr>
-        <table class="table table-stripped table-hover">
-            <thead class="thead bg-info">
+        <table class="table table-stripped table-hover ">
+            <thead class="thead bg-info ">
                 <th>Registration No</th>
                 <th>Name</th>
                 <th>Attendence</th>
@@ -71,7 +82,7 @@
                 <th>Letter Grade</th>
                 <th>Action</th>
             </thead>
-            {% for i in student_list|dictsort:"Reg_No" %}
+            {% for i in student_list %}
             <tr>
                 <td>{{i.Reg_No}} </td>
                 <td>{{i.Name}} </td>
@@ -82,41 +93,39 @@
                 <td>{{i.Total_mark}} </td>
                 <td>{{i.Grade_point}} </td>
                 <td>{{i.Letter_grade}} </td>
-                <td class="stud_del">
-                    <a class="btn btn-danger" href="{% url 'delete_student' batch course i.id %}">Delete</a>
+                <td class="stud_del ">
+                    <a class="btn btn-warning " href="{% url 'delete_student' batch course i.id %} ">Delete</a>
                 </td>
             </tr>
             {% endfor %}
         </table>
     </div>
     <br>
-    <div class="row">
-        <div class="col"></div>
-        <div class="col-mid-auto">
-            <div id="btn">
-                <form action="" method="POST">
-                    {% csrf_token %}
-                    <div class="container">
-                        <button class="btn btn-success" name="calculate_sessional" type="submit" name="Calculate">Calculate GPA</button>
-                    </div>
-                </form>
-                <form action="" method="POST">
-                    {% csrf_token %}
-                    <div class="container submit">
-                        <button class="btn btn-success" name="submit_sessional" type="submit" name="Submit">Submit</button>
-                    </div>
-                </form>
-            </div>
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-sm" id="btn">
+            <form action=" " method="POST">
+                {% csrf_token %}
+                <div class="container">
+                    <button style="float: left;" class="btn btn-info" name="calculate_sessional" type="submit" name="Calculate">Calculate GPA</button>
+                </div>
+            </form>
         </div>
-        <div class="col"></div>
+        <div class="col-sm">
+            <form action=" " method="POST">
+                {% csrf_token %}
+                <div class="container submit">
+                    <button style="float: right;" class="btn btn-info" name="submit_sessional" type="submit" name="Submit">Submit</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
 
 
 {% endblock %} {% block js_script %}
-<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js " integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin=" anonymous "></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js "></script>
 <script>
     /*selec*/
     $('#id_Reg_No').select2({
@@ -125,12 +134,12 @@
 
     /*live search*/
     $(document).ready(function() {
-        $(document).on("dblclick", ".editable", function() {
+        $(document).on("dblclick ", ".editable ", function() {
             var value = $(this).text();
-            var data_type = $(this).data("type");
-            var input_type = "text";
-            if (data_type == "created_at") {
-                input_type = "datetime-local";
+            var data_type = $(this).data("type ");
+            var input_type = "text ";
+            if (data_type == "created_at ") {
+                input_type = "datetime-local ";
             }
             var input = "<input type='" + input_type + "' class='input-data' value='" + value + "' class='form-control'>";
             $(this).html(input);
@@ -145,24 +154,27 @@
             var type = td.data("type");
             sendToServer(td.data("id"), value, type);
         });
-        $(document).on("keypress", ".input-data", function(e) {
-            var key = e.which;
-            if (key == 13) {
-                var value = $(this).val();
-                var td = $(this).parent("td");
-                $(this).remove();
-                td.html(value);
-                td.addClass("editable");
-                var type = td.data("type");
-                sendToServer(td.data("id"), value, type);
-            }
-        });
+        $(document).on("keypress", ".input-data",
+            function(e) {
+                var key = e.which;
+                if (key == 13) {
+                    var value = $(this).val();
+                    var td = $(this).parent("td");
+                    $(this).remove();
+                    td.html(value);
+                    td.addClass("editable");
+                    var type = td.data("type");
+                    sendToServer(td.data("id"), value,
+                        type);
+                }
+            });
 
         function sendToServer(id, value, type) {
             console.log(id);
             console.log(value);
             console.log(type);
-            $.ajax({
+            if ((type == 'Attendence' & value <= 10) | ((type == 'Lab_performance' | type == 'Project_mark' | type == 'Exam'))) {
+                $.ajax({
                     url: "http://127.0.0.1:8000/saveresult_sessional",
                     type: "POST",
                     data: {
@@ -179,8 +191,7 @@
                             });
                         }, 2000);
                     }
-                })
-                .fail(function() {
+                }).fail(function() {
                     $("#id2").show();
                     $("#id2").addClass("alert alert-danger").html("Error!");
                     setTimeout(function() {
@@ -189,9 +200,12 @@
                         });
                     }, 2000);
                 });
+            } else {
 
+                alert('Please Give Attendence marks less than or equal 10 !!!');
+
+            }
         }
-
     });
 </script>
 {% endblock %}

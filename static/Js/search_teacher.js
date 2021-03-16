@@ -30,10 +30,11 @@ searchField.addEventListener('keyup', (e) => {
                     data.forEach((item) => {
                         tbody.innerHTML += `
                                         <tr>
-                                        <td>${item.first_name}</td>
-                                        <td>${item.last_name}</td>
-                                        <td>${item.username}</td>
+                                        <td>${item.first_name} ${item.last_name}</td>
+                                        <td>${item.related_values.designation}</td>
+                                        <td>${item.related_values.teach_fields}</td>
                                         <td>${item.email}</td>
+                                        <td>${item.related_values.contact}</td>
                                         <td><a class="btn btn-primary" href="user_details/${item.id}">Details</a>
                                         </td>
                                         </tr> `

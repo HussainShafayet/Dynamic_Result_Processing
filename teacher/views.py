@@ -87,13 +87,16 @@ def details_course(request, batch, course):
 
 
 def course_result(request, batch, course):
+    current_user = request.user
+    teacher = Teacher.objects.get(user=current_user)
+    dept = teacher.dept
     get_batch = Sessions.objects.get(Batch=batch)
     get_course = Course.objects.get(Course=course, Batch=get_batch)
     course_type = get_course.Course_type
     if course_type == 'Theory':
         student_list = get_course.course_result_theory_set.all()
         val = 'course_result_theory'
-        drop_student = Student_data.objects.all()
+        drop_student = Student_data.objects.filter(dept=dept)
         context = {
             'student_list': student_list,
             'val': val,
@@ -157,7 +160,7 @@ def course_result(request, batch, course):
         return render(request, 'course_result_theory.html', context)
     elif course_type == 'Sessional':
         student_list = get_course.course_result_sessional_set.all()
-        drop_student = Student_data.objects.all()
+        drop_student = Student_data.objects.filter(dept=dept)
         val = 'course_result_sessional'
         context = {
             'student_list': student_list,
@@ -180,7 +183,6 @@ def course_result(request, batch, course):
                     get_name = drop_student.Name
                     check_reg_no = get_course.course_result_sessional_set.filter(
                         Reg_No=reg_no)
-                    print(check_reg_no)
                     if not check_reg_no:
                         add_drop = Course_Result_Sessional(
                             course=get_course, batch=drop_session, Reg_No=reg_no, Name=get_name, semester=drop_semester_sessional)
@@ -276,7 +278,8 @@ def course_result(request, batch, course):
                         Course=course, Batch=get_batch)
                     course_name = get_course.Course+' LG'
 
-                    all_students = find_semester.result_table_set.filter(Name='Name')
+                    all_students = find_semester.result_table_set.filter(
+                        Name='Name')
                     first_line = all_students[0]
                     fieldlist = first_line.__dict__
                     for field, value in fieldlist.items():
@@ -441,6 +444,3 @@ def delete_student(request, batch, course, id):
     elif course_type == 'Sessional':
         del_std = Course_Result_Sessional.objects.get(id=id).delete()
     return redirect('course_result', batch, course)
-
-
-

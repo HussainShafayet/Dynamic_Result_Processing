@@ -155,24 +155,7 @@
     <!-- Body -->
     <div style="margin-top:30px">
         <div class="row ">
-            <!-- <div class="col-sm-2" style="border: 1px solid darkgray; height:300px;">
-                <h3>Some Links</h3>
-                <p></p>
-                <ul class="nav nav-pills flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link " href="#">Link</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="#"></a>
-                    </li>
-                </ul>
-            </div> -->
+            {% block sidelink%} {% endblock %}
             <div class="col-sm" style=" min-height:800px">
 
                 {% block body %}{% endblock %}

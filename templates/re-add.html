@@ -42,15 +42,15 @@
         <div id="id2"></div>
     </div>
 
-    <div style="border: 2px solid red; min-height:400px;min-width:400px; display:flex;align-items:center">
+    <div style="border: 1px solid darkgrey; min-height:200px; background-color:rgb(161, 146, 122); box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);">
 
         <!-- Re-add Part  -->
-        <div class="row" style="">
+        <div class="row" style="margin-top:20px;">
             <div class="col-sm">
                 <form action="" method="POST">
                     {% csrf_token %}
                     <div class="row" style="margin: 10px;">
-                        <div class="col-sm">
+                        <div class="col-sm" style="margin-bottom: 10px;">
                             <select name="registration_no" class="form-control select_option" required>
                             <option value="null" selected disabled >Select Registration</option>
                             {% for reg_no in reg_list%}
@@ -68,12 +68,11 @@
 
                     </div>
                     <div style="float:right; padding:8px">
-                        <button class="btn btn-primary" name="re-addmission" type="submit" href="">Add</button>
+                        <button class="btn btn-info" name="re-addmission" type="submit" href="">Add Student</button>
                     </div>
                 </form>
 
             </div>
-            <div class="col-sm"></div>
         </div>
     </div>
 

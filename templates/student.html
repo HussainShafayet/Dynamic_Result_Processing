@@ -10,57 +10,62 @@
     }
 </style>
 
-{%endblock%}{% block body %} {% if val == 'active_courses' %}
+{%endblock%}{% block body %}
 
-<div class=" table-responsive">
-    {% if list_of_list %}
-    <h3 class="text-center">Active Courses</h3>
-    <hr>
-    <table class="table table-striped table-hover">
+<div class="container">
+    {% if val == 'active_courses' %}
 
-        <thead class=" thead bg-info">
-            <tr>
-                <th>Course Name</th>
-                <th>Attendence</th>
-                <th>Term Test 01</th>
-                <th>Term Test 02</th>
-                <th>Term Test 03</th>
-                <th>Term Test Total</th>
-                <th>Pre Final Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for stu in list_of_list %}
-            <tr>
-                {% for i in stu %}
-                <td>{{i}}</td>
-                {% endfor %}
-            </tr>{%endfor%}</tbody>
-    </table>{%else%}
-    <p>No Active courses.</p>{%endif%}
-</div>
-{% else %}
-<h1>Result</h1>
-<div class="table-responsive">
-    <table class="table table-hover">
-        <thead>
-            {% for stu in result2 %}
-            <tr>
-                {% for i in stu %}
-                <th>{{i}}</th>
-                {% endfor %}
-            </tr>{% endfor %}
-        </thead>
-        <tbody>
-            {% for stu in results %}
-            <tr>
-                {% for i in stu %}
-                <td>{{i}}</td>
-                {% endfor %}
-            </tr> {% endfor %}
-        </tbody>
+    <div class=" table-responsive">
+        {% if list_of_list %}
+        <h3 class="text-center">Active Courses</h3>
+        <hr>
+        <table class="table table-striped table-hover">
 
-    </table>
+            <thead class=" thead bg-info">
+                <tr>
+                    <th>Course Name</th>
+                    <th>Attendence</th>
+                    <th>Term Test 01</th>
+                    <th>Term Test 02</th>
+                    <th>Term Test 03</th>
+                    <th>Term Test Total</th>
+                    <th>Pre Final Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stu in list_of_list %}
+                <tr>
+                    {% for i in stu %}
+                    <td>{{i}}</td>
+                    {% endfor %}
+                </tr>{%endfor%}</tbody>
+        </table>{%else%}
+        <p>No Active courses.</p>{%endif%}
+    </div>
+    {% else %}
+    <h1>Result</h1>
+    <div class="table-responsive">
+        {% if results %}
+        <table class="table table-hover">
+            <thead>
+                {% for stu in result2 %}
+                <tr>
+                    {% for i in stu %} {% if forloop.counter == 1%}
+                    <th>Registration No</th>{% else %}
+                    <th>{{i}}</th>{%endif%} {% endfor %}
+                </tr>{% endfor %}
+            </thead>
+            <tbody>
+                {% for stu in results %}
+                <tr>
+                    {% for i in stu %}
+                    <td>{{i}}</td>
+                    {% endfor %}
+                </tr> {% endfor %}
+            </tbody>
+
+        </table>{%else%}Not Publish{%endif%}
+    </div>
 </div>
 {%endif%}
 <!-- <table>

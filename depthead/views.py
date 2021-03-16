@@ -172,8 +172,10 @@ def allow_user(request, id):
             stud = Student.objects.get(user=user_det)
             reg = stud.reg_no
             batch = stud.batch
+            dept = stud.dept
             get_sess = Sessions.objects.get(Batch=batch)
-            add_student = Student_data(session=get_sess, Reg_No=reg, Name=name)
+            add_student = Student_data(
+                session=get_sess, Reg_No=reg, Name=name, dept=dept)
             add_student.save()
             semester_list = Result_Semester_List.objects.filter(
                 session=get_sess)
@@ -297,7 +299,7 @@ def student_search(request):
         # print(type(stud_info2))
         #from itertools import chain
         #stud_info3 = chain(test, stud_info2)
-        #print(stud_info3)
+        # print(stud_info3)
         data = stud_info2.values()
 
         for i in data:
@@ -310,7 +312,7 @@ def student_search(request):
                 value = getattr(stu_obj, column.name)
                 #print(column.name, value)
                 mydict[column.name] = str(value)
-            #print(mydict)
+            # print(mydict)
             i['related_values'] = mydict
         # print(data)
         return JsonResponse(list(data), safe=False)
@@ -406,6 +408,16 @@ def teacher_search(request):
         teacher_info = User.objects.filter(query).filter(
             Q(first_name__icontains=str(search_str)) | Q(last_name__icontains=str(search_str)) | Q(username__icontains=str(search_str)) | Q(email__icontains=str(search_str)))
         data = teacher_info.values()
+        for i in data:
+            foreign_key = i['id']
+            use_obj = User.objects.get(pk=int(foreign_key))
+            teach_obj = Teacher.objects.get(user=use_obj)
+            mydict = {}
+            column_list = teach_obj._meta.get_fields()
+            for column in column_list[1:]:
+                value = getattr(teach_obj, column.name)
+                mydict[column.name] = str(value)
+            i['related_values'] = mydict
         return JsonResponse(list(data), safe=False)
 
 
@@ -466,7 +478,7 @@ def add_syllabus(request):
 def view_syllabus(request):
     depthead = Depthead.objects.get(user=request.user)
     dept = depthead.dept
-    syllabus = Syllabus.objects.filter(dept=dept)
+    syllabus = Syllabus.objects.filter(dept=dept).order_by('Syllabus_Name')
     val = 'view_syllabus'
     context = {
         'syllabus': syllabus,
@@ -531,12 +543,14 @@ def add_course(request, syllabus_id, semester):
 def view_course_list_all(request, syllabus_id, semester):
     syllabus = Syllabus.objects.get(Syllabus_Name=syllabus_id)
     search_syllabus = Sessions.objects.filter(syllabus=syllabus)
+    semester_list = Course_Semester_List.objects.filter(syllabus=syllabus)
     if search_syllabus:
         value = 'hide'
     else:
         value = 'visible'
     get_semester = Course_Semester_List.objects.get(
         syllabus=syllabus, Semester=semester)
+
     course_list = get_semester.course_list_all_set.all()
     val = 'course_list_by_semester'
     context = {
@@ -544,7 +558,8 @@ def view_course_list_all(request, syllabus_id, semester):
         'val': val,
         'semester': semester,
         'syllabus_id': syllabus_id,
-        'value': value
+        'value': value,
+        'semester_list': semester_list,
     }
     return render(request, 'course_list.html', context)
 
@@ -639,11 +654,11 @@ def create_batch(request):
 def find_batch(request):
     depthead = Depthead.objects.get(user=request.user)
     dept = depthead.dept
-    batches = Sessions.objects.filter(dept=dept)
+    batches = Sessions.objects.filter(dept=dept).order_by('Session')
     val = 'batch_info'
     context = {
         'batches': batches,
-        'val': val
+        'val': val,
     }
     return render(request, 'batch_info.html', context)
 
@@ -654,11 +669,12 @@ def batch_info(request, batch):
     batch2 = Sessions.objects.get(Batch=batch)
     semester_list = Result_Semester_List.objects.filter(session=batch2)
     # result_semester_list = batch.result_semester_list_set.all()
-
+    val2 = 'sidelink'
     context = {
         'result_semester_list': semester_list,
         'val': 'result_semester_list_info',
-        'batch_val': batch
+        'batch_val': batch,
+        'val2': val2,
 
     }
     return render(request, 'batch_info.html', context)
@@ -1038,6 +1054,8 @@ def result_info(request, batch, semester):
 
     val = 'result_info_table'
     teahcer_list = Teacher_name.objects.all()
+    batch2 = Sessions.objects.get(Batch=batch)
+    semester_list = Result_Semester_List.objects.filter(session=batch2)
     context = {
         'result_info': list_of_list,
         'val': val,
@@ -1046,7 +1064,8 @@ def result_info(request, batch, semester):
         'teacher_list': teahcer_list,
         'batch': batch,
         'semester': semester,
-        'courses': get_courses
+        'courses': get_courses,
+        'result_semester_list': semester_list,
     }
 
     if request.method == 'POST':
@@ -1374,7 +1393,6 @@ def re_admission(request):
     if request.method == 'POST':
         get_reg = request.POST.get('registration_no')
         get_batch = request.POST.get('batch')
-        print(get_reg, get_batch)
         get_session = Sessions.objects.get(Batch=get_batch)
         Result_Table.objects.filter(Reg=get_reg).delete()
         student_data_obj = Student_data.objects.get(Reg_No=get_reg)

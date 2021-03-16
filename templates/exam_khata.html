@@ -34,7 +34,7 @@
         </div>{% endfor %}
     </div>
     {%else%}
-    <p>No paper has been assigned yet.</p>{%endif%} {%else%}
+    <p style="margin-left: 10px;">No paper has been assigned yet.</p>{%endif%} {%else%}
 
     <div style="height: 50px;margin-bottom:10px;">
         {% if messages %} {% for message in messages %}
@@ -47,8 +47,10 @@
     </div>
     {% if part == 'Part A' %}
     <div class="table-responsive">
-        <h3 class="text-center">{{course}} (Part A) marks</h3>
-        <hr>
+        <h3 class="text-center">{{course}} (Part A) marks
+            <hr>
+        </h3>
+
         <table class="table table-striped table-hover">
             <thead class="thead bg-info">
                 <tr class="text-center">
@@ -68,8 +70,10 @@
     </div>
     {%else%}
     <div class="table-responsive">
-        <h3 class="text-center">{{course}} (Part B) marks</h3>
-        <hr>
+        <h3 class="text-center">{{course}} (Part B) marks
+            <hr>
+        </h3>
+
         <table class="table table-hover">
             <thead class="thead bg-info">
                 <tr class="text-center">
@@ -91,7 +95,7 @@
     <div>
         <form action="" method="POST">
             {% csrf_token %}
-            <input type="submit" name="assign_khata" value="Submit Result">
+            <input style="float: right;" class="btn btn-info" type="submit" name="assign_khata" value="Submit Result">
         </form>
     </div><br> {%endif%}
 </div>

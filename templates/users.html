@@ -452,21 +452,21 @@
     <div class="app-table table-responsive">
         <table class="table table-striped table-hover">
             <thead class="thead bg-info">
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Username</th>
+                <th>Name</th>
+                <th>Designation</th>
+                <th>Teaching Field</th>
                 <th>Email</th>
-
+                <th>Contact</th>
                 <th>View as</th>
             </thead>
             <tbody>
                 {% for j in teacher_info %}
                 <tr>
-                    <td>{{j.first_name}} </td>
-                    <td>{{j.last_name}}</td>
-                    <td>{{j.username}}</td>
+                    <td>{{j.first_name}} {{j.last_name}}</td>
+                    <td>{{j.teacher.designation}}</td>
+                    <td>{{j.teacher.teach_fields}}</td>
                     <td>{{j.email}}</td>
-
+                    <td>{{j.teacher.contact}}</td>
                     <td><a class="btn btn-primary" href="{% url 'userdetails' j.id %}">Details</a></td>
                 </tr>
                 {% endfor %}
@@ -476,11 +476,11 @@
     <div class="table-output table-responsive">
         <table class="table table-striped table-hover">
             <thead class="thead bg-info">
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Username</th>
+                <th>Name</th>
+                <th>Designation</th>
+                <th>Teaching Field</th>
                 <th>Email</th>
-
+                <th>Contact</th>
                 <th>View as</th>
             </thead>
             <tbody class="table-body">

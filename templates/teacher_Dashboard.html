@@ -39,7 +39,7 @@
         </div>
     </div>{% endfor %}
 </div>{%else%}
-<p>No Courses has been assingned yet.</p>{%endif%} <br> {% elif val == 'user_t2' %}{% if course %}
+<p style="margin-left: 10px; font-size:18px;">No Courses has been assingned yet.</p>{%endif%} <br> {% elif val == 'user_t2' %}{% if course %}
 <div class="row">
     {% for course_detail in course %}
     <div class="col">
@@ -58,7 +58,7 @@
         </div>
     </div>{% endfor %}
 </div>{%else%}
-<p>No completed courses.</p>{%endif%}
+<p style="margin-left: 10px ;font-size:18px;">No completed courses.</p>{%endif%}
 
 <br> {% elif val == 'course_det' %}
 <h3>Course Details</h3>

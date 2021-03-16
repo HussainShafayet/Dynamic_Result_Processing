@@ -1,6 +1,41 @@
-{% extends 'base.html' %}{% load crispy_forms_tags %}{% block body %}{% if val == 'course_list_by_semester' %}
+{% extends 'base.html' %}{% load crispy_forms_tags %}{% block style %}
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid darkgray;
+        border-collapse: collapse;
+        white-space: nowrap;
+        text-align: center;
+    }
+    
+    a:hover {
+        color: black;
+    }
+</style>
+
+{%endblock%} {%block sidelink %} {% if val == 'course_list_by_semester' %}
+<div class="col-sm-2" style="border: 1px solid white; min-height:100px; background-color:#F1F1F1">
+    <h3>All Semester
+        <hr>
+    </h3>
+    <p></p>
+    <ul class="nav nav-pills flex-column">
+        {% for batch in semester_list %}
+        <li class="nav-item">
+            <a style="color:black; " class="nav-link " href="{% url 'view_course_list' syllabus_id batch.Semester %}">{{batch.Semester}} Semester Courses</a>
+        </li>
+        {%endfor%}
+    </ul>
+</div> {%else%}{% endif %} {% endblock %}
+
+
+<!-- Body Part -->
+{% block body %}{% if val == 'course_list_by_semester' %}
 
 <div class="container">
+
+    {% if value == 'visible' %}
     <div style="height: 50px;margin-bottom:10px;">
         {% if messages %} {% for message in messages %}
         <div class="alert alert-{{message.tags}}" role="alert" id="">
@@ -10,14 +45,16 @@
         <div id="id"></div>
         <div id="id2"></div>
     </div>
-    {% if value == 'visible' %}
+
     <div style="margin-left: 10px; margin-bottom:10px;">
         <a class="btn btn-primary" href="{% url 'add_course' syllabus_id semester %}">Add New Course</a>
     </div>
     {% if course_list %}
     <div class="table-responsive">
-        <h1 class="text-center">{{semester}} semester courses will be displayed here</h1>
-        <hr>
+        <h3 class="text-center">{{semester}} Semester Courses
+            <hr>
+        </h3>
+
         <table class="table table-hover table-striped">
             <thead class="thead bg-info">
                 <tr>
@@ -48,11 +85,22 @@
         <a class="btn btn-primary " href="{% url 'add_course' syllabus_id semester %} ">Add New Course</a>
     </div> -->
     {% if course_list %}
+    <div style="margin-bottom:10px;">
+        {% if messages %} {% for message in messages %}
+        <div class="alert alert-{{message.tags}}" role="alert" id="">
+            <button type="button" class="close" data-dismiss="alert">X</button> {{message}}
+        </div>
+        {% endfor %} {% endif %}
+        <div id="id"></div>
+        <div id="id2"></div>
+    </div>
     <div class="table-responsive">
-        <h1 class="text-center">{{semester}} semester courses will be displayed here</h1>
-        <hr>
+        <h3 class="text-center">{{semester}} Semester Courses
+            <hr>
+        </h3>
+
         <table class="table table-hover table-striped">
-            <thead class="thead bg-secondary">
+            <thead class="thead bg-info">
                 <tr>
                     <th scope="col">Course Code</th>
                     <th scope="col">Title</th>
