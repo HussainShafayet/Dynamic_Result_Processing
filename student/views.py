@@ -7,6 +7,8 @@ from depthead.decorators import (login_required, allowed_user)
 # My views here.
 
 
+@login_required
+@allowed_user(allowed_roles=['Student'])
 def student_dashboard(request):
     return render(request, 'user_dashboard.html', {'val': 'user_stud'})
 
@@ -46,6 +48,8 @@ def active_courses(request):
     return render(request, 'student.html', context)
 
 
+@login_required
+@allowed_user(allowed_roles=['Student'])
 def student_result(request, semester):
     user2 = request.user
     stud = Student.objects.get(user=user2)

@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Course_List_All
 from teacher.models import Course_Result_Theory
+from django.contrib import messages
 
 
 @csrf_exempt
@@ -29,6 +30,8 @@ def save_paper_code(request):
     type = request.POST.get('type', '')
     value = request.POST.get('value', '')
     course = Course_Result_Theory.objects.get(pk=id)
+    course2 = Course_Result_Theory.objects.all()
+    
     if type == "Exam_Part_A_Code":
         course.Exam_Part_A_Code = value
     if type == "Exam_Part_B_Code":

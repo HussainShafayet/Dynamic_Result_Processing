@@ -113,22 +113,27 @@
         <div class="row">
             <div class="col-sm">
                 <div class="container" style="margin: 10px;">
-                    <form action="" method="POST">
-                        {% csrf_token %}
 
-                        <div class="row">
-                            <div class="col-sm">
+
+                    <div class="row">
+                        <div class="col-sm">
+                            <form action="" method="POST">
+                                {% csrf_token %}
                                 <input type="radio" class="radio" id="1st" name="count_TT" value=1 required>
                                 <label for="1st">Best One</label><br>
                                 <input type="radio" id="2nd" name="count_TT" value=2>
                                 <label for="2nd">Best Two</label><br>
                                 <input type="radio" id="3rd" name="count_TT" value=3>
-                                <label for="3rd">Avagare of 3</label></div>
+                                <label for="3rd">Avagare of 3</label><br>
+                                <input class="btn btn-info" type="submit" name="calculate" value="Calculate"></form>
                         </div>
-                        <div style="margin-top: 20px;">
-                            <input class="btn btn-info" type="submit" name="calculate" value="Calculate">
-                            <button style="float: right;" class="btn btn-info" type="submit" class="btn btn-info" name="change_state">Submit</button></div>
-                    </form>
+                    </div>
+                    <div>
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            <button style="margin-bottom: 60px; float:right" style="float: right;" class="btn btn-info" type="submit" class="btn btn-info" name="change_state">Submit</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

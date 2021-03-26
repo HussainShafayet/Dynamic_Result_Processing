@@ -20,7 +20,17 @@
         box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);
     }
     
-    a:hover {
+    #sidelink a {
+        color: rgb(9, 102, 224);
+    }
+    
+    #sidelink a:hover {
+        color: black;
+        background-color: rgb(167, 136, 136);
+        transition: .5s;
+    }
+    
+    #sidelink a.active {
         color: black;
     }
     
@@ -30,16 +40,18 @@
 </style>
 
 {%endblock%} {% block sidelink %} {% if val == 'result_info_table' %}
-<div class="col-sm" style="border: 1px solid white; min-height:100px;background-color:#F1F1F1">
+<div id="sidelink" class="col-sm" style="border: 1px solid rgb(199, 221, 199); min-height:100px;max-width:250px;background-color:#F1F1F1">
     <h3>All Semester
         <hr>
     </h3>
     <ul class="nav nav-pills flex-column">
-        {% for sem in result_semester_list %}
+        {% for sem in result_semester_list %} {% if forloop.counter == 1%}
         <li class="nav-item">
-            <a style="color: black;" class="nav-link " href="{% url 'result_info' batch sem.Semester %}">{{sem.Semester}} Semester Result</a>
-        </li>
-        {%endfor%}
+            <a class="nav-link active" href="{% url 'result_info' batch sem.Semester %}">{{sem.Semester}} Semester</a>
+        </li>{%else%}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'result_info' batch sem.Semester %}">{{sem.Semester}} Semester</a>
+        </li>{%endif%} {%endfor%}
     </ul>
 </div>{% endif %} {%endblock%} {% block body %}
 <div class="container">
@@ -174,10 +186,10 @@
 
     <!-- Assign Courses Part -->
     {%if courses %}
-    <h2 class="text-center">Assign Courses
+    <h2 class="text-center">Assigned Courses
         <hr>
     </h2>
-    <div class="row" style="background-color:rgb(211, 207, 160) ; box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);">
+    <div class="row" style=" box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);">
         {% for course in courses %}
         <div class="col">
             <div class="container py-4">
@@ -236,7 +248,6 @@
             </div>
         </div>
     </div>
-    <div><button id="recheck" class="btn btn-info">Re-check</button></div>
     <div class="table-responsive" id="re-check1" style="display: none;">
         <h3 class="text-center"> Re-Check Course details</h3>
         <hr>
@@ -273,7 +284,7 @@
         </table>
     </div>
     <div class="table-responsive" id="re-check2" style="display:block;">
-        <h3 class="text-center">Course details</h3>
+        <h3 class="text-center">Course Details</h3>
         <hr>
         <table class="table table-stripped table-hover">
             <thead class="thead bg-info">
@@ -298,7 +309,7 @@
                     <td>{{student.Pre_Final_Total}} </td>
                     <td class="editable" data-id="{{student.id}}" data-type="Exam_Part_A_Code">{{student.Exam_Part_A_Code}}</td>
                     <td>{{student.Exam_Part_A}} </td>
-                    <td class="editable " data-id="{{student.id}} " data-type="Exam_Part_B_Code ">{{student.Exam_Part_B_Code}}</td>
+                    <td class="editable" data-id="{{student.id}}" data-type="Exam_Part_B_Code">{{student.Exam_Part_B_Code}}</td>
                     <td>{{student.Exam_Part_B}} </td>
                     <td>{{student.Total_mark}} </td>
                     <td>{{student.Grade_point}} </td>
@@ -311,25 +322,24 @@
 
     <br>
     <div>
-        <div class="row ">
-            <div class="col "></div>
-            <div class="col-mid-auto ">
-                <div style="display: flex; flex-direction:row; ">
-                    <form action=" " method="POST ">
-                        {% csrf_token %}
-                        <div class="container ">
-                            <button class="btn btn-primary " type="submit " name="calculate ">Calculate</button>
-                        </div>
-                    </form>
-                    <form action=" " method="POST ">
-                        {% csrf_token %}
-                        <div class="container " id="submit_result ">
-                            <button class="btn btn-success " type="submit " name="submit ">Submit Result</button>
-                        </div>
-                    </form>
-                </div>
+        <div class="row" style="margin-top: 20px;">
+            <div class="col-sm" style="margin-bottom: 10px;">
+                <button id="recheck" class="btn btn-info">Re-check</button>
             </div>
-            <div class="col "></div>
+            <div class="col-sm">
+                <form action=" " method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-info" type="submit" name="calculate">Calculate</button>
+                </form>
+            </div>
+            <div class="col-sm">
+                <form action=" " method="POST">
+                    {% csrf_token %}
+                    <div id="submit_result">
+                        <button class="btn btn-info" type="submit" name="submit">Submit Result</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -345,10 +355,24 @@
 <!-- Javascript Part  -->
 {% block js_script %}
 
+<script>
+    $(document).ready(function() {
 
+    });
+</script>
 <script>
     /*live editable*/
     $(document).ready(function() {
+        $('#sidelink li a').click(function() {
+            //removing the previous selected menu state
+            $('#sidelink li').find('a.active').removeClass('active');
+            //adding the state for this parent menu
+            $(this).addClass('active');
+
+        });
+
+
+
         $(document).on("dblclick ", ".editable ", function() {
             var value = $(this).text();
             var data_type = $(this).data("type ");

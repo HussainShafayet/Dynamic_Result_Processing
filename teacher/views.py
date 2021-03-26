@@ -74,6 +74,8 @@ def assign_course_result(request):
     return render(request, 'teacher_Dashboard.html', context)
 
 
+@login_required
+@allowed_user(allowed_roles=['Teacher'])
 def details_course(request, batch, course):
     course_details = Course.objects.get(Batch=batch, Course=course)
     course_details2 = Course_list.objects.get(course_code=course_details)
@@ -86,6 +88,8 @@ def details_course(request, batch, course):
     return render(request, 'teacher_Dashboard.html', context)
 
 
+@login_required
+@allowed_user(allowed_roles=['Teacher'])
 def course_result(request, batch, course):
     current_user = request.user
     teacher = Teacher.objects.get(user=current_user)
@@ -108,7 +112,7 @@ def course_result(request, batch, course):
             if 'drop_student' in request.POST:
                 reg_no = request.POST.get('reg_no')
                 drop_semester = request.POST.get('select_semester')
-                if reg_no == 'null':
+                if reg_no is None:
                     messages.warning(
                         request, 'Please select a registration no!')
                     return redirect('course_result', batch, course)
@@ -173,7 +177,7 @@ def course_result(request, batch, course):
             if 'drop_student_sessional' in request.POST:
                 reg_no = request.POST.get('reg_no')
                 drop_semester_sessional = request.POST.get('select_semester')
-                if reg_no == 'null':
+                if reg_no is None:
                     messages.warning(
                         request, 'Please select a registration no!')
                     return redirect('course_result', batch, course)
@@ -300,6 +304,8 @@ def course_result(request, batch, course):
         return render(request, 'course_result_sessional.html', context)
 
 
+@login_required
+@allowed_user(allowed_roles=['Teacher'])
 def archived_course(request, batch, course):
     get_batch = Sessions.objects.get(Batch=batch)
     get_course = Course.objects.get(
@@ -378,6 +384,8 @@ def assaigned_khatas(request, batch, course):
     return render(request, 'exam_khata.html', context)
 
 
+@login_required
+@allowed_user(allowed_roles=['Teacher'])
 def result_submit(request, batch, course):
     get_batch = Sessions.objects.get(Batch=batch)
     get_course = Course.objects.get(Course=course, Batch=get_batch)
@@ -435,6 +443,8 @@ def result_submit(request, batch, course):
     return redirect('course_result', batch, course)
 
 
+@login_required
+@allowed_user(allowed_roles=['Teacher'])
 def delete_student(request, batch, course, id):
     get_batch = Sessions.objects.get(Batch=batch)
     get_course = Course.objects.get(Course=course, Batch=get_batch)

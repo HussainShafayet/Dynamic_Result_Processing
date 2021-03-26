@@ -152,11 +152,6 @@ def student_registration(request):
     if request.method == 'POST':
         form = StudentRegForm(request.POST, request.FILES)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.is_active = True
-            user.save()
-            group = Group.objects.get(name='None')
-            user.groups.add(group)
             reg_no = form.cleaned_data.get('reg_no')
             reg_no_test = Student_data.objects.filter(Reg_No=reg_no)
             if reg_no_test:
@@ -169,6 +164,11 @@ def student_registration(request):
                 }
                 return render(request, 'registration.html', context)
             else:
+                user = form.save(commit=False)
+                user.is_active = True
+                user.save()
+                group = Group.objects.get(name='None')
+                user.groups.add(group)
                 messages.success(request, 'Registration Successful !!!')
                 return redirect('login')
                 """ current_site = get_current_site(request)

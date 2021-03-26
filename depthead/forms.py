@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 from .models import Course_list, Batch, Student_Sessions, Session, Syllabus, Course_Semester_List, Course_List_All, Sessions
+from accounts.models import Depthead
 
 
 class AddSyllabus(forms.ModelForm):
@@ -22,7 +23,6 @@ class Add_Semester(forms.ModelForm):
         fields = [
             'Semester'
         ]
-
 
 
 class AddCourse(forms.ModelForm):
@@ -48,6 +48,14 @@ class Create_batch(forms.ModelForm):
         fields = [
             'syllabus', 'Batch', 'Session'
         ]
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(Create_batch, self).__init__(*args, **kwargs)
+        depthead = Depthead.objects.get(user=user)
+        dept = depthead.dept
+        if user:
+           self.fields['syllabus'].queryset = Syllabus.objects.filter(dept=dept)
 
     def clean(self):
         cleaned_data = super(Create_batch, self).clean()

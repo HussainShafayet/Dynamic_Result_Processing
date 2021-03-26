@@ -26,7 +26,8 @@ from PyPDF2 import PdfFileMerger
 
 
 # Create your views here.
-
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def depthead_home(request):
     return render(request, 'user_Dashboard.html', {'val': 'user_dh', })
 
@@ -111,6 +112,8 @@ def users(request):
         return render(request, 'users.html', context)
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def search(request):
     if request.method == "POST":
         search_str = json.loads(request.body).get("searchText")
@@ -175,7 +178,7 @@ def allow_user(request, id):
             dept = stud.dept
             get_sess = Sessions.objects.get(Batch=batch)
             add_student = Student_data(
-                session=get_sess, Reg_No=reg, Name=name, dept=dept)
+                session=get_sess, Reg_No=reg, Name=name, dept=str(dept))
             add_student.save()
             semester_list = Result_Semester_List.objects.filter(
                 session=get_sess)
@@ -193,6 +196,8 @@ def allow_user(request, id):
     return render(request, 'users.html', context)
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def delete_user(request, id):
     User = get_user_model()
     user_del = User.objects.get(id=id)
@@ -271,6 +276,8 @@ def student_info(request):
         return render(request, 'users.html', context)
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def student_search(request):
     if request.method == "POST":
         search_str = json.loads(request.body).get("searchText")
@@ -388,6 +395,8 @@ def teacher_info(request):
         return render(request, 'users.html', context)
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def teacher_search(request):
     if request.method == "POST":
         search_str = json.loads(request.body).get("searchText")
@@ -422,6 +431,8 @@ def teacher_search(request):
 
 
 # add Syllabus and view syllabus
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def add_syllabus(request):
     if request.method == 'POST':
         form = AddSyllabus(request.POST)
@@ -475,6 +486,8 @@ def add_syllabus(request):
         return render(request, 'syllabus.html', context)
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def view_syllabus(request):
     depthead = Depthead.objects.get(user=request.user)
     dept = depthead.dept
@@ -487,6 +500,8 @@ def view_syllabus(request):
     return render(request, 'syllabus.html', context)
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def syllabus_semester(request, syllabus_id):
     syllabus = Syllabus.objects.get(Syllabus_Name=syllabus_id)
     semester = Course_Semester_List.objects.filter(syllabus=syllabus)
@@ -500,6 +515,8 @@ def syllabus_semester(request, syllabus_id):
     return render(request, 'syllabus.html', context)
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def add_course(request, syllabus_id, semester):
     if request.method == 'POST':
         form = AddCourse(request.POST)
@@ -540,6 +557,8 @@ def add_course(request, syllabus_id, semester):
         return render(request, 'course_list.html', context)
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def view_course_list_all(request, syllabus_id, semester):
     syllabus = Syllabus.objects.get(Syllabus_Name=syllabus_id)
     search_syllabus = Sessions.objects.filter(syllabus=syllabus)
@@ -564,6 +583,8 @@ def view_course_list_all(request, syllabus_id, semester):
     return render(request, 'course_list.html', context)
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def delete_course(request, syllabus_id, semester, id):
     del_course = Course_List_All.objects.get(pk=id).delete()
     messages.success(request, 'This course is deleted succesfully!!!')
@@ -574,7 +595,7 @@ def delete_course(request, syllabus_id, semester, id):
 @allowed_user(allowed_roles=['DeptHead'])
 def create_batch(request):
     if request.method == 'POST':
-        form = Create_batch(request.POST)
+        form = Create_batch(request.POST, user=request.user)
         if form.is_valid():
             depthead = Depthead.objects.get(user=request.user)
             dept = depthead.dept
@@ -642,7 +663,7 @@ def create_batch(request):
             }
             return render(request, 'create_batch.html', context)
     else:
-        form = Create_batch()
+        form = Create_batch(user=request.user)
         context = {
             'form': form,
         }
@@ -857,6 +878,8 @@ def calculate_GPA(batch, semester):
         stu.save()
 
 
+@login_required
+@allowed_user(allowed_roles=['DeptHead'])
 def result_info(request, batch, semester):
     get_batch = Sessions.objects.get(Batch=batch)
     get_session = get_batch.Session
@@ -999,9 +1022,9 @@ def result_info(request, batch, semester):
             Y = 1
 
     for field, value in column_list.items():
+        phase_2_stop = field
         if value == 'Cumulative Grade':
             break
-        phase_2_stop = field
 
     start = 0
     for field, value in column_list.items():
@@ -1275,6 +1298,7 @@ def course_result_details(request, batch, semester, course):
                 return redirect('course_result_details', batch, semester, course)
 
         if ('calculate' in request.POST):
+            print(2)
             gpa = 0.00
             grade = ''
             for i in student_list:
@@ -1383,8 +1407,11 @@ def course_result_details(request, batch, semester, course):
 @login_required
 @allowed_user(allowed_roles=['DeptHead'])
 def re_admission(request):
-    reg_list = Student_data.objects.all().order_by('Reg_No')
-    sessions = Sessions.objects.all().order_by('Session')
+    depthead = Depthead.objects.get(user=request.user)
+    dept = depthead.dept
+    reg_list = Student_data.objects.filter(dept=str(dept)).order_by('Reg_No')
+    # dept2=Dept.objects.get(dept=dept)
+    sessions = Sessions.objects.filter(dept=dept).order_by('Session')
 
     context = {
         'reg_list': reg_list,

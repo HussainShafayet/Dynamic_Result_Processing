@@ -69,7 +69,7 @@
 {% if val == 'user_val' %} {% load static%}
 <h3 class="text-center">Unauthorised Users</h3>
 <hr>
-<div class="container">
+<div class="container">{% if user_list %}
     <div class="row" style="margin-bottom: 15px;">
         <div class="col-10">
             <form class="form-inline my-2 my-lg-0">
@@ -81,7 +81,7 @@
         </div>
         <div class="col-2"></div>
 
-    </div>{% if user_list %}
+    </div>
     <div class="app-table table-responsive">
         <table class="table table-striped table-hover">
             <thead class="thead bg-info">
@@ -129,7 +129,7 @@
     </div>
 </div>
 {% elif messages %} {% for message in messages %} {{message}} {% endfor %} {% else %}
-<p style="color: rgb(243, 9, 9); padding:3px;font-size:large">No users are waiting list.</p>
+<p style="color: rgb(243, 9, 9); padding:3px;font-size:medium">No users are waiting list.</p>
 
 
 {% endif %}
