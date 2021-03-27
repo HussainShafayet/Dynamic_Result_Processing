@@ -95,7 +95,7 @@ DATABASES = {
         'NAME': 'Result_processing_database',
         'USER': 'postgres',
         'PASSWORD': 'psql123',
-        'HOST': 'localhost',
+        'HOST': '127.0.0.1',
         'PORT': '5432',
     }
 }
