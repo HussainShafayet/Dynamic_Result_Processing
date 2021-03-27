@@ -89,7 +89,10 @@ WSGI_APPLICATION = 'Dynamic_Result_Processing.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
+import dj_database_url
+DATABASE = {'default': dj_database_url.config()}
+
+""" DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'Result_processing_database',
@@ -98,7 +101,7 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '5432',
     }
-}
+} """
 
 
 # Password validation
