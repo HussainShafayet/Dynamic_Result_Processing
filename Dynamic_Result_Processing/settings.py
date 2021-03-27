@@ -91,11 +91,11 @@ WSGI_APPLICATION = 'Dynamic_Result_Processing.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'Result_processing_database',
         'USER': 'postgres',
         'PASSWORD': 'psql123',
-        'HOST': '127.0.0.1:8000',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
