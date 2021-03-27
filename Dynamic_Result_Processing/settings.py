@@ -91,7 +91,7 @@ WSGI_APPLICATION = 'Dynamic_Result_Processing.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'Result_processing_database',
         'USER': 'postgres',
         'PASSWORD': 'psql123',
