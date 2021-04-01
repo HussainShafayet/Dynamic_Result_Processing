@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Course_list, Batch, Student_Sessions, Session, Syllabus, Course_Semester_List, Course_List_All, Sessions
+from .models import Course_list, Batch, Student_Sessions, Session, Syllabus, Course_Semester_List, Course_List_All, Sessions,Dept
 from accounts.models import Depthead
 
 
@@ -9,6 +9,14 @@ class AddSyllabus(forms.ModelForm):
         model = Syllabus
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(AddSyllabus, self).__init__(*args, **kwargs)
+        depthead = Depthead.objects.get(user=user)
+        dept = depthead.dept
+        if user:
+           self.fields['dept'].queryset = Dept.objects.filter(
+               dept=dept)
     def clean(self):
         cleaned_data = super(AddSyllabus, self).clean()
         syllabus = cleaned_data.get('Syllabus_Name')

@@ -435,7 +435,7 @@ def teacher_search(request):
 @allowed_user(allowed_roles=['DeptHead'])
 def add_syllabus(request):
     if request.method == 'POST':
-        form = AddSyllabus(request.POST)
+        form = AddSyllabus(request.POST,user=request.user)
         if form.is_valid():
             form.save()
             syllabus = form.cleaned_data['Syllabus_Name']
@@ -475,7 +475,7 @@ def add_syllabus(request):
             }
         return render(request, 'syllabus.html', context)
     else:
-        form = AddSyllabus()
+        form = AddSyllabus(user=request.user)
         val1 = 'add_syllabus'
         val2 = 'syllabus_semester'
         context = {
@@ -1156,6 +1156,8 @@ def result_info(request, batch, semester):
                 return redirect('result_info', batch, semester)
 
         if 'calculate' in request.POST:
+            print(semester) 
+            print(type(semester))
             calculate_GPA(batch, semester)
             return redirect('result_info', batch, semester)
 
