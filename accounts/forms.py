@@ -276,16 +276,18 @@ class Profile_edit_Form(forms.ModelForm):
 class Depthead_profile_edit_form(forms.ModelForm):
     class Meta:
         model = Depthead
-        exclude = ['user', 'image']
+        exclude = ['user', 'image','dept']
 
 
 class Teacher_profile_edit_form(forms.ModelForm):
     class Meta:
         model = Teacher
-        exclude = ['user', 'image']
+        exclude = ['user', 'image','dept']
 
 
 class Student_profile_edit_form(forms.ModelForm):
     class Meta:
         model = Student
-        exclude = ['user', 'image']
+        exclude = ['user', 'image','dept','batch','session','reg_no']
+
+

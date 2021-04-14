@@ -1,8 +1,8 @@
-{% extends 'base.html' %}
-
-
+{% extends 'base.html' %} {% block title %}Result{% endblock %}
 <!-- Style Part -->
 {% block style %}
+<link href="/media/bootstrap/css/select2.min.css" rel="stylesheet" />
+
 <style>
     table,
     th,
@@ -35,25 +35,20 @@
     }
     
     .card-deck {
-        width: 250px;
+        max-width: 250px;
+        text-align: center;
+    }
+    
+    .select2-container .select2-selection--single {
+        height: 38px;
+    }
+    
+    .select2-container .select2-selection--single {
+        line-height: 38px;
     }
 </style>
 
-{%endblock%} {% block sidelink %} {% if val == 'result_info_table' %}
-<div id="sidelink" class="col-sm" style="border: 1px solid rgb(199, 221, 199); min-height:100px;max-width:250px;background-color:#F1F1F1">
-    <h3>All Semester
-        <hr>
-    </h3>
-    <ul class="nav nav-pills flex-column">
-        {% for sem in result_semester_list %} {% if forloop.counter == 1%}
-        <li class="nav-item">
-            <a class="nav-link active" href="{% url 'result_info' batch sem.Semester %}">{{sem.Semester}} Semester</a>
-        </li>{%else%}
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'result_info' batch sem.Semester %}">{{sem.Semester}} Semester</a>
-        </li>{%endif%} {%endfor%}
-    </ul>
-</div>{% endif %} {%endblock%} {% block body %}
+{%endblock%}{% block body %}
 <div class="container">
 
     <!-- Messages -->
@@ -71,113 +66,134 @@
 
 
 
-
-    <!-- Result Info Table -->
-    {% if val == 'result_info_table' %}
-
-
-    <!-- Assign Teacher -->
     <div class="row">
+        <!-- {% if val == 'result_info_table' %}
+        <div class="col-4">
+            <div id="sidelink" class="col-sm" style="border: 2px solid rgb(199, 221, 199); min-height:100px;background-color:#F1F1F1;">
+                <h3>All Semester
+                    <hr>
+                </h3>
+                <ul class="nav nav-pills flex-column">
+                    {% for sem in result_semester_list %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'result_info' batch sem.Semester %}">{{sem.Semester}} Semester</a>
+                    </li>{%endfor%}
+                </ul>
+            </div>
+        </div>{%endif%} -->
         <div class="col-sm">
-            <div style="border:2px solid rgb(199, 221, 199); min-height:100px; margin:10px;">
-                <div class="container">
-                    <form action="" method="POST">
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="col-sm" style="margin-bottom: 10px;">
-                                <label for="courses">Course: </label>
-                                <select name="courses" class="form-control" required>
+            <!-- Result Info Table -->
+            {% if val == 'result_info_table' %}
+
+            <!-- Assign Teacher -->
+            <div class="row">
+                <div class="col-sm">
+                    <div style="border:2px solid rgb(199, 221, 199); margin-top:15px;">
+                        <form action="" method="POST" style="margin: 10px;">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-sm" style="margin-bottom: 10px;">
+                                    <label for="courses">Course: </label>
+                                    <select style="min-width: 152px;" name="courses" class="form-control select_option" required>
                             <option value="null" selected disabled >Select Course</option>
                             {% for course in course_list%}
                             <option value="{{course}}">{{course}}</option>
                             {%endfor%}
                         </select>
-                            </div>
-                            <div class="col-sm">
-                                <label for="teacher">Teacher: </label>
-                                <select name="teacher" class="form-control" required>
+                                </div>
+                                <div class="col-sm">
+                                    <label for="teacher">Teacher: </label>
+                                    <select style="min-width: 152px;" name="teacher" class="form-control select_option" required>
                             <option value="null" selected disabled>Select Teacher</option>
                             {% for i in teacher_list %}
                             <option value="{{i}}">{{i}}</option>{% endfor %}
                         </select>
+                                </div>
+                                <div class="col-sm" style="margin-bottom: 10px;">
+                                    <button style="margin-top: 32px; height:38px;width:131px;" class="btn btn-info" name="assign_course" type="submit" href="">Assign Teacher</button>
+                                </div>
                             </div>
-                            <div class="col-sm" style="margin-bottom: 10px;">
-                                <button style="margin-top: 32px;" class="btn btn-info" name="assign_course" type="submit" href="">Assign Teacher</button>
-                            </div>
-                        </div>
 
-                    </form>
+                        </form>
+
+                    </div>
                 </div>
-            </div>
-        </div>
 
 
 
-        <!-- Drop Courses -->
-        {% if semester == '1st' or semester == '2nd' %} {% else %}
-        <div class="col-sm">
-            <div style="border:2px solid rgb(199, 221, 199); min-height:100px; margin:10px;">
-                <div class="container">
-                    <form action="" method="POST">
-                        {% csrf_token %}
-                        <div class="row">
+                <!-- Drop Courses -->
+                {% if semester == '1st' or semester == '2nd' %} {% else %}
+                <div class="col-sm">
+                    <div style="border:2px solid rgb(199, 221, 199); margin-top:15px; min-height:106px;">
 
-                            <div class="col-sm">
-                                <label for="drop_courses">Add Drop Course: </label>
-                                <select name="drop_courses" class="form-control" required>
+                        <form action="" method="POST" style="margin: 10px;">
+                            {% csrf_token %}
+                            <div class="row">
+
+                                <div class="col-sm">
+                                    <label for="drop_courses">Add Drop Course: </label>
+                                    <select style="min-width: 243px;" name="drop_courses" class="form-control select_option " required>
                             <option value="null" selected disabled>Select Drop Course</option>
                             {% for i in drop_course_list %}
                             <option value="{{i}}">{{i}}</option>{% endfor %}
                         </select>
+                                </div>
+                                <div class="col-sm" style=" margin-bottom:10px;">
+                                    <button style="margin-top: 32px; min-width:149px;" class="btn btn-info" name="add_drop_courses" type="submit">Add Drop Course</button>
+                                </div>
                             </div>
-                            <div class="col-sm" style=" margin-bottom:10px;">
-                                <button style="margin-top: 32px;" class="btn btn-info" name="add_drop_courses" type="submit">Add Drop Course</button>
-                            </div>
-                        </div>
 
-                    </form>
-                </div>
+                        </form>
+
+                    </div>
+                </div>{%endif%}
             </div>
-        </div>{%endif%}
+
+
+            <div class=" table-responsive">
+                <h3 style="margin-top: 25px;" class="text-center">{{semester}} Semester Result Sheet
+                    <hr>
+                </h3>
+                <div class="dropdown show" style="margin-bottom: 15px;">
+                    <a class="btn btn-info dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">All Semester</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        {% for sem in result_semester_list %}
+                        <a class="dropdown-item" href="{% url 'result_info' batch sem.Semester %}">{{sem.Semester}} Semester</a> {%endfor%}
+                    </div>
+                </div>
+                <table class="table table-hover" style="border:2px solid rgb(199, 221, 199);">
+                    {% for stu in result_info %} {% if forloop.counter == 1%}
+                    <tr class="bg-info">
+                        {% for i in stu %}{% if forloop.counter == 1%}
+                        <th>Registration No</th>{%else%}
+                        <th>{{i}}</th>{%endif%} {% endfor %}
+                    </tr>{% else %}
+                    <tr>
+                        {% for i in stu %}
+                        <td>{{i}}</td>
+                        {% endfor %}
+                    </tr> {% endif %}{% endfor %}
+                </table>
+            </div>
+
+            <br>
+            <div style="margin-top: 20px; min-height:50px;">
+
+                <form style="float: left;" action="" method="POST">
+                    {%csrf_token%}
+
+                    <button type="submit" class="btn btn-info" name="create_pdf">Create PDF</button>
+                </form>
+
+
+                <form style="float: right;" action="" method="POST">
+                    {%csrf_token%}
+                    <button type="submit" name="calculate" class="btn btn-info">Calculate Result</button>
+                </form>
+            </div>
+
+        </div>
     </div>
-
-
-    <div class=" table-responsive">
-        <h3 style="margin-top: 10px;" class="text-center">{{batch}} {{semester}} Semester Result Sheet
-            <hr>
-        </h3>
-        <table class="table table-striped table-hover">
-            {% for stu in result_info %} {% if forloop.counter == 1%}
-            <tr class="bg-info">
-                {% for i in stu %}{% if forloop.counter == 1%}
-                <th>Registration No</th>{%else%}
-                <th>{{i}}</th>{%endif%} {% endfor %}
-            </tr>{% else %}
-            <tr>
-                {% for i in stu %}
-                <td>{{i}}</td>
-                {% endfor %}
-            </tr> {% endif %}{% endfor %}
-        </table>
-    </div>
-
-    <br>
-    <div style="margin-top: 20px; min-height:50px;">
-
-        <form style="float: left;" action="" method="POST">
-            {%csrf_token%}
-
-            <button type="submit" class="btn btn-info" name="create_pdf">Create PDF</button>
-        </form>
-
-
-        <form style="float: right;" action="" method="POST">
-            {%csrf_token%}
-            <button type="submit" name="calculate" class="btn btn-info">Calculate Result</button>
-        </form>
-    </div>
-
-
 
 
 
@@ -186,10 +202,10 @@
 
     <!-- Assign Courses Part -->
     {%if courses %}
-    <h2 class="text-center">Assigned Courses
+    <h3 class="text-center" style="margin-top: 25px;">Assigned Courses
         <hr>
-    </h2>
-    <div class="row" style=" box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);">
+    </h3>
+    <div class="row">
         {% for course in courses %}
         <div class="col">
             <div class="container py-4">
@@ -216,28 +232,28 @@
 
     <!-- Course Result Details Part -->
     {% elif val == 'course_result_details' %}
-    <div style=" margin-bottom:10px;margin-top:10px">
+    <div style=" margin-bottom:20px;margin-top:10px">
         <div style="border:2px solid rgb(199, 221, 199); min-height:100px; margin-top:10px;align-items:center; ">
             <div class="container">
                 <form action="" method="POST">
                     {% csrf_token %}
                     <div class="row">
-                        <div class="col-sm">
-                            <label for="part_a">Part A: </label>
-                            <select name="part_a" class="form-control" required>
-                        <option value="null" selected disabled>Select teacher</option>
-                        {% for i in teacher_list %}
-                        <option value="{{i}}">{{i}}</option>
-                        {% endfor %}
-                    </select>
+                        <div class="col-sm" style="margin-bottom: 15px;">
+                            <label for="part_a">Part A: </label><br>
+                            <select name="part_a" class="form-control select_option" required>
+                                <option value="null" selected disabled>Select teacher</option>
+                                {% for i in teacher_list %}
+                                <option value="{{i}}">{{i}}</option>
+                                {% endfor %}
+                                </select>
                         </div>
                         <div class="col-sm">
-                            <label for="part_b">Part B: </label>
-                            <select name="part_b" class="form-control" required>
-                            <option value="null" selected disabled>Select teacher</option>
-                            {% for i in teacher_list %}
-                            <option value="{{i}}">{{i}}</option>{% endfor %}
-                        </select>
+                            <label for="part_b">Part B: </label><br>
+                            <select name="part_b" class="form-control select_option" required>
+                                <option value="null" selected disabled>Select teacher</option>
+                                {% for i in teacher_list %}
+                                <option value="{{i}}">{{i}}</option>{% endfor %}
+                                </select>
                         </div>
                         <div class="col-sm" style="margin-bottom: 10px;">
                             <input style="margin-top: 32px;" class="btn btn-info" type="submit" name="assign_khata" value="Assign Khata">
@@ -249,9 +265,9 @@
         </div>
     </div>
     <div class="table-responsive" id="re-check1" style="display: none;">
-        <h3 class="text-center"> Re-Check Course details</h3>
+        <h3 class="text-center"> Re-Check {{course}} marks details</h3>
         <hr>
-        <table class="table table-stripped table-hover">
+        <table class="table table-hover">
             <thead class="thead bg-info">
                 <tr>
                     <th>Registration No</th>
@@ -284,9 +300,9 @@
         </table>
     </div>
     <div class="table-responsive" id="re-check2" style="display:block;">
-        <h3 class="text-center">Course Details</h3>
+        <h3 class="text-center">{{course}} marks Details</h3>
         <hr>
-        <table class="table table-stripped table-hover">
+        <table class="table table-hover">
             <thead class="thead bg-info">
                 <tr>
                     <th>Registration No</th>
@@ -321,22 +337,22 @@
     </div>
 
     <br>
-    <div>
-        <div class="row" style="margin-top: 20px;">
-            <div class="col-sm" style="margin-bottom: 10px;">
-                <button id="recheck" class="btn btn-info">Re-check</button>
+    <div class="container-fluid" style="border: 2px solid rgb(199, 221, 199);margin-top:25px;">
+        <div class="row m-2">
+            <div class="col">
+                <button id="recheck" type="button" class="btn btn-info m-2 btn-block">Re-check</button>
             </div>
-            <div class="col-sm">
+            <div class="col">
                 <form action=" " method="POST">
                     {% csrf_token %}
-                    <button class="btn btn-info" type="submit" name="calculate">Calculate</button>
+                    <button class="btn btn-info m-2 btn-block" type="submit" name="calculate">Calculate</button>
                 </form>
             </div>
-            <div class="col-sm">
+            <div class="col">
                 <form action=" " method="POST">
                     {% csrf_token %}
                     <div id="submit_result">
-                        <button class="btn btn-info" type="submit" name="submit">Submit Result</button>
+                        <button class="btn btn-info m-2 btn-block" type="submit" name="submit">Submit Result</button>
                     </div>
                 </form>
             </div>
@@ -345,6 +361,7 @@
 
 
     {%endif%}
+</div>
 </div>
 
 {% endblock %}
@@ -355,8 +372,11 @@
 <!-- Javascript Part  -->
 {% block js_script %}
 
+<script src="/media/bootstrap/js/jquery-3.5.1.min.js "></script>
+<script src="/media/bootstrap/js/select2.min.js "></script>
 <script>
-    $(document).ready(function() {
+    /*selec*/
+    $('.select_option').select2({
 
     });
 </script>

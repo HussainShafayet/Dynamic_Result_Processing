@@ -27,9 +27,53 @@ from depthead.decorators import unauthenticated_user, login_required
 
 # My views here.
 
-
 def home(request):
-    return render(request, 'user_dashboard.html')
+    user = request.user
+    if user.is_authenticated:
+        if user.is_depthead:
+            return redirect('depthead_dashboard')
+        elif user.is_student:
+            return redirect('student_dashboard')
+        elif user.is_teacher:
+            return redirect('teacher_dashboard')
+    else:    
+        if request.method == 'POST':
+            form = AuthenticationForm(request=request, data=request.POST)
+            if form.is_valid():
+                username = form.cleaned_data['username']
+                password = form.cleaned_data['password']
+                user = authenticate(username=username, password=password)
+                if user is not None:
+                    if user.is_depthead:
+                        auth.login(request, user)
+                        messages.success(request, 'You are logged in!')
+                        return redirect('depthead_dashboard')
+                    elif user.is_student:
+                        auth.login(request, user)
+                        messages.success(request, 'You are logged in!')
+                        return redirect('student_dashboard')
+                    elif user.is_teacher:
+                        auth.login(request, user)
+                        messages.success(request, 'You are logged in!')
+                        return redirect('teacher_dashboard')
+                    else:
+                        auth.login(request, user)
+                        messages.warning(request, 'Your are not authorised user')
+                        return redirect(home)
+            else:
+                conext = {
+                    'form': form
+                }
+                return render(request, 'login.html', conext)
+        else:
+            form = AuthenticationForm()
+            conext = {
+                'form': form
+            }
+        return render(request, 'user_dashboard.html',conext)
+
+def about(request):
+    return render(request,'about.html')
 
 # User Registration and Activation
 

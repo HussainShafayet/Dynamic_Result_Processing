@@ -1,4 +1,4 @@
-{% extends 'base.html' %}{% load crispy_forms_tags %}{% block style %}
+{% extends 'base.html' %}{% load crispy_forms_tags %}{% block title %}{{course}} result{% endblock %}{% block style %}
 <link href="/media/bootstrap/css/select2.min.css" rel="stylesheet" />
 <style>
     table,
@@ -40,14 +40,14 @@
         <div id="id" style="height:50px;"></div>
         <div id="id2" style="height:50px;"></div>
     </div>
-    <div style="margin-top: 10px; border:1px solid rgb(199, 221, 199);min-height:100px;margin-bottom:20px;">
+    <div style="margin-top: 10px; border:1px solid rgb(199, 221, 199);min-height:100px;">
         <div class="container" style="margin-top: 10px;">
             <form action="{% url 'course_result' batch course %}" method="POST">
                 {%csrf_token%}
                 <div class="row">
                     <div class="col-sm">
                         <label for="reg_no">Registration No: </label>
-                        <select name="reg_no" id="id_Reg_No" class="form-control" required>
+                        <select name="reg_no" id="id_Reg_No" class="form-control select_option" required>
                     <option value="null" selected disabled>Select Registration</option>
                     {%for i in drop_student %}
                     <option value="{{i.Reg_No}}" >{{i.Reg_No}}</option>
@@ -73,12 +73,12 @@
             </form>
         </div>
     </div>
-    <div class="table-responsive" style="margin-top: 10px;">
+    <div class="table-responsive" style="margin-top: 30px;">
         <h3 class="text-center">{{course}} ({{course.Course_type}}) Marks(Out of 30)
             <hr>
         </h3>
 
-        <table class="table table-stripped  table-hover">
+        <table class="table table-hover">
             <thead class="thead bg-info">
                 <tr>
                     <th>Registration No</th>
@@ -102,22 +102,18 @@
                 <td class="editable" data-id="{{student.id}}" data-type="Term_Test_03">{{student.Term_Test_03}} </td>
                 <td>{{student.Term_Test_Total}} </td>
                 <td>{{student.Pre_Final_Total}} </td>
-                <td class="stud_del">
+                <td class="delete_course_student" class="stud_del">
                     <a class="btn btn-warning" href="{% url 'delete_student' batch course student.id %}">Delete</a>
                 </td>
             </tr>
             {% endfor %}
         </table>
     </div>
-    <div style="margin-top: 20px;border:1px solid rgb(188, 223, 188); min-height:100px;">
-        <div class="row">
-            <div class="col-sm">
-                <div class="container" style="margin: 10px;">
-
-
-                    <div class="row">
-                        <div class="col-sm">
-                            <form action="" method="POST">
+    <div style="margin-top: 30px;border:1px solid rgb(188, 223, 188); min-height:100px;">
+        <div class="row m-2">
+            <div class="col-8">
+                    <div>
+                        <form action="" method="POST">
                                 {% csrf_token %}
                                 <input type="radio" class="radio" id="1st" name="count_TT" value=1 required>
                                 <label for="1st">Best One</label><br>
@@ -126,15 +122,14 @@
                                 <input type="radio" id="3rd" name="count_TT" value=3>
                                 <label for="3rd">Avagare of 3</label><br>
                                 <input class="btn btn-info" type="submit" name="calculate" value="Calculate"></form>
-                        </div>
                     </div>
-                    <div>
-                        <form action="" method="POST">
-                            {% csrf_token %}
-                            <button style="margin-bottom: 60px; float:right" style="float: right;" class="btn btn-info" type="submit" class="btn btn-info" name="change_state">Submit</button>
-                        </form>
-                    </div>
-                </div>
+                    
+            </div>
+            <div class="col-4" id="course_marks_submit">
+                <form action="" method="POST">
+                        {% csrf_token %}
+                    <button style="margin-top:96px;float:right;" class="btn btn-info" type="submit" class="btn btn-info" name="change_state">Submit</button>
+                </form>
             </div>
         </div>
     </div>

@@ -8,6 +8,9 @@ class AddSyllabus(forms.ModelForm):
     class Meta():
         model = Syllabus
         fields = '__all__'
+        labels = {
+            'dept': 'Department'
+        }
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)

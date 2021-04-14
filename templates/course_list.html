@@ -14,20 +14,7 @@
     }
 </style>
 
-{%endblock%} {%block sidelink %} {% if val == 'course_list_by_semester' %}
-<div class="col-sm-2" style="border: 1px solid white; min-height:100px; background-color:#F1F1F1">
-    <h3>All Semester
-        <hr>
-    </h3>
-    <p></p>
-    <ul class="nav nav-pills flex-column">
-        {% for batch in semester_list %}
-        <li class="nav-item">
-            <a style="color:black; " class="nav-link " href="{% url 'view_course_list' syllabus_id batch.Semester %}">{{batch.Semester}} Semester Courses</a>
-        </li>
-        {%endfor%}
-    </ul>
-</div> {%else%}{% endif %} {% endblock %}
+{%endblock%}
 
 
 <!-- Body Part -->
@@ -45,17 +32,30 @@
         <div id="id"></div>
         <div id="id2"></div>
     </div>
+    <div class="row m-0" style="border: 1px solid rgb(199, 221, 199);min-height:80px; align-items:center;">
 
-    <div style="margin-left: 10px; margin-bottom:10px;">
-        <a class="btn btn-primary" href="{% url 'add_course' syllabus_id semester %}">Add New Course</a>
+        <div class="col-9">
+            <div class="dropdown show">
+                <a class="btn btn-info dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">All Semester</a>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    {% for batch in semester_list %}
+                    <a class="dropdown-item" href="{% url 'view_course_list' syllabus_id batch.Semester %}">{{batch.Semester}} Semester Courses</a> {%endfor%}
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <a style="float: right; white-space:nowrap" class="btn btn-info" href="{% url 'add_course' syllabus_id semester %}">Add New Course</a>
+        </div>
     </div>
+
+
     {% if course_list %}
-    <div class="table-responsive">
+    <div class="table-responsive" style="margin-top: 20px;">
         <h3 class="text-center">{{semester}} Semester Courses
             <hr>
         </h3>
 
-        <table class="table table-hover table-striped">
+        <table class="table table-hover">
             <thead class="thead bg-info">
                 <tr>
                     <th scope="col">Course Code</th>
@@ -72,14 +72,14 @@
                     <td class="editable" data-id="{{course.id}}" data-type="title">{{course.title}}</td>
                     <td class="editable" data-id="{{course.id}}" data-type="course_type">{{course.course_type}}</td>
                     <td class="editable" data-id="{{course.id}}" data-type="credit">{{course.credit}}</td>
-                    <td id="delete_course">
+                    <td class="delete_course">
                         <a class="btn btn-warning" href="{% url 'delete_course' syllabus_id semester course.id %} ">Delete course</a>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-    </div>{% else %} No coureses has been added yet. {%endif%}{% else %}
+    </div>{% else %}<p style="margin-top: 10px;">No coureses has been added yet.</p>  {%endif%} {% else %}
 
     <!-- <div style="margin-left: 10px; margin-bottom:10px; ">
         <a class="btn btn-primary " href="{% url 'add_course' syllabus_id semester %} ">Add New Course</a>
@@ -98,8 +98,14 @@
         <h3 class="text-center">{{semester}} Semester Courses
             <hr>
         </h3>
-
-        <table class="table table-hover table-striped">
+        <div class="dropdown show" style="margin-bottom: 15px;">
+            <a class="btn btn-info dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">All Semester</a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                {% for batch in semester_list %}
+                <a class="dropdown-item" href="{% url 'view_course_list' syllabus_id batch.Semester %}">{{batch.Semester}} Semester Courses</a> {%endfor%}
+            </div>
+        </div>
+        <table class="table table-hover">
             <thead class="thead bg-info">
                 <tr>
                     <th scope="col">Course Code</th>
@@ -133,8 +139,9 @@
 <div class="row">
     <div class="col-3"></div>
     <div class="col-6">
-        <h3 style="margin-bottom: 10px;" class="text-center">Add New Course </h3>
-        <hr>
+        <h3 style="margin-bottom: 10px;" class="text-center">Add New Course
+            <hr> </h3>
+
         <form action=" " method="POST">
             {% csrf_token %} {{form|crispy}}
             <button class="btn btn-primary" type="submit">Add Course</button>
@@ -185,7 +192,7 @@
             console.log(value);
             console.log(type);
             $.ajax({
-                url: "http://127.0.0.1:8000/savecourse",
+                url: "{% url 'savecourse' %}",
                 type: "POST",
                 data: {
                     id: id,

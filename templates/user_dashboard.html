@@ -1,51 +1,241 @@
-{% extends 'base.html' %}{% block title %}{% if val == 'user_dh' %}Depthead Dashboard{% elif val == 'user_t' %}Teacher Dashboard{% elif val == 'user_stud' %}Student Dasdboard {% else %}Result Processing{% endif %}{% endblock %}{% block body %}
-<div>
-    <!-- {% if messages %} {% for message in messages %}
-    <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
-        <strong>{{message}}</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div> {% endfor %} {% endif %} -->
-</div>
-{% if val == 'user_dh'%}
+{% extends 'base.html' %}{% load crispy_forms_tags %}{% block title %}{% if val == 'user_dh' %}Depthead Dashboard{% elif val == 'user_t' %}Teacher Dashboard{% elif val == 'user_stud' %}Student Dasdboard {% else %}Result Processing{% endif %}{%endblock%}
+{% block body %}
+
+<div></div>
+{% if val == 'user_dh' %}
 <div class="container">
     <div>
         {% if messages %} {% for message in messages %}
-        <div class="alert alert-{{message.tags}} " role="alert">
+        <div class="alert alert-{{message.tags}}" role="alert">
             <button type="button" class="close" data-dismiss="alert">X</button> {{message}}
         </div>
         {% endfor %} {% endif %}
     </div>
-    <p>Welcome{{user}}</p>
-    <p>DeptHead</p>
-    <div class="text-center">Test</div>
+    <div class="row">
+        <div class="col-sm">
+            <div class="container" style="box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06); min-height:400px;margin-bottom: 20px;">
+                <div style="text-align: center; padding:5px;">
+                    <h4 style="font-size: 2rem;margin-top: 50px;">Welcome to {{user.first_name}} {{user.last_name}}</h4>
+                </div>
+                <div style="margin-top: 20px;">
+                    <p>As a Department Head first of all you will create a new syllabus and create new course.Then you will create a new batch.You could be assigned teacher for individual course.You could also assigned exam paper like Part A and Part B with
+                        subject code between different two teacher.When teacher will give course marks then you could calculte GPA and then you could calculate CGPA.You also maintain users like teacher,students activity.</p>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-sm">
+            <div style="min-height:400px; box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);">
+                <div style="height: 50px; background-color:azure; display:flex;align-items:center;justify-content:center;">
+                    <h5 class="text-center">Notice</h5>
+                </div>
+                <div class="row container" style="width: inherit;">
+                    <div class="col-sm">
+                        <div style="display: flex;align-items:center;justify-content:center;margin-top:10px;">
+                            <h6 style="font-weight: bold;" class="text-center">Exam Result
+                                <hr>
+                            </h6>
+
+                        </div>
+                        <div>
+                            <ol style="margin-left: 10px;">
+                                <li><a href="">1st year 1st</a></li>
+                                <li><a a href="#">1st year 2nd</a></li>
+                                <li>
+                                    <a a href=# ">2nd year 1st</a></li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="col-sm ">
+                        <div style="display: flex;align-items:center;justify-content:center;margin-top:10px; ">
+                            <h6 style="font-weight: bold; " class="text-center ">Others
+                                <hr>
+                            </h6>
+
+                        </div>
+                        <div >
+                            <ol style="margin-left: 10px; ">
+                                <li><a href=" ">Registration Fee</a></li>
+                                <li><a a href="# ">Semester Fee</a></li>
+                                <li>
+                                    <a a href=# ">Exam Shedule</a>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>
+
+
+
 {% elif val == 'user_t' %}
-<div>
-    {% if messages %} {% for message in messages %}
-    <div class="alert alert-{{message.tags}} " role="alert">
-        <button type="button" class="close" data-dismiss="alert">X</button> {{message}}
+<div class="container ">
+    <div>
+        {% if messages %} {% for message in messages %}
+        <div class="alert alert-{{message.tags}} " role="alert ">
+            <button type="button " class="close " data-dismiss="alert ">X</button> {{message}}
+        </div>
+        {% endfor %} {% endif %}
     </div>
-    {% endfor %} {% endif %}
-</div>
-<p>Welcome {{user}}</p>
-<p>Teacher</p>{% elif val == 'user_stud' %}
-<div>
-    {% if messages %} {% for message in messages %}
-    <div class="alert alert-{{message.tags}} " role="alert">
-        <button type="button" class="close" data-dismiss="alert">X</button> {{message}}
-    </div>
-    {% endfor %} {% endif %}
-</div>
-<p>Welcome {{user}}</p>
-Student{% else %}
-<div>
-    {% if messages %} {% for message in messages %}
-    <div class="alert alert-{{message.tags}} " role="alert">
-        <button type="button" class="close" data-dismiss="alert">X</button> {{message}}
-    </div>
-    {% endfor %} {% endif %}
-</div>
-normal user {% endif %}
+    <div class="row">
+        <div class="col-sm">
+            <div class="container" style="box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06); min-height:400px;margin-bottom: 20px;">
+                <div style="text-align: center; padding:5px;">
+                    <h4 style="font-size: 2rem;margin-top: 50px;">Welcome to {{user.first_name}} {{user.last_name}}</h4>
+                </div>
+                <div style="margin-top: 20px;">
+                    <p>As a Teacher you will see assign courses. You will give pre-final marks like Attendence,TermTest,lab performance and calculte pre-final marks.You also see exam paper which is assigned by Department Head and give papre marks and submit
+                        to Department Head.</p>
+                </div>
+            </div>
 
-<br> {% endblock %}
+        </div>
+        <div class="col-sm">
+            <div style="min-height:400px; box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);">
+                <div style="height: 50px; background-color:azure; display:flex;align-items:center;justify-content:center;">
+                    <h5 class="text-center">Notice</h5>
+                </div>
+                <div class="row container" style="width: inherit;">
+                    <div class="col-sm">
+                        <div style="display: flex;align-items:center;justify-content:center;margin-top:10px;">
+                            <h6 style="font-weight: bold;" class="text-center">Exam Result
+                                <hr>
+                            </h6>
+
+                        </div>
+                        <div>
+                            <ol style="margin-left: 10px;">
+                                <li><a href="">1st year 1st</a></li>
+                                <li><a a href="#">1st year 2nd</a></li>
+                                <li>
+                                    <a a href=# ">2nd year 1st</a></li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="col-sm ">
+                        <div style="display: flex;align-items:center;justify-content:center;margin-top:10px; ">
+                            <h6 style="font-weight: bold; " class="text-center ">Others
+                                <hr>
+                            </h6>
+
+                        </div>
+                        <div >
+                            <ol style="margin-left: 10px; ">
+                                <li><a href=" ">Registration Fee</a></li>
+                                <li><a a href="# ">Semester Fee</a></li>
+                                <li>
+                                    <a a href=# ">Exam Shedule</a>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% elif val == 'user_stud' %}
+<div class="container ">
+    <div>
+        {% if messages %} {% for message in messages %}
+        <div class="alert alert-{{message.tags}} " role="alert ">
+            <button type="button " class="close " data-dismiss="alert ">X</button> {{message}}
+        </div>
+        {% endfor %} {% endif %}
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <div class="container" style="box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06); min-height:400px;margin-bottom: 20px;">
+                <div style="text-align: center; padding:5px;">
+                    <h4 style="font-size: 2rem;margin-top: 50px;">Welcome to {{user.first_name}} {{user.last_name}}</h4>
+                </div>
+                <div style="margin-top: 20px;">
+                    <p>As a student you will see semester wise result.You would see active courses.You also see different notice from Department Head and Teacher.</p>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-sm">
+            <div style="min-height:400px; box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);">
+                <div style="height: 50px; background-color:azure; display:flex;align-items:center;justify-content:center;">
+                    <h5 class="text-center">Notice</h5>
+                </div>
+                <div class="row container" style="width: inherit;">
+                    <div class="col-sm">
+                        <div style="display: flex;align-items:center;justify-content:center;margin-top:10px;">
+                            <h6 style="font-weight: bold;" class="text-center">Exam Result
+                                <hr>
+                            </h6>
+
+                        </div>
+                        <div>
+                            <ol style="margin-left: 10px;">
+                                <li><a href="">1st year 1st</a></li>
+                                <li><a a href="#">1st year 2nd</a></li>
+                                <li>
+                                    <a a href=# ">2nd year 1st</a></li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="col-sm ">
+                        <div style="display: flex;align-items:center;justify-content:center;margin-top:10px; ">
+                            <h6 style="font-weight: bold; " class="text-center ">Others
+                                <hr>
+                            </h6>
+
+                        </div>
+                        <div >
+                            <ol style="margin-left: 10px; ">
+                                <li><a href=" ">Registration Fee</a></li>
+                                <li><a a href="# ">Semester Fee</a></li>
+                                <li>
+                                    <a a href=# ">Exam Shedule</a>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %} {% if user.is_authenticated is False %}
+
+<div class="container">
+    <div>
+        {% if messages %} {% for message in messages %}
+        <div class="alert alert-{{message.tags}}" role="alert ">
+            <button type="button" class="close" data-dismiss="alert">X</button> {{message}}
+        </div>
+        {% endfor %} {% endif %}
+    </div>
+    <div>
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <div class="page-header">
+                    <h2 class="text-center">Login</h2>
+                </div>
+                <hr>
+                <form action="" method="POST">
+                    {% csrf_token %} {{form|crispy}}{% if error %}
+                    <p class="text-danger">{{error}}</p>
+                    {% endif %}
+                    <small id="forgot-pass">
+            <a href="{% url 'password_reset' %}">Forgot password? </a>
+        </small>
+                    <br><br>
+                    <input id="log-btn" type="submit" class="btn btn-primary" value="Login">
+
+                </form>
+                <p id="reg-log">Don't have an account? <a onclick="document.getElementById('id01').style.display='block'" style="width:auto; cursor:pointer;"><u>Registration</u> </a></p>
+            </div>
+        </div>
+    </div>
+</div>{% endif %} {% endif %} {% endblock %}

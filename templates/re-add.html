@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% block style %}
+{% extends 'base.html' %}{% block title %}Re-Addmission{%endblock%} {% block style %}
 <link href="/media/bootstrap/css/select2.min.css" rel="stylesheet" />
 <style>
     table,
@@ -26,11 +26,18 @@
     #id_semester {
         line-height: 38px;
     }
+    
+    @media only screen and (max-width: 800px) {
+        div #add {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    }
 </style>
 
 {% endblock %} {% block body %}
 <div class="container">
-
     <!-- Messages Part -->
     <div>
         {% if messages %} {% for message in messages %}
@@ -38,45 +45,42 @@
             <button type="button" class="close" data-dismiss="alert">X</button> {{message}}
         </div>
         {% endfor %} {% endif %}
-        <div id="id"></div>
-        <div id="id2"></div>
     </div>
 
-    <div style="border: 1px solid darkgrey; min-height:200px; background-color:rgb(161, 146, 122); box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);">
+    <div style=" background-color:#FFFFFF; box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06); min-height:300px; display:flex;justify-content:center;align-items:center;max-width:1000px;margin:0 auto;">
 
         <!-- Re-add Part  -->
-        <div class="row" style="margin-top:20px;">
-            <div class="col-sm">
-                <form action="" method="POST">
-                    {% csrf_token %}
-                    <div class="row" style="margin: 10px;">
-                        <div class="col-sm" style="margin-bottom: 10px;">
-                            <select name="registration_no" class="form-control select_option" required>
-                            <option value="null" selected disabled >Select Registration</option>
+        <div id="add" class="container">
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="row m-0">
+
+                    <div class="col" style="margin-bottom: 10px;">
+                        <select style="min-width: 260px;" name="registration_no" class="form-control select_option" required>
+                            <option value="null"  selected disabled>Select Registration</option>
                             {% for reg_no in reg_list%}
                             <option value="{{reg_no}}">{{reg_no}}</option>
                             {%endfor%}
                         </select>
-                        </div>
-                        <div class="col-sm">
-                            <select name="batch" class="form-control select_option" required>
+                    </div>
+                    <div class="col">
+                        <select name="batch" style="min-width: 260px;" class="form-control select_option" required>
                             <option value="null" selected disabled>Select Batch</option>
                             {% for i in sessions %}
                             <option value="{{i}}">{{i}}</option>{% endfor %}
                         </select>
-                        </div>
-
                     </div>
-                    <div style="float:right; padding:8px">
-                        <button class="btn btn-info" name="re-addmission" type="submit" href="">Add Student</button>
-                    </div>
-                </form>
 
-            </div>
+
+                </div>
+                <div style="margin-top:15px; display:flex;justify-content:center;align-items:center;">
+                    <button class="btn btn-info" name="re-addmission" type="submit" href=" ">Add Student</button>
+                </div>
+            </form>
+
+
         </div>
     </div>
-
-
 </div>
 
 
@@ -88,8 +92,8 @@
 
 <!-- Javascript Part -->
 {% block js_script %}
-<script src="/media/bootstrap/js/jquery-3.5.1.min.js"></script>
-<script src="/media/bootstrap/js/select2.min.js"></script>
+<script src="/media/bootstrap/js/jquery-3.5.1.min.js "></script>
+<script src="/media/bootstrap/js/select2.min.js "></script>
 <script>
     /*selec*/
     $('.select_option').select2({

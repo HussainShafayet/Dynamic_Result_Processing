@@ -66,7 +66,7 @@
             </form>
         </div>
     </div>
-    <div class="table-responsive " style="margin-top: 10px; ">
+    <div class="table-responsive " style="margin-top: 30px; ">
         <h3 class="text-center ">{{course}} ({{course.Course_type}}) result</h3>
         <hr>
         <table class="table table-stripped table-hover ">
@@ -93,8 +93,8 @@
                 <td>{{i.Total_mark}} </td>
                 <td>{{i.Grade_point}} </td>
                 <td>{{i.Letter_grade}} </td>
-                <td class="stud_del ">
-                    <a class="btn btn-warning " href="{% url 'delete_student' batch course i.id %} ">Delete</a>
+                <td class="delete_course_student">
+                    <a class="btn btn-warning" href="{% url 'delete_student' batch course i.id %}">Delete</a>
                 </td>
             </tr>
             {% endfor %}

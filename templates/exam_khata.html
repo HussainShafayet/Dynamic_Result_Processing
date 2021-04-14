@@ -1,5 +1,14 @@
-{% extends 'base.html' %} {% block style %}
+{% extends 'base.html' %}{% block title %}Exam Paper{%endblock%} {% block style %}
 <style>
+    table,
+    th,
+    td {
+        border: 1px solid darkgray;
+        border-collapse: collapse;
+        white-space: nowrap;
+        text-align: center;
+    }
+    
     .card:hover {
         background-color: rgb(113, 223, 204);
         transition: .5s;
@@ -15,6 +24,9 @@
 {% endblock %} {% block body %}
 <div class="container">
     {% if val == 'exam_khata' %} {% if courses %}
+    <h3 class="text-center">Assigned Exam Paper
+        <hr>
+    </h3>
     <div class="row">
         {% for course_detail in courses %}
         <div class="col">
@@ -51,7 +63,7 @@
             <hr>
         </h3>
 
-        <table class="table table-striped table-hover">
+        <table class="table table-hover">
             <thead class="thead bg-info">
                 <tr class="text-center">
                     <th>Khata Code</th>
@@ -92,7 +104,7 @@
         </table>
     </div>
     {%endif%}
-    <div>
+    <div style="margin-top: 30px;">
         <form action="" method="POST">
             {% csrf_token %}
             <input style="float: right;" class="btn btn-info" type="submit" name="assign_khata" value="Submit Result">

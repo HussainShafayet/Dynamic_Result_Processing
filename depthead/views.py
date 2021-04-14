@@ -701,7 +701,7 @@ def batch_info(request, batch):
     return render(request, 'batch_info.html', context)
 
 
-def calculate_GPA(batch, semester):
+def calculate_GPA(request,batch, semester):
     get_batch = Sessions.objects.get(Batch=batch)
     get_syllabus = get_batch.syllabus
     semester_string = Course_Semester_List.objects.get(
@@ -829,8 +829,10 @@ def calculate_GPA(batch, semester):
             get_reg = getattr(student, 'Reg')
             get_credit = getattr(student, credit)
             get_total_point = getattr(student, total_point)
-
             previous_credit = credit_dict[get_reg]
+            if get_credit is None or get_total_point is None:
+                get_credit = 0.0
+                get_total_point=0.0
             after_credit = previous_credit+float(get_credit)
             credit_dict[get_reg] = after_credit
 
@@ -1104,7 +1106,7 @@ def result_info(request, batch, semester):
                 if assigned_course_list:
                     messages.warning(
                         request, 'This course has been already assigned!')
-                    return render(request, 'result_info.html', context)
+                    return redirect('result_info', batch, semester)
                 else:
                     New_course = Course(teacher=teacher_obj, Course=course, Batch=get_batch,
                                         Course_type=type2, semester=semester_string.Semester)
@@ -1118,6 +1120,7 @@ def result_info(request, batch, semester):
                             theory_course = Course_Result_Theory(
                                 course=find_course, batch=get_batch, Reg_No=i.Reg_No, Name=i.Name, semester=find_course.semester)
                             theory_course.save()
+                        return redirect('result_info', batch, semester)
 
                     elif type2 == 'Sessional':
                         find_course = Course.objects.get(
@@ -1128,8 +1131,7 @@ def result_info(request, batch, semester):
                             theory_course = Course_Result_Sessional(
                                 course=find_course, batch=get_batch, Reg_No=i.Reg_No, Name=i.Name, semester=find_course.semester)
                             theory_course.save()
-
-            return render(request, 'result_info.html', context)
+                        return redirect('result_info', batch, semester)
         if 'add_drop_courses' in request.POST:
             get_drop_course = request.POST.get('drop_courses')
             if get_drop_course == '----':
@@ -1156,79 +1158,8 @@ def result_info(request, batch, semester):
                 return redirect('result_info', batch, semester)
 
         if 'calculate' in request.POST:
-            if semester == '8th':
-                prev_semester = '7th'
-                get_session = Sessions.objects.get(Batch=batch)
-                get_semeter = Result_Semester_List.objects.get(
-                    Semester=prev_semester, session=get_session)
-                get_result = Result_Table.objects.filter(
-                    result_semester=get_semester)
-                for i in get_result:
-                    i = get_result.__dict__
-                    for field, value in i.items():
-                        print(field, value)
-                        if value == 'Cumulative Grade Point':
-                            print(2)
-            if semester == '7th':
-                prev_semester = '6th'
-                get_session = Sessions.objects.get(Batch=batch)
-                get_semeter = Result_Semester_List.objects.get(
-                    Semester=prev_semester, session=get_session)
-                get_result = Result_Table.objects.filter(
-                    result_semester=get_semester)
-                for i in get_result:
-                    i = get_result.__dict__
-                    for field, value in i.items():
-                        print(field, value)
-                        if value == 'Cumulative Grade Point':
-                            print(2)
-            if semester == '6th':
-                prev_semester = '5th'
-                get_session = Sessions.objects.get(Batch=batch)
-                get_semeter = Result_Semester_List.objects.get(
-                    Semester=prev_semester, session=get_session)
-                get_result = Result_Table.objects.filter(
-                    result_semester=get_semester)
-                for i in get_result:
-                    i = get_result.__dict__
-                    for field, value in i.items():
-                        print(field, value)
-                        if value == 'Cumulative Grade Point':
-                            print(2)
-            if semester == '5th':
-                prev_semester = '4th'
-                get_session = Sessions.objects.get(Batch=batch)
-                get_semeter = Result_Semester_List.objects.get(
-                    Semester=prev_semester, session=get_session)
-                get_result = Result_Table.objects.filter(
-                    result_semester=get_semester)
-                for i in get_result:
-                    field_list = i._meta.get_fields()
-                    for j in field_list[3:]:
-                        val = getattr(i, j.name)
-                        print(val)
-                        if val == 'Cumulative Grade Point':
-                            print(val)
-                            break
-                            
-            if semester == '4th':
-                prev_semester = '3rd'
-            if semester == '3rd':
-                prev_semester='2nd'
-            if semester == '2nd':
-                prev_semester = '1st'
-                get_session = Sessions.objects.get(Batch=batch)
-                get_semeter = Result_Semester_List.objects.get(
-                    Semester=semester, session=get_session)
-                get_result = Result_Table.objects.filter(result_semester=get_semester)
-                for i in get_result:
-                    i = get_result.__dict__
-                    for field, value in i.items():
-                        print(field,value)
-                        if value == 'Cumulative Grade Point':
-                            print(2)
 
-            calculate_GPA(batch, semester)
+            calculate_GPA(request,batch, semester)
             return redirect('result_info', batch, semester)
 
         if 'create_pdf' in request.POST:
@@ -1345,6 +1276,7 @@ def course_result_details(request, batch, semester, course):
         'student_list': student_list,
         'teacher_list': teahcer_list,
         'val': val,
+        'course':get_course,
     }
     if request.method == 'POST':
         if('assign_khata' in request.POST):

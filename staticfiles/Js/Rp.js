@@ -32,27 +32,17 @@ $(document).ready(function() {
     $('.submit').on('click', function() {
         return confirm("Are you complete Calculate GPA ???");
     });
-    $('#delete_course').on('click', function() {
-        return confirm("Are you sure???")
+    $('.delete_course').on('click', function() {
+        return confirm("Are you sure???");
     });
     $('#submit_result').on('click', function() {
-        return confirm("Please Calculate result first.")
+        return confirm("Please Calculate result first.");
     });
-    x = 1
-    $('#recheck').on('click', function() {
-        x = x + 1;
-        if (x % 2 == 0) {
-            $('#re-check1').css('display', 'block');
-            $('#re-check2').css('display', 'none');
-        } else {
-            $('#re-check1').css('display', 'none');
-            $('#re-check2').css('display', 'block');
-        }
-
+    $('#course_marks_submit').on('click', function() {
+        return confirm("Are you calculate marks completely?");
     });
-    $(".nav .nav-link").on("click", function() {
-        $(".nav").find(".active").removeClass("active");
-        $(this).addClass("active");
+    $('.delete_course_student').on('click', function() {
+        return confirm("Are you sure?");
     });
 
 });

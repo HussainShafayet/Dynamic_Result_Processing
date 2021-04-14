@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %} Result Processing {% endblock %}</title>
-
+    <link rel="stylesheet" type="text/css" href="/media/bootstrap/css/bootstrap.min.css.map" media="all">
     <link rel="stylesheet" type="text/css" href="/media/bootstrap/css/bootstrap.min.css" media="all">
     <link rel="stylesheet" href="{% static 'css/rp.css' %}" type="text/css">{% block style %}{% endblock %}
 </head>
@@ -21,7 +21,7 @@
 
     <div>
         <nav class="navbar navbar-expand-lg navbar-light  " style="background-color: #3f72af; ">
-            <a class="navbar-brand" href="{% url 'home'%}">Result Processing</a>
+            <a class="navbar-brand" href="">Result Processing</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
         </button>
@@ -51,6 +51,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 're-add' %}">Re-Addmission</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 're-add' %}">Notification</a>
+                    </li>
                     {% elif user.is_teacher %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'teacher_dashboard' %}">Home</a></li>
                     <li class="nav-item">
@@ -60,7 +63,7 @@
                         <a class="nav-link" href="{% url 'completed_courses' %}">Completed Courses</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'exam_khata'%}">Exam Khata</a>
+                        <a class="nav-link" href="{% url 'exam_khata'%}">Exam Paper</a>
                     </li>
                     {% elif user.is_student %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'student_dashboard' %}">Home</a></li>
@@ -92,14 +95,14 @@
                     {% else %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
                     <li class="nav-item">
-                        <a class="nav-link" href="">About</a>
+                        <a class="nav-link" href="{% url 'about' %}">About</a>
                     </li> {% endif %}
                 </ul>
-                <div id="prof">
+                <div id="prof" style="margin-right: 10px;">
                     <ul>
                         {% if user.is_authenticated %}
                         <li class="nav-item dropdown" style=" right:0px;">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% if user.is_depthead %}<img src="{{user.depthead.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer;">{% elif user.is_teacher %}<img src="{{user.teacher.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer">{%elif user.is_student%}<img  src="{{user.student.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer">{%else%}<img  src="media/images/profile/profile.png" alt="image" width="30px" height="30px" style="border-radius: 50%; margin-right:5px; cursor:pointer">{%endif%}</a>
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% if user.is_depthead %}<img src="{{user.depthead.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; cursor:pointer;">{% elif user.is_teacher %}<img src="{{user.teacher.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%;cursor:pointer">{%elif user.is_student%}<img  src="{{user.student.image.url}}" alt="image" width="30px" height="30px" style="border-radius: 50%; cursor:pointer">{%else%}<img  src="media/images/profile/profile.png" alt="image" width="30px" height="30px" style="border-radius: 50%; cursor:pointer">{%endif%}</a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
                                 <a class="dropdown-item" href="">Setting</a>
@@ -155,7 +158,7 @@
     </div>
     <!-- Body -->
     <div style="margin-top:30px">
-        <div class="row ">
+        <div class="row">
             {% block sidelink%} {% endblock %}
             <div class="col-sm" style=" min-height:800px">
 
@@ -184,12 +187,12 @@
     </div>
     <!-- Footer -->
     <div class="jumbotron text-center" style="margin-bottom:0;margin-top: 100px;">
-        <p>Footer</p>
+        <p>copyright@SS</p>
 
         <div style="margin: 24px 0;">
-            <a href="#"><i class="fa fa-dribbble"></i></a>
-            <a href="#"><i class="fa fa-twitter"></i></a>
-            <a href="#"><i class="fa fa-linkedin"></i></a>
+            <a href="https://www.google.com/"><i class="fa fa-google"></i></a>
+            <a href="https://www.twitter.com/"><i class="fa fa-twitter"></i></a>
+            <a href="https://www.linkedin.com/"><i class="fa fa-linkedin"></i></a>
             <a href="https://www.facebook.com/"><i class="fa fa-facebook"></i></a>
         </div>
     </div>
@@ -198,7 +201,9 @@
     <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script> -->
     <script type="text/javascript" src="/media/bootstrap/js/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="/media/bootstrap/js/bf12ee2437.js"></script>
+    <script type="text/javascript" src="/media/bootstrap/js/popper.min.js"></script>
     <script type="text/javascript" type="text/javascript" src="/media/bootstrap/js/bootstrap.min.js"></script>
+
     <!-- <script src="https://kit.fontawesome.com/bf12ee2437.js" crossorigin="anonymous"></script> -->
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
     {% block js_script %}{% endblock %}

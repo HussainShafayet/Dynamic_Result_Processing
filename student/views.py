@@ -63,35 +63,109 @@ def student_result(request, semester):
     get_result = Result_Table.objects.filter(
         Reg=reg2, result_semester=get_semester)
 
-    course_list1 = []
-    course_list_of_list1 = []
-    course_list_of_list2 = []
-    x = 0
-    for i in get_result:
-        field_list = i._meta.get_fields()
+    #Phase 1 - Column Names
+    first_line = get_result[0]
+    column_list = first_line.__dict__
+    phase_1_start = ''
+    X = 0
+    for field, value in column_list.items():
+        if value == 'Total Grade Point':
+            skip_field = field
+        if X == 1:
+            phase_1_start = field
+            break
+        if value == 'Cumulative Grade':
+            X = 1
 
-        for j in field_list[3:]:
-            val = getattr(i, j.name)
-            if val == None:
-                break
-            elif val == 'Name':
-                x = 1
-                course_list1.append(val)
-            else:
-                course_list1.append(val)
-        if x == 1:
-            course_list_of_list1.append(course_list1)
-        else:
-            course_list_of_list2.append(course_list1)
-        course_list1 = []
-        x = 2
+    for field, value in column_list.items():
+        temp = field
+        if value is None:
+            break
+        phase_1_stop = temp
 
+    my_list = []
+    list_of_list = []
+    start = 0
+    my_list.append('Registration No')
+    my_list.append('Name')
+
+    for field, value in column_list.items():
+        if field == phase_1_start:
+            start = 1
+        if start == 1:
+            my_list.append(value)
+        if field == phase_1_stop:
+            break
+
+    #Phase 2 - Column Names
+    phase_2_start = ''
+    Y = 0
+    for field, value in column_list.items():
+        if Y == 1:
+            phase_2_start = field
+            break
+        if value == 'Name':
+            Y = 1
+
+    for field, value in column_list.items():
+        if value == 'Cumulative Grade':
+            break
+        phase_2_stop = field
+
+    start = 0
+    for field, value in column_list.items():
+        if field == skip_field:
+            continue
+        if field == phase_2_start:
+            start = 1
+        if start == 1:
+            my_list.append(value)
+        if field == phase_2_stop:
+            break
+
+    list_of_list.append(my_list)
+    my_list = []
+
+    #Phase 1 - Student
+    my_list2 = []
+    list_of_list_2 = []
     results = Result_Table.objects.filter(
         Reg=reg_no, batch=get_batch, result_semester=get_semester)
+    for i in results:
+        my_list2.append(i.Reg)
+        my_list2.append(i.Name)
+        column_list = i.__dict__
+        start = 0
+        for field, value in column_list.items():
+            if field == phase_1_start:
+                start = 1
+            if start == 1:
+                if value is None:
+                    value = ' '
+                my_list2.append(value)
+            if field == phase_1_stop:
+                break
+
+        # Phase 2 - Students
+        start = 0
+        for field, value in column_list.items():
+            if field == skip_field:
+                continue
+            if field == phase_2_start:
+                start = 1
+            if start == 1:
+                if value is None:
+                    value = ' '
+                my_list2.append(value)
+            if field == phase_2_stop:
+                break
+
+        list_of_list_2.append(my_list2)
+        my_list2 = []
+
     list1 = []
     list_of_list1 = []
-    list_of_list2 = []
-    x = 0
+
     for i in results:
 
         field_list = i._meta.get_fields()
@@ -99,24 +173,13 @@ def student_result(request, semester):
             val = getattr(i, j.name)
             if val == None:
                 break
-            elif val == 'Name':
-                x = 1
-                list1.append(val)
             else:
                 list1.append(val)
-        if x == 1:
-            list_of_list1.append(list1)
-        else:
-            list_of_list2.append(list1)
-        list1 = []
-        x = 2
-    """ import operator
-    sorted_list = sorted(list_of_list2, key=operator.itemgetter(0))
-    for i in sorted_list:
-        list_of_list1.append(i) """
+        list_of_list1.append(list1)
 
     contex = {
-        'results': list_of_list2,
-        'result2': course_list_of_list1
+        'results': list_of_list_2,
+        'result2': list_of_list,
+        'semester':get_semester,
     }
     return render(request, 'student.html', contex)

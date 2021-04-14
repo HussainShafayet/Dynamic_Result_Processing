@@ -1,0 +1,29 @@
+{% extends 'base.html' %}{% block title %}About{% endblock %} {%block style %}
+<style>
+    p {
+        font-size: medium;
+    }
+</style>
+{%endblock%} {% block body %}
+<div class="container">
+    <h5>About this App
+        <hr>
+    </h5>
+    <p>This is a result processing system made for Sylhet Engineering College.</p>
+    <p>
+        It is divided into five modules- i)Admin ii) Department Head iii) Teacher iv) Students
+    </p>
+    <p>All the users like (Dept. Head, Teachers, Students) has to register into the system. These users has to be allowed by authority/admin. All type of users will have different types of dashboard and different users will see different data on their dashboards.
+    </p>
+    <p>The principle of Sylhet Engineering College is the admin of this project. Admin create New Departments and assign Department Head to that department. And he can also monitor all the activity of this project’s users .
+    </p>
+    <p>
+        Department Head can allow new teachers and students into the system. He has to create/maintain the syllabus. He has to assign the subjects to the teacher. Finally he will calculate the CGPA of students.
+    </p>
+    <p>A teacher will find all the courses assigned to him in his dashboard. Then he will give marks to the students of courses. After completing the marksheet he will calculate grade and GPA for the courses. And then he will submit the result to the main
+        marksheet.
+    </p>
+    <p>Students can see only his result on his dashboard He can see all previous courses and current/active courses
+    </p>
+</div>
+{% endblock %}

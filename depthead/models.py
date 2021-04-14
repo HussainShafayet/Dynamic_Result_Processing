@@ -65,8 +65,7 @@ class Result_Semester_List(models.Model):
 
 class Result_Table(models.Model):
     objects = models.Manager()
-    result_semester = models.ForeignKey(
-        Result_Semester_List, on_delete=models.CASCADE)
+    result_semester = models.ForeignKey(Result_Semester_List, on_delete=models.CASCADE)
     batch = models.ForeignKey(Sessions, on_delete=models.CASCADE)
     Reg = models.CharField(max_length=50)
     Name = models.CharField(max_length=50)

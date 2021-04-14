@@ -43,13 +43,16 @@
         <p>No Active courses.</p>{%endif%}
     </div>
     {% else %}
-    <h1>Result</h1>
+    <h3 class="text-center">{{semester}} Semester Result
+        <hr>
+    </h3>
     <div class="table-responsive">
+
         {% if results %}
         <table class="table table-hover">
             <thead>
                 {% for stu in result2 %}
-                <tr>
+                <tr class="bg-info">
                     {% for i in stu %} {% if forloop.counter == 1%}
                     <th>Registration No</th>{% else %}
                     <th>{{i}}</th>{%endif%} {% endfor %}

@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('accounts.urls')),
-    path('', include('depthead.urls')),
-    path('', include('teacher.urls')),
-    path('', include('student.urls')),
+    path('depthead_dashboard/', include('depthead.urls')),
+    path('teacher_dashboard/', include('teacher.urls')),
+    path('student_dashboard/', include('student.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

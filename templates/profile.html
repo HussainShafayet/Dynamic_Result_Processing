@@ -65,17 +65,17 @@
     <div class="card1">
         <div class="profile-header">
             <div class="profile-image">
-                <img src="{{profile_value.image.url }} " alt="Profile picture " width="180px " height="180px " style="border-radius: 50%;z-index:1; ">
+                <img src="{{profile_value.image.url }}" alt="Profile picture" width="180px" height="180px" style="border-radius: 50%;z-index:1;">
             </div>
         </div>
-        <div class="test1 ">
+        <div class="test1">
             <a href="{% url 'profile' %} ">About me</a>
             <a class=" " href="{% url 'edit_profile' profile_value.user.id %} ">Edit Profile</a>
             <a class=" " href="{% url 'password' profile_value.user.id %} ">Change password</a>
         </div>
         <div>
             {% if messages %} {% for message in messages %}
-            <div class="alert alert-{{message.tags}} " role="alert" id=" ">
+            <div class="alert alert-{{message.tags}}" role="alert" id="">
                 <button type="button" class="close" data-dismiss="alert">X</button> {{message}}
             </div>
             {% endfor %} {% endif %}
@@ -84,7 +84,7 @@
         {% if profile_details == 'profile_details' %}
         <div style="margin-top: 20px;">
             <h2 style="text-align:center ">Profile Information</h2>
-            <table class="table ">
+            <table class="table">
                 {% if profile_value.user.is_depthead %}
                 <tr>
                     <td>Name</td>
@@ -159,9 +159,9 @@
                 {% endif %}
             </table>
         </div>{% elif val == 'password_change' %}
-        <div class="row " style="margin-top: 30px; ">
-            <div class="col "></div>
-            <div class="col-mid-auto " style="text-align: start; margin-bottom:20px">
+        <div class="row" style="margin-top: 30px;">
+            <div class="col"></div>
+            <div class="col-mid-auto" style="text-align: start; margin-bottom:20px">
                 <form action=" " method="POST">
                     {% csrf_token %}{{password_form|crispy}}
                     <button type="submit" class="btn btn-primary mb-2">Save</button>
@@ -170,15 +170,15 @@
             <div class="col "></div>
         </div>
         {% else %}
-        <div class="row " style="margin-top: 30px; ">
-            <div class="col "></div>
-            <div class="col-mid-auto " style="text-align: start; margin-bottom:20px">
+        <div class="row" style="margin-top: 30px;">
+            <div class="col"></div>
+            <div class="col-mid-auto" style="text-align: start; margin-bottom:20px">
                 <form action=" " method="POST">
                     {% csrf_token %}{{form|crispy}}{{form2|crispy}}
                     <button type="submit" class="btn btn-primary mb-2">Save</button>
                 </form>
             </div>
-            <div class="col "></div>
+            <div class="col"></div>
         </div>
         {% endif %}
     </div>

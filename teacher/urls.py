@@ -3,7 +3,7 @@ from . import views, apiViews
 
 
 urlpatterns = [
-    path('teacher_dashboard/', views.teacher_dashboard, name='teacher_dashboard'),
+    path('', views.teacher_dashboard, name='teacher_dashboard'),
     path('assign_course/', views.assign_course, name='assign_course'),
     path('completed_courses/', views.completed_courses, name='completed_courses'),
     path('assign_course/<str:batch>/<str:course>/course_result/', views.course_result, name='course_result'),
