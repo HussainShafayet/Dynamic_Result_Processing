@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse,HttpResponseRedirect
 from django.contrib import messages
 # User Reg,login and Logout
 from .forms import (DeptheadRegForm, TeacherRegForm, StudentRegForm, Profile_edit_Form,
@@ -27,6 +27,7 @@ from depthead.decorators import unauthenticated_user, login_required
 
 # My views here.
 
+
 def home(request):
     user = request.user
     if user.is_authenticated:
@@ -36,7 +37,8 @@ def home(request):
             return redirect('student_dashboard')
         elif user.is_teacher:
             return redirect('teacher_dashboard')
-    else:    
+
+    else:
         if request.method == 'POST':
             form = AuthenticationForm(request=request, data=request.POST)
             if form.is_valid():
@@ -58,7 +60,8 @@ def home(request):
                         return redirect('teacher_dashboard')
                     else:
                         auth.login(request, user)
-                        messages.warning(request, 'Your are not authorised user')
+                        messages.warning(
+                            request, 'Your are not authorised user')
                         return redirect(home)
             else:
                 conext = {
@@ -70,10 +73,11 @@ def home(request):
             conext = {
                 'form': form
             }
-        return render(request, 'user_dashboard.html',conext)
+        return render(request, 'user_dashboard.html', conext)
+
 
 def about(request):
-    return render(request,'about.html')
+    return render(request, 'about.html')
 
 # User Registration and Activation
 

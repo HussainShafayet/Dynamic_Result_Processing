@@ -91,12 +91,12 @@ WSGI_APPLICATION = 'Dynamic_Result_Processing.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Result_processing_database',
-        'USER': 'postgres',
-        'PASSWORD': 'psql123',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'result_processing_system',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
 }
 

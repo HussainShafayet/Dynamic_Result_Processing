@@ -6,7 +6,7 @@ from .models import (Course,
 from django.contrib.auth.models import (User, auth, Group)
 from django.contrib import messages
 from depthead.models import (
-    batch_result, Course_list, Sessions, Result_Table, Result_Semester_List)
+      Sessions, Result_Table, Result_Semester_List)
 from depthead.decorators import (login_required, allowed_user)
 from student.models import Student_data
 from django.shortcuts import get_object_or_404
@@ -74,7 +74,7 @@ def assign_course_result(request):
     return render(request, 'teacher_Dashboard.html', context)
 
 
-@login_required
+""" @login_required
 @allowed_user(allowed_roles=['Teacher'])
 def details_course(request, batch, course):
     course_details = Course.objects.get(Batch=batch, Course=course)
@@ -85,7 +85,7 @@ def details_course(request, batch, course):
         'course_details2': course_details2,
         'val': val,
     }
-    return render(request, 'teacher_Dashboard.html', context)
+    return render(request, 'teacher_Dashboard.html', context) """
 
 
 @login_required

@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Course_list, Batch, Student_Sessions, Session, Syllabus, Course_Semester_List, Course_List_All, Sessions,Dept
+from .models import Batch, Session, Syllabus, Course_Semester_List, Course_List_All, Sessions,Dept
 from accounts.models import Depthead
 
 

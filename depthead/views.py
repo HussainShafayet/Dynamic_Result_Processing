@@ -4,8 +4,8 @@ from django.contrib.auth.models import (User, Group,)
 from accounts.models import (Student, Teacher, Depthead)
 from django.contrib.auth import get_user_model
 from .forms import (AddCourse, Create_batch, AddSyllabus, Add_Semester)
-from .models import (Course_list, Batch, Session,
-                     Student_Sessions, batch_result, Dept, Syllabus, Course_Semester_List, Sessions, Result_Semester_List, Result_Table, Course_List_All)
+from .models import ( Batch, Session,
+                      Dept, Syllabus, Course_Semester_List, Sessions, Result_Semester_List, Result_Table, Course_List_All)
 from teacher.models import (Course,
                             Course_Result_Sessional, Teacher_name, Course_Result_Theory, Course_Khata)
 from student.models import(Student_data)
